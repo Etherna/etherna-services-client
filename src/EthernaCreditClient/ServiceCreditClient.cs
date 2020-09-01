@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Etherna.CreditClient
 {
-    public class EthernaCreditClient : IEthernaCreditClient
+    public class ServiceCreditClient : IServiceCreditClient
     {
         // Fields.
         private readonly Uri baseUrl;
@@ -14,7 +14,7 @@ namespace Etherna.CreditClient
         private readonly string ssoClientSecret;
 
         // Constructors.
-        public EthernaCreditClient(
+        public ServiceCreditClient(
             Uri baseUrl,
             Uri ssoBaseUrl,
             string ssoClientId,
