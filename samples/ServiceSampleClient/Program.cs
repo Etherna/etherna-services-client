@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Etherna.CreditClient.SampleClient
+namespace Etherna.CreditClient.ServiceSampleClient
 {
     class Program
     {
@@ -24,7 +24,7 @@ namespace Etherna.CreditClient.SampleClient
             Console.WriteLine();
 
             // Create client.
-            var client = new EthernaCreditClient(new Uri(baseUrl), new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
+            var client = new ServiceCreditClient(new Uri(baseUrl), new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
 
             // Consume service api.
             var balance = await client.ServiceInteract.BalanceGetAsync(address);

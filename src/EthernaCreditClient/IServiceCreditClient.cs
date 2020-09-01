@@ -1,6 +1,6 @@
 ﻿namespace Etherna.CreditClient
 {
-    public interface IEthernaCreditClient
+    public interface IServiceCreditClient
     {
         IServiceInteractClient ServiceInteract { get; }
     }
