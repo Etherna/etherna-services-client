@@ -5,7 +5,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>Etherna.CreditClient</RootNamespace>
     <Authors>Etherna Sagl</Authors>
-    <Description>A .net client for Etherna Credit service</Description>
+    <Description>A .Net client for Etherna Credit service</Description>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     
@@ -21,7 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="IdentityModel" Version="4.3.1" />
+    <PackageReference Include="IdentityModel" Version="4.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
