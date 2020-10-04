@@ -11,7 +11,7 @@ namespace Etherna.CreditClient
         // Fields.
         private ServiceInteractClient _serviceInteract = default!;
         private readonly Uri baseUrl;
-        private readonly ReaderWriterLockSlim initLock = new ReaderWriterLockSlim();
+        private readonly SemaphoreSlim initLock = new SemaphoreSlim(1);
         private readonly Uri ssoBaseUrl;
         private readonly string ssoClientId;
         private readonly string ssoClientSecret;
@@ -40,6 +40,7 @@ namespace Etherna.CreditClient
         }
 
         // Properties.
+        public string? BearerToken { get; private set; }
         public bool IsInitialized { get; private set; }
         public IServiceInteractClient ServiceInteract
         {
@@ -54,13 +55,13 @@ namespace Etherna.CreditClient
         // Methods.
         public async Task InitializeAsync()
         {
-            initLock.EnterWriteLock();
-
-            if (IsInitialized)
-                return;
+            await initLock.WaitAsync().ConfigureAwait(false);
 
             try
             {
+                if (IsInitialized)
+                    return;
+
                 // Discover endpoints from metadata.
                 using var httpClient = new HttpClient();
                 var discoveryDoc = await httpClient.GetDiscoveryDocumentAsync(ssoBaseUrl.AbsoluteUri).ConfigureAwait(false);
@@ -83,7 +84,8 @@ namespace Etherna.CreditClient
 
                 // Set api token.
                 var apiClient = new HttpClient();
-                apiClient.SetBearerToken(tokenResponse.AccessToken);
+                BearerToken = tokenResponse.AccessToken;
+                apiClient.SetBearerToken(BearerToken);
 
                 // Create service clients.
                 _serviceInteract = new ServiceInteractClient(baseUrl.AbsoluteUri, apiClient);
@@ -93,7 +95,7 @@ namespace Etherna.CreditClient
             }
             finally
             {
-                initLock.ExitWriteLock();
+                initLock.Release();
             }
         }
     }
