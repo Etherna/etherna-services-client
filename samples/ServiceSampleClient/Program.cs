@@ -67,6 +67,12 @@ namespace Etherna.CreditClient.ServiceSampleClient
             // Create client.
             var client = new ServiceCreditClient(new Uri(creditBaseUrl), new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
 
+            // Initialize and print initialization.
+            await client.InitializeAsync();
+            Console.WriteLine("Bearer token:");
+            Console.WriteLine(client.BearerToken);
+            Console.WriteLine();
+
             // Consume service api.
             var balance = await client.ServiceInteract.BalanceGetAsync(address);
             Console.WriteLine($"Current balance: ${balance}");
