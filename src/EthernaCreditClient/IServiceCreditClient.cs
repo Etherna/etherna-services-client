@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Etherna.CreditClient
 {
     public interface IServiceCreditClient
     {
-        string? BearerToken { get; }
+        IEnumerable<KeyValuePair<string, IEnumerable<string>>> DefaultRequestHeaders { get; }
         bool IsInitialized { get; }
         IServiceInteractClient ServiceInteract { get; }
 

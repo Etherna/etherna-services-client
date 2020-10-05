@@ -67,10 +67,16 @@ namespace Etherna.CreditClient.ServiceSampleClient
             // Create client.
             var client = new ServiceCreditClient(new Uri(creditBaseUrl), new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
 
-            // Initialize and print initialization.
+            // Initialize and print default headers.
             await client.InitializeAsync();
-            Console.WriteLine("Bearer token:");
-            Console.WriteLine(client.BearerToken);
+
+            Console.WriteLine("Default headers:");
+            foreach (var headerPair in client.DefaultRequestHeaders)
+            {
+                Console.WriteLine($"+{headerPair.Key}:");
+                foreach (var value in headerPair.Value)
+                    Console.WriteLine($"++\t{value}");
+            }
             Console.WriteLine();
 
             // Consume service api.

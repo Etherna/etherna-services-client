@@ -1,5 +1,6 @@
 ﻿using IdentityModel.Client;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace Etherna.CreditClient
     {
         // Fields.
         private ServiceInteractClient _serviceInteract = default!;
+        private readonly HttpClient apiClient = new HttpClient();
         private readonly Uri baseUrl;
         private readonly SemaphoreSlim initLock = new SemaphoreSlim(1);
         private readonly Uri ssoBaseUrl;
@@ -36,11 +38,20 @@ namespace Etherna.CreditClient
 
         public void Dispose()
         {
+            apiClient.Dispose();
             initLock.Dispose();
         }
 
         // Properties.
-        public string? BearerToken { get; private set; }
+        public IEnumerable<KeyValuePair<string, IEnumerable<string>>> DefaultRequestHeaders
+        {
+            get
+            {
+                if (!IsInitialized)
+                    InitializeAsync().Wait();
+                return apiClient.DefaultRequestHeaders;
+            }
+        }
         public bool IsInitialized { get; private set; }
         public IServiceInteractClient ServiceInteract
         {
@@ -82,10 +93,8 @@ namespace Etherna.CreditClient
                 if (tokenResponse.IsError)
                     throw tokenResponse.Exception ?? new InvalidOperationException();
 
-                // Set api token.
-                var apiClient = new HttpClient();
-                BearerToken = tokenResponse.AccessToken;
-                apiClient.SetBearerToken(BearerToken);
+                // Set api bearer token.
+                apiClient.SetBearerToken(tokenResponse.AccessToken);
 
                 // Create service clients.
                 _serviceInteract = new ServiceInteractClient(baseUrl.AbsoluteUri, apiClient);
