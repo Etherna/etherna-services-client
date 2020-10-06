@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Etherna Sagl</Authors>
+    <IsPackable>false</IsPackable>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EthernaCreditClient.AspNetCore\EthernaCreditClient.AspNetCore.csproj" />
+  </ItemGroup>
+
+</Project>

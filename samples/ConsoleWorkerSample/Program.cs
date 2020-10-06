@@ -70,16 +70,6 @@ namespace Etherna.CreditClient.ServiceSampleClient
             var httpClient = await CreateHttpClientAsync(new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
             var client = new ServiceCreditClient(new Uri(creditBaseUrl), () => httpClient);
 
-            // Print default headers.
-            Console.WriteLine("Default headers:");
-            foreach (var headerPair in client.ClientDefaultRequestHeaders)
-            {
-                Console.WriteLine($"+{headerPair.Key}:");
-                foreach (var value in headerPair.Value)
-                    Console.WriteLine($"++\t{value}");
-            }
-            Console.WriteLine();
-
             // Consume service api.
             var balance = await client.ServiceInteract.BalanceGetAsync(address);
             Console.WriteLine($"Current balance: ${balance}");

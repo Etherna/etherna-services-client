@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 
 namespace Etherna.CreditClient
@@ -20,8 +19,6 @@ namespace Etherna.CreditClient
         }
 
         // Properties.
-        public IEnumerable<KeyValuePair<string, IEnumerable<string>>> ClientDefaultRequestHeaders =>
-            createHttpClient().DefaultRequestHeaders;
         public IServiceInteractClient ServiceInteract =>
             new ServiceInteractClient(baseUrl.AbsoluteUri, createHttpClient());
     }
