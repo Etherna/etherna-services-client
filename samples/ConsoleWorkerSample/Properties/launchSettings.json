@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ServiceSampleClient": {
+      "commandName": "Project",
+      "commandLineArgs": "-c https://localhost:44369/ -a 0x5FbA40e3613383246E4B60f860e547c6Ba92BcE9 -l https://localhost:44379/ -i ethernaGatevalCreditClientId -s ethernaGatevalCreditClientSecret"
+    }
+  }
+}

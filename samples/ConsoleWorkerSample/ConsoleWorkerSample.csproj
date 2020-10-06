@@ -6,6 +6,8 @@
     <RootNamespace>Etherna.CreditClient.SampleClient</RootNamespace>
     <Authors>Etherna Sagl</Authors>
     <IsPackable>false</IsPackable>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
