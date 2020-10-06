@@ -20,12 +20,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\myget-deploy.yml = .github\workflows\myget-deploy.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceSampleClient", "samples\ServiceSampleClient\ServiceSampleClient.csproj", "{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleWorkerSample", "samples\ConsoleWorkerSample\ConsoleWorkerSample.csproj", "{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B6130FF-9DC4-444E-B69D-55172877D168}"
 	ProjectSection(SolutionItems) = preProject
 		tools\etherna-credit-api.nswag = tools\etherna-credit-api.nswag
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaCreditClient.AspNetCore", "src\EthernaCreditClient.AspNetCore\EthernaCreditClient.AspNetCore.csproj", "{7693BBBF-4B84-4A6E-9D13-7F736D0317A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7693BBBF-4B84-4A6E-9D13-7F736D0317A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7693BBBF-4B84-4A6E-9D13-7F736D0317A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7693BBBF-4B84-4A6E-9D13-7F736D0317A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7693BBBF-4B84-4A6E-9D13-7F736D0317A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{2D50CC62-DF5A-4AD0-9042-26308DD057EE} = {C3177472-ED49-496E-B6A6-078780C322C4}
 		{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8} = {A114E283-B827-40F8-9180-E13DD3C455CD}
 		{5B6130FF-9DC4-444E-B69D-55172877D168} = {C3177472-ED49-496E-B6A6-078780C322C4}
+		{7693BBBF-4B84-4A6E-9D13-7F736D0317A8} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7539252-E55D-43C2-B2C5-C9A77D191087}

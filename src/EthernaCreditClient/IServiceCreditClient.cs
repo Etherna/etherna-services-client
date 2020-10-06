@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Etherna.CreditClient
 {
     public interface IServiceCreditClient
     {
-        IEnumerable<KeyValuePair<string, IEnumerable<string>>> DefaultRequestHeaders { get; }
-        bool IsInitialized { get; }
+        IEnumerable<KeyValuePair<string, IEnumerable<string>>> ClientDefaultRequestHeaders { get; }
         IServiceInteractClient ServiceInteract { get; }
-
-        Task InitializeAsync();
     }
 }
