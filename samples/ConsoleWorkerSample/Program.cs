@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IdentityModel.Client;
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Etherna.CreditClient.ServiceSampleClient
@@ -64,18 +66,45 @@ namespace Etherna.CreditClient.ServiceSampleClient
 
             Console.WriteLine();
 
-            // Create client.
-            var client = new ServiceCreditClient(new Uri(creditBaseUrl), new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
-
-            // Initialize and print initialization.
-            await client.InitializeAsync();
-            Console.WriteLine("Bearer token:");
-            Console.WriteLine(client.BearerToken);
-            Console.WriteLine();
+            // Create a client.
+            var httpClient = await CreateHttpClientAsync(new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
+            var client = new ServiceCreditClient(new Uri(creditBaseUrl), () => httpClient);
 
             // Consume service api.
             var balance = await client.ServiceInteract.BalanceGetAsync(address);
             Console.WriteLine($"Current balance: ${balance}");
+        }
+
+        static async Task<HttpClient> CreateHttpClientAsync(
+            Uri ssoBaseUrl,
+            string ssoClientId,
+            string ssoClientSecret)
+        {
+            // Discover endpoints from metadata.
+            using var httpClient = new HttpClient();
+            var discoveryDoc = await httpClient.GetDiscoveryDocumentAsync(ssoBaseUrl.AbsoluteUri).ConfigureAwait(false);
+            if (discoveryDoc.IsError)
+                throw discoveryDoc.Exception ?? new InvalidOperationException();
+
+            // Request token.
+            using var tokenRequest = new ClientCredentialsTokenRequest
+            {
+                Address = discoveryDoc.TokenEndpoint,
+
+                ClientId = ssoClientId,
+                ClientSecret = ssoClientSecret,
+                Scope = "ethernaCredit_serviceInteract_api"
+            };
+            var tokenResponse = await httpClient.RequestClientCredentialsTokenAsync(tokenRequest).ConfigureAwait(false);
+
+            if (tokenResponse.IsError)
+                throw tokenResponse.Exception ?? new InvalidOperationException();
+
+            // Create client and set api bearer token.
+            var apiClient = new HttpClient();
+            apiClient.SetBearerToken(tokenResponse.AccessToken);
+
+            return apiClient;
         }
     }
 }

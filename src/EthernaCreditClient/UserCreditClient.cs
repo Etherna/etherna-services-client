@@ -5,17 +5,21 @@ namespace Etherna.CreditClient
 {
     public class UserCreditClient : IUserCreditClient
     {
-        // Constructors.
-        public UserCreditClient(Uri baseUrl)
-        {
-            if (baseUrl is null)
-                throw new ArgumentNullException(nameof(baseUrl));
+        // Fields.
+        private readonly Uri baseUrl;
+        private readonly Func<HttpClient> createHttpClient;
 
-            var apiClient = new HttpClient();
-            UserClient = new UserClient(baseUrl.AbsoluteUri, apiClient);
+        // Constructor.
+        public UserCreditClient(
+            Uri baseUrl,
+            Func<HttpClient> createHttpClient)
+        {
+            this.baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
+            this.createHttpClient = createHttpClient;
         }
 
         // Properties.
-        public IUserClient UserClient { get; }
+        public IUserClient UserClient =>
+            new UserClient(baseUrl.AbsoluteUri, createHttpClient());
     }
 }
