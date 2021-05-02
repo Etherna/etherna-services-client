@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		EthernaCreditClient.sln.licenseheader = EthernaCreditClient.sln.licenseheader
+		LICENSE = LICENSE
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}"
@@ -29,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B6130FF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaCreditClient.AspNetCore", "src\EthernaCreditClient.AspNetCore\EthernaCreditClient.AspNetCore.csproj", "{7693BBBF-4B84-4A6E-9D13-7F736D0317A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreWorkerSample", "samples\AspNetCoreWorkerSample\AspNetCoreWorkerSample.csproj", "{977F4222-3A1C-4647-8DA7-78CAA37163A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreWorkerSample", "samples\AspNetCoreWorkerSample\AspNetCoreWorkerSample.csproj", "{977F4222-3A1C-4647-8DA7-78CAA37163A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
