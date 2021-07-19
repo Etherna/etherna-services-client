@@ -17,7 +17,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Etherna.CreditClient.ServiceSampleClient
+namespace Etherna.ServicesClient.SampleClient
 {
     class Program
     {

@@ -21,7 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace AspNetCoreWorkerSample
+namespace Etherna.ServicesClient.AspSampleClient
 {
     public class Program
     {

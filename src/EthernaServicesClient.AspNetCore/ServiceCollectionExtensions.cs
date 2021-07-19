@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.CreditClient;
+using Etherna.ServicesClient;
 using IdentityModel.Client;
 using System;
 using System.Net.Http;

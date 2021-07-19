@@ -14,7 +14,7 @@
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace AspNetCoreWorkerSample.Pages
+namespace Etherna.ServicesClient.AspSampleClient.Pages
 {
     public class PrivacyModel : PageModel
     {

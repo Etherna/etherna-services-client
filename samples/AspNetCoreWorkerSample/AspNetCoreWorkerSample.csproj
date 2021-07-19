@@ -6,10 +6,11 @@
     <IsPackable>false</IsPackable>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
+    <RootNamespace>Etherna.ServicesClient.AspSampleClient</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EthernaCreditClient.AspNetCore\EthernaCreditClient.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\EthernaServicesClient.AspNetCore\EthernaServicesClient.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>
