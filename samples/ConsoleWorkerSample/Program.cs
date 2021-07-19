@@ -81,11 +81,11 @@ namespace Etherna.ServicesClient.SampleClient
             Console.WriteLine();
 
             // Create a client.
-            var httpClient = await CreateHttpClientAsync(new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
-            var client = new ServiceCreditClient(new Uri(creditBaseUrl), () => httpClient);
+            var httpClient = await CreateHttpClientAsync(new Uri(ssoBaseUrl!), ssoClientId!, ssoClientSecret!);
+            var client = new ServiceCreditClient(new Uri(creditBaseUrl!), () => httpClient);
 
             // Consume service api.
-            var balance = await client.ServiceInteract.BalanceGetAsync(address);
+            var balance = await client.ServiceInteract.BalanceGetAsync(address!);
             Console.WriteLine($"Current balance: ${balance}");
         }
 

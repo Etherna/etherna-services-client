@@ -61,7 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // Register service.
             services.AddSingleton<IServiceCreditClient>(serviceProvider =>
             {
-                var clientFactory = serviceProvider.GetService<IHttpClientFactory>();
+                var clientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
                 return new ServiceCreditClient(
                     serviceBaseUrl,
                     () => clientFactory.CreateClient(ClientName));
