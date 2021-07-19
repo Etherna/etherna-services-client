@@ -12,12 +12,11 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.CreditClient;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
-namespace AspNetCoreWorkerSample.Pages
+namespace Etherna.ServicesClient.AspSampleClient.Pages
 {
     public class IndexModel : PageModel
     {

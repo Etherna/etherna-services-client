@@ -3,15 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <RootNamespace>Etherna.CreditClient.AspNetCore</RootNamespace>
+    <RootNamespace>Etherna.ServicesClient.AspNetCore</RootNamespace>
     <Authors>Etherna Sagl</Authors>
-    <Description>Asp.Net Core adapter for EthernaCreditClient</Description>
+    <Description>Asp.Net Core adapter for EthernaServicesClient</Description>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
 
-    <RepositoryUrl>https://github.com/Etherna/etherna-credit-client</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Etherna/etherna-services-client</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EthernaCreditClient\EthernaCreditClient.csproj" />
+    <ProjectReference Include="..\EthernaServicesClient\EthernaServicesClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
