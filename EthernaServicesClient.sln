@@ -20,7 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A114
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{2D50CC62-DF5A-4AD0-9042-26308DD057EE}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\myget-deploy.yml = .github\workflows\myget-deploy.yml
+		.github\workflows\myget-unstable-deploy.yml = .github\workflows\myget-unstable-deploy.yml
+		.github\workflows\nuget-stable-deploy.yml = .github\workflows\nuget-stable-deploy.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleWorkerSample", "samples\ConsoleWorkerSample\ConsoleWorkerSample.csproj", "{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}"
