@@ -12,9 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient.Clients.Credit;
-
-namespace Etherna.ServicesClient
+namespace Etherna.ServicesClient.Clients.Credit
 {
     public interface IUserCreditClient
     {

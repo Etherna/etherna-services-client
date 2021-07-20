@@ -12,12 +12,28 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient.Clients.Credit;
+using System;
+using System.Net.Http;
 
-namespace Etherna.ServicesClient
+namespace Etherna.ServicesClient.Clients.Credit
 {
-    public interface IServiceCreditClient
+    class UserCreditClient : IUserCreditClient
     {
-        IServiceInteractClient ServiceInteract { get; }
+        // Fields.
+        private readonly Uri baseUrl;
+        private readonly HttpClient httpClient;
+
+        // Constructor.
+        public UserCreditClient(
+            Uri baseUrl,
+            HttpClient httpClient)
+        {
+            this.baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
+            this.httpClient = httpClient;
+        }
+
+        // Properties.
+        public IUserClient UserClient =>
+            new UserClient(baseUrl.AbsoluteUri, httpClient);
     }
 }
