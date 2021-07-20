@@ -15,25 +15,25 @@
 using System;
 using System.Net.Http;
 
-namespace Etherna.ServicesClient
+namespace Etherna.ServicesClient.Clients.Credit
 {
-    public class UserCreditClient : IUserCreditClient
+    class UserCreditClient : IUserCreditClient
     {
         // Fields.
         private readonly Uri baseUrl;
-        private readonly Func<HttpClient> createHttpClient;
+        private readonly HttpClient httpClient;
 
         // Constructor.
         public UserCreditClient(
             Uri baseUrl,
-            Func<HttpClient> createHttpClient)
+            HttpClient httpClient)
         {
             this.baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
-            this.createHttpClient = createHttpClient;
+            this.httpClient = httpClient;
         }
 
         // Properties.
         public IUserClient UserClient =>
-            new UserClient(baseUrl.AbsoluteUri, createHttpClient());
+            new UserClient(baseUrl.AbsoluteUri, httpClient);
     }
 }

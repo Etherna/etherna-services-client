@@ -15,7 +15,7 @@
 using System;
 using System.Net.Http;
 
-namespace Etherna.ServicesClient
+namespace Etherna.ServicesClient.Clients.Credit
 {
     public class ServiceCreditClient : IServiceCreditClient
     {

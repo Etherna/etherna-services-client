@@ -1,5 +1,5 @@
 {
-  "runtime": "NetCore31",
+  "runtime": "Net50",
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
@@ -20,7 +20,7 @@
       "disposeHttpClient": true,
       "protectedMethods": [],
       "generateExceptionClasses": true,
-      "exceptionClass": "ApiException",
+      "exceptionClass": "CreditApiException",
       "wrapDtoExceptions": true,
       "useHttpClientCreationMethod": false,
       "httpClientType": "System.Net.Http.HttpClient",
@@ -56,7 +56,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Etherna.ServicesClient",
+      "namespace": "Etherna.ServicesClient.Clients.Credit",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -94,7 +94,7 @@
       "checksumCacheEnabled": false,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../src/EthernaServicesClient/NSwagGeneratedClient.cs",
+      "output": "../src/EthernaServicesClient/Clients/Credit/NSwagCreditApiClient.cs",
       "newLineBehavior": "Auto"
     }
   }

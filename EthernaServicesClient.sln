@@ -29,6 +29,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B6130FF-9DC4-444E-B69D-55172877D168}"
 	ProjectSection(SolutionItems) = preProject
 		tools\etherna-credit-api.nswag = tools\etherna-credit-api.nswag
+		tools\etherna-sso-api.nswag = tools\etherna-sso-api.nswag
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaServicesClient.AspNetCore", "src\EthernaServicesClient.AspNetCore\EthernaServicesClient.AspNetCore.csproj", "{7693BBBF-4B84-4A6E-9D13-7F736D0317A8}"

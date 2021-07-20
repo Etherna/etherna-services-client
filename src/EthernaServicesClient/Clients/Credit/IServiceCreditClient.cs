@@ -12,10 +12,10 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-namespace Etherna.ServicesClient
+namespace Etherna.ServicesClient.Clients.Credit
 {
-    public interface IUserCreditClient
+    public interface IServiceCreditClient
     {
-        IUserClient UserClient { get; }
+        IServiceInteractClient ServiceInteract { get; }
     }
 }
