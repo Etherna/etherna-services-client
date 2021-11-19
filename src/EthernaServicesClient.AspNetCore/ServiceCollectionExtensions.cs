@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
             task.Wait();
 
             // Register http client. (don't remove it!, `new HttpClient()` doesn't work)
-            services.AddClientAccessTokenClient(CreditClientName);
+            services.AddClientAccessTokenHttpClient(CreditClientName);
 
             // Register service.
             services.AddSingleton<IServiceCreditClient>(serviceProvider =>
@@ -74,7 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
             task.Wait();
 
             // Register http client. (don't remove it!, `new HttpClient()` doesn't work)
-            services.AddClientAccessTokenClient(SsoClientName);
+            services.AddClientAccessTokenHttpClient(SsoClientName);
 
             // Register service.
             services.AddSingleton<IServiceSsoClient>(serviceProvider =>
