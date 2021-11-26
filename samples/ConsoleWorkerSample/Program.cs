@@ -86,8 +86,8 @@ namespace Etherna.ServicesClient.SampleClient
             var client = new ServiceCreditClient(new Uri(creditBaseUrl!), () => httpClient);
 
             // Consume service api.
-            var balance = await client.ServiceInteract.BalanceGetAsync(address!);
-            Console.WriteLine($"Current balance: ${balance}");
+            var credit = await client.ServiceInteract.CreditAsync(address!);
+            Console.WriteLine($"Current balance: ${credit.Balance}");
         }
 
         static async Task<HttpClient> CreateHttpClientAsync(

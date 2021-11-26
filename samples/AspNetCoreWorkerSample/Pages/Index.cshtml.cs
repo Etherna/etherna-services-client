@@ -35,12 +35,15 @@ namespace Etherna.ServicesClient.AspSampleClient.Pages
         }
 
         // Properties.
-        public double UserCredit { get; set; }
+        public double CreditBalance { get; set; }
+        public bool IsUnlimitedCredit { get; set; }
 
         // Methods.
         public async Task OnGetAsync()
         {
-            UserCredit = await creditClient.ServiceInteract.BalanceGetAsync(configuration["SampleConfig:Address"]);
+            var credit = await creditClient.ServiceInteract.CreditAsync(configuration["SampleConfig:Address"]);
+            CreditBalance = credit.Balance;
+            IsUnlimitedCredit = credit.IsUnlimited;
         }
     }
 }
