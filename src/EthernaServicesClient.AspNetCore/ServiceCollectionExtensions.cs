@@ -12,15 +12,13 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient;
 using Etherna.ServicesClient.Clients.Credit;
 using Etherna.ServicesClient.Clients.Sso;
-using IdentityModel.Client;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Etherna.ServicesClient.AspNetCore
 {
     public static class ServiceCollectionExtensions
     {
@@ -29,22 +27,13 @@ namespace Microsoft.Extensions.DependencyInjection
         private const string SsoClientName = "ethernaSsoServiceClient";
 
         // Methods.
-        public static void AddEthernaCreditClientForServices(
+        public static IEthernaClientForServicesBuilder AddEthernaCreditClientForServices(
             this IServiceCollection services,
             Uri creditServiceBaseUrl,
             Uri ssoBaseUrl,
             string clientId,
             string clientSecret)
         {
-            var task = RegisterTokenManagerAsync(
-                services,
-                ssoBaseUrl,
-                CreditClientName,
-                clientId,
-                clientSecret,
-                "ethernaCredit_serviceInteract_api");
-            task.Wait();
-
             // Register http client. (don't remove it!, `new HttpClient()` doesn't work)
             services.AddClientAccessTokenHttpClient(CreditClientName, configureClient: default(Action<HttpClient>));
 
@@ -56,23 +45,22 @@ namespace Microsoft.Extensions.DependencyInjection
                     creditServiceBaseUrl,
                     () => clientFactory.CreateClient(CreditClientName));
             });
+
+            // Return builder.
+            return new EthernaClientForServicesBuilder(
+                clientId,
+                CreditClientName,
+                "ethernaCredit_serviceInteract_api",
+                clientSecret,
+                ssoBaseUrl);
         }
 
-        public static void AddEthernaSsoClientForServices(
+        public static IEthernaClientForServicesBuilder AddEthernaSsoClientForServices(
             this IServiceCollection services,
             Uri ssoBaseUrl,
             string clientId,
             string clientSecret)
         {
-            var task = RegisterTokenManagerAsync(
-                services,
-                ssoBaseUrl,
-                SsoClientName,
-                clientId,
-                clientSecret,
-                "ethernaSso_userContactInfo_api");
-            task.Wait();
-
             // Register http client. (don't remove it!, `new HttpClient()` doesn't work)
             services.AddClientAccessTokenHttpClient(SsoClientName, configureClient: default(Action<HttpClient>));
 
@@ -84,6 +72,14 @@ namespace Microsoft.Extensions.DependencyInjection
                     ssoBaseUrl,
                     () => clientFactory.CreateClient(SsoClientName));
             });
+
+            // Return builder.
+            return new EthernaClientForServicesBuilder(
+                clientId,
+                SsoClientName,
+                "ethernaSso_userContactInfo_api",
+                clientSecret,
+                ssoBaseUrl);
         }
 
         public static void AddEthernaClientsForUsers(
@@ -98,37 +94,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 creditServiceBaseUrl,
                 ssoServicebaseUrl,
                 () => new HttpClient()));
-        }
-
-        // Helpers.
-        private static async Task RegisterTokenManagerAsync(
-            IServiceCollection services,
-            Uri ssoBaseUrl,
-            string clientName,
-            string clientId,
-            string clientSecret,
-            string clientScope)
-        {
-            if (ssoBaseUrl is null)
-                throw new ArgumentNullException(nameof(ssoBaseUrl));
-
-            // Discover endpoints from metadata.
-            using var httpClient = new HttpClient();
-            var discoveryDoc = await httpClient.GetDiscoveryDocumentAsync(ssoBaseUrl.AbsoluteUri).ConfigureAwait(false);
-            if (discoveryDoc.IsError)
-                throw discoveryDoc.Exception ?? new InvalidOperationException();
-
-            // Register token manager.
-            services.AddAccessTokenManagement(options =>
-            {
-                options.Client.Clients.Add(clientName, new ClientCredentialsTokenRequest
-                {
-                    Address = discoveryDoc.TokenEndpoint,
-                    ClientId = clientId,
-                    ClientSecret = clientSecret,
-                    Scope = clientScope
-                });
-            });
         }
     }
 }
