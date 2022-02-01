@@ -12,6 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
+using Etherna.ServicesClient.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,26 +24,38 @@ namespace Etherna.ServicesClient.AspSampleClient
 {
     public class Startup
     {
+        // Constructor.
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        // Properties.
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // Methods.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
 
-            services.AddEthernaCreditClientForServices(
+            // Register client.
+            var ethernaServiceClientBuilder = services.AddEthernaCreditClientForServices(
                 new Uri(Configuration["SampleConfig:ServiceBaseUrl"]),
                 new Uri(Configuration["SampleConfig:SsoBaseUrl"]),
                 Configuration["SampleConfig:ClientId"],
                 Configuration["SampleConfig:ClientSecret"]);
+
+            var clientCredentialTask = ethernaServiceClientBuilder.GetClientCredentialsTokenRequestAsync();
+            clientCredentialTask.Wait();
+            var clientCredential = clientCredentialTask.Result;
+
+            // Register token manager.
+            services.AddAccessTokenManagement(options =>
+            {
+                options.Client.Clients.Add(ethernaServiceClientBuilder.ClientName, clientCredential);
+            });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
