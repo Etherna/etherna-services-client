@@ -30,11 +30,17 @@ namespace Etherna.ServicesClient.AspNetCore
         public Uri SsoBaseUrl { get; }
 
         // Methods.
-        public async Task<ClientCredentialsTokenRequest> GetClientCredentialsTokenRequestAsync()
+        public async Task<ClientCredentialsTokenRequest> GetClientCredentialsTokenRequestAsync(bool requireHttps = true)
         {
             // Discover endpoints from metadata.
             using var httpClient = new HttpClient();
-            var discoveryDoc = await httpClient.GetDiscoveryDocumentAsync(SsoBaseUrl.AbsoluteUri).ConfigureAwait(false);
+            using var request = new DiscoveryDocumentRequest
+            {
+                Address = SsoBaseUrl.AbsoluteUri,
+                Policy = new DiscoveryPolicy { RequireHttps = requireHttps }
+            };
+
+            var discoveryDoc = await httpClient.GetDiscoveryDocumentAsync(request).ConfigureAwait(false);
             if (discoveryDoc.IsError)
                 throw discoveryDoc.Exception ?? new InvalidOperationException();
 

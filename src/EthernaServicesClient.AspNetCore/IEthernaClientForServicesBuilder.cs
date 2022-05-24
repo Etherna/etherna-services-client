@@ -14,6 +14,6 @@ namespace Etherna.ServicesClient.AspNetCore
         Uri SsoBaseUrl { get; }
 
         // Methods.
-        Task<ClientCredentialsTokenRequest> GetClientCredentialsTokenRequestAsync();
+        Task<ClientCredentialsTokenRequest> GetClientCredentialsTokenRequestAsync(bool requireHttps = true);
     }
 }
