@@ -857,12 +857,10 @@ namespace Etherna.ServicesClient.Clients.Credit
 
         [System.Text.Json.Serialization.JsonPropertyName("balance")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public double Balance { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("isUnlimited")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public bool IsUnlimited { get; set; } = default!;
 
     }
@@ -873,7 +871,6 @@ namespace Etherna.ServicesClient.Clients.Credit
 
         [System.Text.Json.Serialization.JsonPropertyName("amount")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public double Amount { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("author")]
@@ -883,7 +880,6 @@ namespace Etherna.ServicesClient.Clients.Credit
 
         [System.Text.Json.Serialization.JsonPropertyName("creationDateTime")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public System.DateTimeOffset CreationDateTime { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("operationName")]
