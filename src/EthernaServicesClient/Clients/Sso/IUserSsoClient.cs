@@ -2,6 +2,6 @@
 {
     public interface IUserSsoClient
     {
-        public IIdentityClient IdentityClient { get; }
+        IIdentityClient IdentityClient { get; }
     }
 }

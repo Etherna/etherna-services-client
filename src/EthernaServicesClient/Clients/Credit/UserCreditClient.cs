@@ -29,7 +29,7 @@ namespace Etherna.ServicesClient.Clients.Credit
             HttpClient httpClient)
         {
             this.baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
-            this.httpClient = httpClient;
+            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         // Properties.

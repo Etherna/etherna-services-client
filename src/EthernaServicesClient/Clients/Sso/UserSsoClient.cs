@@ -15,7 +15,7 @@ namespace Etherna.ServicesClient.Clients.Sso
             HttpClient httpClient)
         {
             this.baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
-            this.httpClient = httpClient;
+            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         // Properties.
