@@ -85,6 +85,7 @@ namespace Etherna.ServicesClient.AspNetCore
         public static void AddEthernaClientsForUsers(
             this IServiceCollection services,
             Uri creditServiceBaseUrl,
+            Uri gatewayServiceBaseUrl,
             Uri indexServiceBaseUrl,
             Uri ssoServicebaseUrl)
         {
@@ -93,6 +94,7 @@ namespace Etherna.ServicesClient.AspNetCore
 
             services.AddSingleton<IEthernaUserClients>(new EthernaUserClients(
                 creditServiceBaseUrl,
+                gatewayServiceBaseUrl,
                 indexServiceBaseUrl,
                 ssoServicebaseUrl,
                 () => new HttpClient()));
