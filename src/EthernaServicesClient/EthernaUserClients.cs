@@ -1,4 +1,5 @@
 ﻿using Etherna.ServicesClient.Clients.Credit;
+using Etherna.ServicesClient.Clients.Gateway;
 using Etherna.ServicesClient.Clients.Index;
 using Etherna.ServicesClient.Clients.Sso;
 using System;
@@ -10,6 +11,7 @@ namespace Etherna.ServicesClient
     {
         public EthernaUserClients(
             Uri creditServiceBaseUrl,
+            Uri gatewayServiceBaseUrl,
             Uri indexServiceBaseUrl,
             Uri ssoServiceBaseUrl,
             Func<HttpClient> createHttpClient)
@@ -20,11 +22,13 @@ namespace Etherna.ServicesClient
             var httpClient = createHttpClient();
 
             CreditClient = new UserCreditClient(creditServiceBaseUrl, httpClient);
+            GatewayClient = new UserGatewayClient(gatewayServiceBaseUrl, httpClient);
             IndexClient = new UserIndexClient(indexServiceBaseUrl, httpClient);
             SsoClient = new UserSsoClient(ssoServiceBaseUrl, httpClient);
         }
 
         public IUserCreditClient CreditClient { get; }
+        public IUserGatewayClient GatewayClient { get; }
         public IUserIndexClient IndexClient { get; }
         public IUserSsoClient SsoClient { get; }
     }
