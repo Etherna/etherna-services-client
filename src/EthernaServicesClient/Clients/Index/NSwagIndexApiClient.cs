@@ -1157,22 +1157,24 @@ namespace Etherna.ServicesClient.Clients.Index
         /// <summary>
         /// Get a complete list of users.
         /// </summary>
+        /// <param name="onlyWithVideo">Filter only users with published videos</param>
         /// <param name="page">Current page of results</param>
         /// <param name="take">Number of items to retrieve. Max 100</param>
         /// <returns>Current page on list</returns>
         /// <exception cref="IndexApiException">A server side error occurred.</exception>
         [System.Obsolete]
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserDto>> UsersGetAsync(int? page = null, int? take = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserDto>> UsersGetAsync(bool? onlyWithVideo = null, int? page = null, int? take = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Get a complete list of users.
         /// </summary>
+        /// <param name="onlyWithVideo">Filter only users with published videos</param>
         /// <param name="page">Current page of results</param>
         /// <param name="take">Number of items to retrieve. Max 100</param>
         /// <returns>Current page on list</returns>
         /// <exception cref="IndexApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UserDtoPaginatedEnumerableDto> List2Async(int? page = null, int? take = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<UserDtoPaginatedEnumerableDto> List2Async(bool? onlyWithVideo = null, int? page = null, int? take = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1252,15 +1254,20 @@ namespace Etherna.ServicesClient.Clients.Index
         /// <summary>
         /// Get a complete list of users.
         /// </summary>
+        /// <param name="onlyWithVideo">Filter only users with published videos</param>
         /// <param name="page">Current page of results</param>
         /// <param name="take">Number of items to retrieve. Max 100</param>
         /// <returns>Current page on list</returns>
         /// <exception cref="IndexApiException">A server side error occurred.</exception>
         [System.Obsolete]
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserDto>> UsersGetAsync(int? page = null, int? take = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserDto>> UsersGetAsync(bool? onlyWithVideo = null, int? page = null, int? take = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/v0.3/Users?");
+            if (onlyWithVideo != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("onlyWithVideo") + "=").Append(System.Uri.EscapeDataString(ConvertToString(onlyWithVideo, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
             if (page != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("page") + "=").Append(System.Uri.EscapeDataString(ConvertToString(page, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -1344,14 +1351,19 @@ namespace Etherna.ServicesClient.Clients.Index
         /// <summary>
         /// Get a complete list of users.
         /// </summary>
+        /// <param name="onlyWithVideo">Filter only users with published videos</param>
         /// <param name="page">Current page of results</param>
         /// <param name="take">Number of items to retrieve. Max 100</param>
         /// <returns>Current page on list</returns>
         /// <exception cref="IndexApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<UserDtoPaginatedEnumerableDto> List2Async(int? page = null, int? take = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<UserDtoPaginatedEnumerableDto> List2Async(bool? onlyWithVideo = null, int? page = null, int? take = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/v0.3/Users/list2?");
+            if (onlyWithVideo != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("onlyWithVideo") + "=").Append(System.Uri.EscapeDataString(ConvertToString(onlyWithVideo, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
             if (page != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("page") + "=").Append(System.Uri.EscapeDataString(ConvertToString(page, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -3202,7 +3214,7 @@ namespace Etherna.ServicesClient.Clients.Index
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -3624,7 +3636,7 @@ namespace Etherna.ServicesClient.Clients.Index
         [System.Text.Json.Serialization.JsonPropertyName("elements")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
-        public System.Collections.Generic.ICollection<CommentDto> Elements { get; } = default!;
+        public System.Collections.Generic.ICollection<CommentDto> Elements { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("maxPage")]
 
@@ -3709,7 +3721,7 @@ namespace Etherna.ServicesClient.Clients.Index
         [System.Text.Json.Serialization.JsonPropertyName("sources")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
-        public System.Collections.Generic.IDictionary<string, string> Sources { get; } = default!;
+        public System.Collections.Generic.IDictionary<string, string> Sources { get; set; } = default!;
 
     }
 
@@ -3838,7 +3850,7 @@ namespace Etherna.ServicesClient.Clients.Index
         [System.Text.Json.Serialization.JsonPropertyName("elements")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
-        public System.Collections.Generic.ICollection<UserDto> Elements { get; } = default!;
+        public System.Collections.Generic.ICollection<UserDto> Elements { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("maxPage")]
 
@@ -3914,38 +3926,38 @@ namespace Etherna.ServicesClient.Clients.Index
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public string Id { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("creationDateTime")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public System.DateTimeOffset CreationDateTime { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("currentVoteValue")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-        public VoteValue? CurrentVoteValue { get; set; }
+        public VoteValue? CurrentVoteValue { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("lastValidManifest")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
-        public VideoManifestDto? LastValidManifest { get; set; } = default!;
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
+        public VideoManifestDto LastValidManifest { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("ownerAddress")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public string OwnerAddress { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("totDownvotes")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public long TotDownvotes { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("totUpvotes")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public long TotUpvotes { get; set; } = default!;
 
     }
@@ -3956,27 +3968,27 @@ namespace Etherna.ServicesClient.Clients.Index
 
         [System.Text.Json.Serialization.JsonPropertyName("currentPage")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public int CurrentPage { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("elements")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public System.Collections.Generic.ICollection<VideoDto> Elements { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("maxPage")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public long MaxPage { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("pageSize")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public int PageSize { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("totalElements")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         public long TotalElements { get; set; } = default!;
 
     }
@@ -3987,48 +3999,53 @@ namespace Etherna.ServicesClient.Clients.Index
 
         [System.Text.Json.Serialization.JsonPropertyName("batchId")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public string? BatchId { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("description")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public string? Description { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("duration")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public long? Duration { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("hash")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public string Hash { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("originalQuality")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public string? OriginalQuality { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("personalData")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public string? PersonalData { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("sources")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public System.Collections.Generic.ICollection<SourceDto> Sources { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("thumbnail")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public ImageDto Thumbnail { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("title")]
 
-        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
         public string? Title { get; set; } = default!;
+
+        [System.Text.Json.Serialization.JsonPropertyName("v")]
+
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
+        public string? V { get; set; } = default!;
 
     }
 
@@ -4039,7 +4056,7 @@ namespace Etherna.ServicesClient.Clients.Index
         [System.Text.Json.Serialization.JsonPropertyName("errorDetails")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]   
-        public System.Collections.Generic.ICollection<ErrorDetailDto> ErrorDetails { get; } = default!;
+        public System.Collections.Generic.ICollection<ErrorDetailDto> ErrorDetails { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("hash")]
 
