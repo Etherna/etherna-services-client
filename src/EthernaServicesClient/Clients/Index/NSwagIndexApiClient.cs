@@ -2047,7 +2047,7 @@ namespace Etherna.ServicesClient.Clients.Index
         /// <param name="value">Vote value</param>
         /// <returns>Success</returns>
         /// <exception cref="IndexApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task VotesAsync(string id, VoteValue value, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task VotesAsync(string id, Value value, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -3383,7 +3383,7 @@ namespace Etherna.ServicesClient.Clients.Index
         /// <param name="value">Vote value</param>
         /// <returns>Success</returns>
         /// <exception cref="IndexApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task VotesAsync(string id, VoteValue value, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task VotesAsync(string id, Value value, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3682,13 +3682,14 @@ namespace Etherna.ServicesClient.Clients.Index
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-        public ValidationErrorType ErrorNumber { get; set; } = default!;
+        [System.Obsolete]
+        public ErrorDetailDtoErrorNumber ErrorNumber { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("errorType")]
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-        public ValidationErrorType ErrorType { get; set; } = default!;
+        public ErrorDetailDtoErrorType ErrorType { get; set; } = default!;
 
     }
 
@@ -3858,45 +3859,6 @@ namespace Etherna.ServicesClient.Clients.Index
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum ValidationErrorType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"InvalidDescription")]
-        InvalidDescription = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"InvalidPersonalData")]
-        InvalidPersonalData = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"InvalidThumbnailSource")]
-        InvalidThumbnailSource = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"InvalidTitle")]
-        InvalidTitle = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"InvalidVideoSource")]
-        InvalidVideoSource = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"JsonConvert")]
-        JsonConvert = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MissingDescription")]
-        MissingDescription = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MissingDuration")]
-        MissingDuration = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MissingOriginalQuality")]
-        MissingOriginalQuality = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"MissingTitle")]
-        MissingTitle = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"Unknown")]
-        Unknown = 10,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class VideoCreateInput
     {
 
@@ -3926,7 +3888,7 @@ namespace Etherna.ServicesClient.Clients.Index
 
         [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]   
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
-        public VoteValue CurrentVoteValue { get; set; } = default!;
+        public VideoDtoCurrentVoteValue? CurrentVoteValue { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("lastValidManifest")]
 
@@ -4059,7 +4021,100 @@ namespace Etherna.ServicesClient.Clients.Index
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum VoteValue
+    public enum Value
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Up")]
+        Up = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Down")]
+        Down = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Neutral")]
+        Neutral = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ErrorDetailDtoErrorNumber
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidDescription")]
+        InvalidDescription = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidPersonalData")]
+        InvalidPersonalData = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidThumbnailSource")]
+        InvalidThumbnailSource = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidTitle")]
+        InvalidTitle = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidVideoSource")]
+        InvalidVideoSource = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JsonConvert")]
+        JsonConvert = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MissingDescription")]
+        MissingDescription = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MissingDuration")]
+        MissingDuration = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MissingOriginalQuality")]
+        MissingOriginalQuality = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MissingTitle")]
+        MissingTitle = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unknown")]
+        Unknown = 10,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ErrorDetailDtoErrorType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidDescription")]
+        InvalidDescription = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidPersonalData")]
+        InvalidPersonalData = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidThumbnailSource")]
+        InvalidThumbnailSource = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidTitle")]
+        InvalidTitle = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"InvalidVideoSource")]
+        InvalidVideoSource = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JsonConvert")]
+        JsonConvert = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MissingDescription")]
+        MissingDescription = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MissingDuration")]
+        MissingDuration = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MissingOriginalQuality")]
+        MissingOriginalQuality = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MissingTitle")]
+        MissingTitle = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unknown")]
+        Unknown = 10,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum VideoDtoCurrentVoteValue
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Up")]
