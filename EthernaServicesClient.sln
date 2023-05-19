@@ -18,12 +18,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaServicesClient", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A114E283-B827-40F8-9180-E13DD3C455CD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{2D50CC62-DF5A-4AD0-9042-26308DD057EE}"
-	ProjectSection(SolutionItems) = preProject
-		.github\workflows\myget-unstable-deploy.yml = .github\workflows\myget-unstable-deploy.yml
-		.github\workflows\nuget-stable-deploy.yml = .github\workflows\nuget-stable-deploy.yml
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleWorkerSample", "samples\ConsoleWorkerSample\ConsoleWorkerSample.csproj", "{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B6130FF-9DC4-444E-B69D-55172877D168}"
@@ -66,7 +60,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{54CD0D09-BC23-4161-8670-CCF5E60CBAFC} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
-		{2D50CC62-DF5A-4AD0-9042-26308DD057EE} = {C3177472-ED49-496E-B6A6-078780C322C4}
 		{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8} = {A114E283-B827-40F8-9180-E13DD3C455CD}
 		{5B6130FF-9DC4-444E-B69D-55172877D168} = {C3177472-ED49-496E-B6A6-078780C322C4}
 		{7693BBBF-4B84-4A6E-9D13-7F736D0317A8} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}

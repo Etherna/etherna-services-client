@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Etherna.ServicesClient.AspNetCore
 {
-    class EthernaClientForServicesBuilder : IEthernaClientForServicesBuilder
+    internal sealed class EthernaClientForServicesBuilder : IEthernaClientForServicesBuilder
     {
         // Constructor.
         public EthernaClientForServicesBuilder(

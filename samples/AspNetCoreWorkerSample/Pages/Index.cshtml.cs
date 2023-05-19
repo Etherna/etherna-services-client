@@ -41,7 +41,7 @@ namespace Etherna.ServicesClient.AspSampleClient.Pages
         // Methods.
         public async Task OnGetAsync()
         {
-            var credit = await creditClient.ServiceInteract.CreditAsync(configuration["SampleConfig:Address"]);
+            var credit = await creditClient.ServiceInteract.CreditAsync(configuration["SampleConfig:Address"]!);
             CreditBalance = credit.Balance;
             IsUnlimitedCredit = credit.IsUnlimited;
         }

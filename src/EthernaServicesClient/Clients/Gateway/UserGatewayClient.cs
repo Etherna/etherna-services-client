@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Etherna.ServicesClient.Clients.Gateway
 {
-    class UserGatewayClient : IUserGatewayClient
+    internal sealed class UserGatewayClient : IUserGatewayClient
     {
         // Fields.
         private readonly Uri baseUrl;

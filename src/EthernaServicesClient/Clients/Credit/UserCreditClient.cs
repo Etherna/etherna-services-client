@@ -17,7 +17,7 @@ using System.Net.Http;
 
 namespace Etherna.ServicesClient.Clients.Credit
 {
-    class UserCreditClient : IUserCreditClient
+    internal sealed class UserCreditClient : IUserCreditClient
     {
         // Fields.
         private readonly Uri baseUrl;

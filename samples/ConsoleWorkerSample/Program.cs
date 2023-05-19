@@ -117,7 +117,7 @@ namespace Etherna.ServicesClient.SampleClient
 
             // Create client and set api bearer token.
             var apiClient = new HttpClient();
-            apiClient.SetBearerToken(tokenResponse.AccessToken);
+            apiClient.SetBearerToken(tokenResponse.AccessToken!);
 
             return apiClient;
         }

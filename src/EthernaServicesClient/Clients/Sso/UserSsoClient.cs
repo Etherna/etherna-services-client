@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Etherna.ServicesClient.Clients.Sso
 {
-    class UserSsoClient : IUserSsoClient
+    internal sealed class UserSsoClient : IUserSsoClient
     {
         // Fields.
         private readonly Uri baseUrl;

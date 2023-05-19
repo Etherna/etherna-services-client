@@ -31,10 +31,10 @@ namespace Etherna.ServicesClient.AspSampleClient
 
             // Register client.
             var ethernaServiceClientBuilder = builder.Services.AddEthernaCreditClientForServices(
-                new Uri(builder.Configuration["SampleConfig:ServiceBaseUrl"]),
-                new Uri(builder.Configuration["SampleConfig:SsoBaseUrl"]),
-                builder.Configuration["SampleConfig:ClientId"],
-                builder.Configuration["SampleConfig:ClientSecret"]);
+                new Uri(builder.Configuration["SampleConfig:ServiceBaseUrl"]!),
+                new Uri(builder.Configuration["SampleConfig:SsoBaseUrl"]!),
+                builder.Configuration["SampleConfig:ClientId"]!,
+                builder.Configuration["SampleConfig:ClientSecret"]!);
 
             var clientCredentialTask = ethernaServiceClientBuilder.GetClientCredentialsTokenRequestAsync();
             clientCredentialTask.Wait();

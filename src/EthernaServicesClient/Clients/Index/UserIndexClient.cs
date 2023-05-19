@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Etherna.ServicesClient.Clients.Index
 {
-    class UserIndexClient : IUserIndexClient
+    internal sealed class UserIndexClient : IUserIndexClient
     {
         // Fields.
         private readonly Uri baseUrl;
