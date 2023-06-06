@@ -12,77 +12,44 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient.Clients.Credit;
-using Etherna.ServicesClient.Clients.Sso;
+using IdentityModel.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Etherna.ServicesClient.AspNetCore
 {
     public static class ServiceCollectionExtensions
     {
-        // Consts.
-        private const string CreditClientName = "ethernaCreditServiceClient";
-        private const string SsoClientName = "ethernaSsoServiceClient";
-
         // Methods.
-        public static IEthernaClientForServicesBuilder AddEthernaCreditClientForServices(
-            this IServiceCollection services,
-            Uri creditServiceBaseUrl,
-            Uri ssoBaseUrl,
-            string clientId,
-            string clientSecret)
-        {
-            // Register http client. (don't remove it!, `new HttpClient()` doesn't work)
-            services.AddClientAccessTokenHttpClient(CreditClientName, configureClient: default(Action<HttpClient>));
-
-            // Register service.
-            services.AddSingleton<IServiceCreditClient>(serviceProvider =>
-            {
-                var clientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
-                return new ServiceCreditClient(
-                    creditServiceBaseUrl,
-                    () => clientFactory.CreateClient(CreditClientName));
-            });
-
-            // Return builder.
-            return new EthernaClientForServicesBuilder(
-                clientId,
-                CreditClientName,
-                "ethernaCredit_serviceInteract_api",
-                clientSecret,
-                ssoBaseUrl);
-        }
-
-        public static IEthernaClientForServicesBuilder AddEthernaSsoClientForServices(
+        public static IEthernaInternalClientsBuilder AddEthernaInternalClients(
             this IServiceCollection services,
             Uri ssoBaseUrl,
-            string clientId,
-            string clientSecret)
+            bool requireHttps = true)
         {
-            // Register http client. (don't remove it!, `new HttpClient()` doesn't work)
-            services.AddClientAccessTokenHttpClient(SsoClientName, configureClient: default(Action<HttpClient>));
+            if (ssoBaseUrl is null)
+                throw new ArgumentNullException(nameof(ssoBaseUrl));
 
-            // Register service.
-            services.AddSingleton<IServiceSsoClient>(serviceProvider =>
-            {
-                var clientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
-                return new ServiceSsoClient(
-                    ssoBaseUrl,
-                    () => clientFactory.CreateClient(SsoClientName));
-            });
+            // Register memory cache to keep tokens.
+            services.AddDistributedMemoryCache();
 
-            // Return builder.
-            return new EthernaClientForServicesBuilder(
-                clientId,
-                SsoClientName,
-                "ethernaSso_userContactInfo_api",
-                clientSecret,
-                ssoBaseUrl);
+            // Discover token endpoint.
+            var discoverTokenEndpointTask = DiscoverTokenEndpointAsync(requireHttps, ssoBaseUrl);
+            discoverTokenEndpointTask.Wait();
+            var tokenEndpoint = discoverTokenEndpointTask.Result;
+
+            // Register client token management.
+            var clientCredentialsTokenManagementBuilder = services.AddClientCredentialsTokenManagement();
+
+            return new EthernaInternalClientsBuilder(
+                services,
+                ssoBaseUrl,
+                tokenEndpoint,
+                clientCredentialsTokenManagementBuilder);
         }
 
-        public static void AddEthernaClientsForUsers(
+        public static void AddEthernaUserClients(
             this IServiceCollection services,
             Uri creditServiceBaseUrl,
             Uri gatewayServiceBaseUrl,
@@ -98,6 +65,27 @@ namespace Etherna.ServicesClient.AspNetCore
                 indexServiceBaseUrl,
                 ssoServicebaseUrl,
                 () => new HttpClient()));
+        }
+
+        // Helpers.
+        private static async Task<string> DiscoverTokenEndpointAsync(
+            bool requireHttps,
+            Uri ssoBaseUrl)
+        {
+            // Discover endpoints from metadata.
+            using var httpClient = new HttpClient();
+            using var request = new DiscoveryDocumentRequest
+            {
+                Address = ssoBaseUrl.AbsoluteUri,
+                Policy = new DiscoveryPolicy { RequireHttps = requireHttps }
+            };
+
+            var discoveryDocResult = await httpClient.GetDiscoveryDocumentAsync(request).ConfigureAwait(false);
+
+            if (discoveryDocResult.IsError)
+                throw discoveryDocResult.Exception ?? new InvalidOperationException();
+
+            return discoveryDocResult.TokenEndpoint!;
         }
     }
 }
