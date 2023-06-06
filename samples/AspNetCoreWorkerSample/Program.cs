@@ -29,22 +29,12 @@ namespace Etherna.ServicesClient.AspSampleClient
             // Add services to the container.
             builder.Services.AddRazorPages();
 
-            // Register client.
-            var ethernaServiceClientBuilder = builder.Services.AddEthernaCreditClientForServices(
-                new Uri(builder.Configuration["SampleConfig:ServiceBaseUrl"]!),
-                new Uri(builder.Configuration["SampleConfig:SsoBaseUrl"]!),
-                builder.Configuration["SampleConfig:ClientId"]!,
-                builder.Configuration["SampleConfig:ClientSecret"]!);
-
-            var clientCredentialTask = ethernaServiceClientBuilder.GetClientCredentialsTokenRequestAsync();
-            clientCredentialTask.Wait();
-            var clientCredential = clientCredentialTask.Result;
-
-            // Register token manager.
-            builder.Services.AddAccessTokenManagement(options =>
-            {
-                options.Client.Clients.Add(ethernaServiceClientBuilder.ClientName, clientCredential);
-            });
+            // Register client with token manager.
+            builder.Services.AddEthernaInternalClients(new Uri(builder.Configuration["SampleConfig:SsoBaseUrl"]!))
+                .AddEthernaCreditClient(
+                    new Uri(builder.Configuration["SampleConfig:ServiceBaseUrl"]!),
+                    builder.Configuration["SampleConfig:ClientId"]!,
+                    builder.Configuration["SampleConfig:ClientSecret"]!);
 
             var app = builder.Build();
 
