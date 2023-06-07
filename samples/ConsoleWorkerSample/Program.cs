@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient.Clients.Credit;
+using Etherna.ServicesClient.Internal;
 using IdentityModel.Client;
 using System;
 using System.Net.Http;
@@ -83,11 +83,11 @@ namespace Etherna.ServicesClient.SampleClient
 
             // Create a client.
             var httpClient = await CreateHttpClientAsync(new Uri(ssoBaseUrl!), ssoClientId!, ssoClientSecret!);
-            var client = new ServiceCreditClient(new Uri(creditBaseUrl!), () => httpClient);
+            var client = new EthernaInternalCreditClient(new Uri(creditBaseUrl!), () => httpClient);
 
             // Consume service api.
             var credit = await client.ServiceInteract.CreditAsync(address!);
-            Console.WriteLine($"Current balance: ${credit.Balance}");
+            Console.WriteLine($"Current balance: {credit.Balance} xDai");
         }
 
         static async Task<HttpClient> CreateHttpClientAsync(

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EthernaServicesClient.AspNetCore\EthernaServicesClient.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\EthernaServicesClient.Internal.AspNetCore\EthernaServicesClient.Internal.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>
