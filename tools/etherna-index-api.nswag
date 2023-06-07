@@ -1,5 +1,5 @@
 {
-  "runtime": "Net60",
+  "runtime": "Net70",
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
@@ -20,7 +20,7 @@
       "disposeHttpClient": true,
       "protectedMethods": [],
       "generateExceptionClasses": true,
-      "exceptionClass": "IndexApiException",
+      "exceptionClass": "EthernaIndexApiException",
       "wrapDtoExceptions": true,
       "useHttpClientCreationMethod": false,
       "httpClientType": "System.Net.Http.HttpClient",
@@ -30,7 +30,7 @@
       "generateSyncMethods": false,
       "generatePrepareRequestAndProcessResponseAsAsyncMethods": false,
       "exposeJsonSerializerSettings": false,
-      "clientClassAccessModifier": "public",
+      "clientClassAccessModifier": "internal",
       "typeAccessModifier": "public",
       "generateContractsOutput": false,
       "contractsNamespace": null,
@@ -56,7 +56,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Etherna.ServicesClient.Clients.Index",
+      "namespace": "Etherna.ServicesClient.GeneratedClients.Index",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -93,7 +93,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../src/EthernaServicesClient/Clients/Index/NSwagIndexApiClient.cs",
+      "output": "../src/EthernaServicesClient.Common/GeneratedClients/Index/NSwagEthernaIndexClient.cs",
       "newLineBehavior": "Auto"
     }
   }

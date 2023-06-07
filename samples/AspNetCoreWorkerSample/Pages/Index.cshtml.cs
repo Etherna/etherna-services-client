@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient.Clients.Credit;
+using Etherna.ServicesClient.Internal;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
@@ -23,12 +23,12 @@ namespace Etherna.ServicesClient.AspSampleClient.Pages
     {
         // Fields.
         private readonly IConfiguration configuration;
-        private readonly IServiceCreditClient creditClient;
+        private readonly IEthernaInternalCreditClient creditClient;
 
         // Constructor.
         public IndexModel(
             IConfiguration configuration,
-            IServiceCreditClient creditClient)
+            IEthernaInternalCreditClient creditClient)
         {
             this.configuration = configuration;
             this.creditClient = creditClient;
