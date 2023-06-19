@@ -6,7 +6,7 @@
     <RootNamespace>Etherna.ServicesClient.Internal.AspNetCore</RootNamespace>
 
     <Authors>Etherna Sagl</Authors>
-    <Description>Asp.Net Core adapter for internal api client of Etherna services</Description>
+    <Description>Asp.Net Core adapter for Internal Api client of Etherna services</Description>
 
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>

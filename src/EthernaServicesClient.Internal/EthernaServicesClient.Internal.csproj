@@ -6,7 +6,7 @@
     <RootNamespace>Etherna.ServicesClient.Internal</RootNamespace>
 
     <Authors>Etherna Sagl</Authors>
-    <Description>Client for internal api of Etherna services</Description>
+    <Description>Client for Internal Api of Etherna services</Description>
 
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>

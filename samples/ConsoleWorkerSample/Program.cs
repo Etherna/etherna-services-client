@@ -83,7 +83,7 @@ namespace Etherna.ServicesClient.SampleClient
 
             // Create a client.
             var httpClient = await CreateHttpClientAsync(new Uri(ssoBaseUrl!), ssoClientId!, ssoClientSecret!);
-            var client = new EthernaInternalCreditClient(new Uri(creditBaseUrl!), () => httpClient);
+            var client = new EthernaInternalCreditClient(new Uri(creditBaseUrl!), httpClient);
 
             // Consume service api.
             var credit = await client.ServiceInteract.CreditAsync(address!);
