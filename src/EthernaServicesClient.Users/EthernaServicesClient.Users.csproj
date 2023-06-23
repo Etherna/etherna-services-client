@@ -6,7 +6,7 @@
     <RootNamespace>Etherna.ServicesClient.Users</RootNamespace>
 
     <Authors>Etherna Sagl</Authors>
-    <Description>Client for user api of Etherna services</Description>
+    <Description>Client for User Api of Etherna services</Description>
 
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>

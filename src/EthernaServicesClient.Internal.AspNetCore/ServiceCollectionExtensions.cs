@@ -34,13 +34,13 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
             // Register memory cache to keep tokens.
             services.AddDistributedMemoryCache();
 
+            // Register client token management.
+            var clientCredentialsTokenManagementBuilder = services.AddClientCredentialsTokenManagement();
+
             // Discover token endpoint.
             var discoverTokenEndpointTask = DiscoverTokenEndpointAsync(requireHttps, ssoBaseUrl);
             discoverTokenEndpointTask.Wait();
             var tokenEndpoint = discoverTokenEndpointTask.Result;
-
-            // Register client token management.
-            var clientCredentialsTokenManagementBuilder = services.AddClientCredentialsTokenManagement();
 
             return new EthernaInternalClientsBuilder(
                 services,

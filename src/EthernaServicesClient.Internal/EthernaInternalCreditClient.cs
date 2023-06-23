@@ -22,19 +22,19 @@ namespace Etherna.ServicesClient.Internal
     {
         // Fields.
         private readonly Uri baseUrl;
-        private readonly Func<HttpClient> createHttpClient;
+        private readonly HttpClient httpClient;
 
         // Constructor.
         public EthernaInternalCreditClient(
             Uri baseUrl,
-            Func<HttpClient> createHttpClient)
+            HttpClient httpClient)
         {
             this.baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
-            this.createHttpClient = createHttpClient;
+            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         // Properties.
         public IServiceInteractClient ServiceInteract =>
-            new ServiceInteractClient(baseUrl.AbsoluteUri, createHttpClient());
+            new ServiceInteractClient(baseUrl.AbsoluteUri, httpClient);
     }
 }

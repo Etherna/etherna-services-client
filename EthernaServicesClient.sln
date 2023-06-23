@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaServicesClient.Inter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaServicesClient.Users", "src\EthernaServicesClient.Users\EthernaServicesClient.Users.csproj", "{4A40D713-9B2C-4C7B-8E1A-58F7C5FB5DD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaServicesClient.Users.AspNetCore", "src\EthernaServicesClient.Users.AspNetCore\EthernaServicesClient.Users.AspNetCore.csproj", "{C33498B1-AAE5-4CA4-BA74-9044CDBDC613}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaServicesClient.Users.Native", "src\EthernaServicesClient.Users.Native\EthernaServicesClient.Users.Native.csproj", "{A5C47534-973E-47E3-8E96-AE4B32A5D09F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,10 +68,10 @@ Global
 		{4A40D713-9B2C-4C7B-8E1A-58F7C5FB5DD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A40D713-9B2C-4C7B-8E1A-58F7C5FB5DD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A40D713-9B2C-4C7B-8E1A-58F7C5FB5DD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C33498B1-AAE5-4CA4-BA74-9044CDBDC613}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C33498B1-AAE5-4CA4-BA74-9044CDBDC613}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C33498B1-AAE5-4CA4-BA74-9044CDBDC613}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C33498B1-AAE5-4CA4-BA74-9044CDBDC613}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,7 +84,7 @@ Global
 		{E3FB5F6A-0B53-474F-9BDF-9AB21CCD52C8} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
 		{5B3FAC56-98AE-4B6B-B1B3-E1117B046717} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
 		{4A40D713-9B2C-4C7B-8E1A-58F7C5FB5DD4} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
-		{C33498B1-AAE5-4CA4-BA74-9044CDBDC613} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
+		{A5C47534-973E-47E3-8E96-AE4B32A5D09F} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7539252-E55D-43C2-B2C5-C9A77D191087}
