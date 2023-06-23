@@ -1,9 +1,24 @@
-﻿using IdentityModel.Client;
+﻿//   Copyright 2020-present Etherna Sagl
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+
+using Etherna.ServicesClient.Internal;
+using IdentityModel.Client;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Etherna.CreditClient.ServiceSampleClient
+namespace Etherna.ServicesClient.SampleClient
 {
     class Program
     {
@@ -67,12 +82,12 @@ namespace Etherna.CreditClient.ServiceSampleClient
             Console.WriteLine();
 
             // Create a client.
-            var httpClient = await CreateHttpClientAsync(new Uri(ssoBaseUrl), ssoClientId, ssoClientSecret);
-            var client = new ServiceCreditClient(new Uri(creditBaseUrl), () => httpClient);
+            var httpClient = await CreateHttpClientAsync(new Uri(ssoBaseUrl!), ssoClientId!, ssoClientSecret!);
+            var client = new EthernaInternalCreditClient(new Uri(creditBaseUrl!), httpClient);
 
             // Consume service api.
-            var balance = await client.ServiceInteract.BalanceGetAsync(address);
-            Console.WriteLine($"Current balance: ${balance}");
+            var credit = await client.ServiceInteract.CreditAsync(address!);
+            Console.WriteLine($"Current balance: {credit.Balance} xDai");
         }
 
         static async Task<HttpClient> CreateHttpClientAsync(
@@ -102,7 +117,7 @@ namespace Etherna.CreditClient.ServiceSampleClient
 
             // Create client and set api bearer token.
             var apiClient = new HttpClient();
-            apiClient.SetBearerToken(tokenResponse.AccessToken);
+            apiClient.SetBearerToken(tokenResponse.AccessToken!);
 
             return apiClient;
         }

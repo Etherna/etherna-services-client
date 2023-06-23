@@ -1,15 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Etherna.ServicesClient.AspSampleClient</RootNamespace>
+    
     <Authors>Etherna Sagl</Authors>
     <IsPackable>false</IsPackable>
-    <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EthernaCreditClient.AspNetCore\EthernaCreditClient.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\EthernaServicesClient.Internal.AspNetCore\EthernaServicesClient.Internal.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

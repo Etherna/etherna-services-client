@@ -2,16 +2,20 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Etherna.CreditClient.SampleClient</RootNamespace>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Etherna.ServicesClient.SampleClient</RootNamespace>
+    
     <Authors>Etherna Sagl</Authors>
     <IsPackable>false</IsPackable>
-    <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EthernaCreditClient\EthernaCreditClient.csproj" />
+    <PackageReference Include="IdentityModel" Version="6.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EthernaServicesClient.Internal\EthernaServicesClient.Internal.csproj" />
   </ItemGroup>
 
 </Project>
