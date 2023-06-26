@@ -22,25 +22,26 @@ namespace Etherna.ServicesClient.Users.Native
     public static class ServiceCollectionExtensions
     {
         // Consts.
-        private const string EthernaUserHttpClientName = "ethernaUserHttpClient";
+        public const string DefaultEthernaUserHttpClientName = "ethernaUserHttpClient";
 
         // Methods.
         public static IEthernaUserClientsBuilder AddEthernaUserClientsWithApiKeyAuth(
             this IServiceCollection services,
             string authority,
             string apiKey,
-            IEnumerable<string> scopes)
+            IEnumerable<string> scopes,
+            string httpClientName = DefaultEthernaUserHttpClientName)
         {
             // Register Etherna OpenId Connect client with "password" flow.
             services.AddEthernaApiKeyOidcClient(
                 authority,
                 apiKey,
                 scopes,
-                EthernaUserHttpClientName);
+                httpClientName);
 
             return new EthernaUserClientsBuilder(
                 services,
-                EthernaUserHttpClientName,
+                httpClientName,
                 new Uri(authority));
         }
 
@@ -50,7 +51,8 @@ namespace Etherna.ServicesClient.Users.Native
             string clientId,
             string? clientSecret,
             int returnUrlPort,
-            IEnumerable<string> scopes)
+            IEnumerable<string> scopes,
+            string httpClientName = DefaultEthernaUserHttpClientName)
         {
             // Register Etherna OpenId Connect client with "code" flow.
             services.AddEthernaCodeOidcClient(
@@ -59,11 +61,11 @@ namespace Etherna.ServicesClient.Users.Native
                 clientSecret,
                 returnUrlPort,
                 scopes,
-                EthernaUserHttpClientName);
+                httpClientName);
 
             return new EthernaUserClientsBuilder(
                 services,
-                EthernaUserHttpClientName,
+                httpClientName,
                 new Uri(authority));
         }
     }
