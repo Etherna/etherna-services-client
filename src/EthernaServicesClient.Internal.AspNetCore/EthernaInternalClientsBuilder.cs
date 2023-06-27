@@ -21,12 +21,13 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
     internal sealed class EthernaInternalClientsBuilder : IEthernaInternalClientsBuilder
     {
         // Consts.
-        private const string EthernaInternalHttpClientName = "ethernaInternalHttpClient";
         private const string EthernaInternalCreditTokenClientName = "ethernaInternalCreditTokenClient";
         private const string EthernaInternalSsoTokenClientName = "ethernaInternalSsoTokenClient";
 
         // Fields.
         private readonly ClientCredentialsTokenManagementBuilder cctmBuilder;
+        private readonly Action<HttpClient>? configureHttpClient;
+        private readonly string httpClientName;
         private readonly IServiceCollection services;
         private readonly Uri ssoBaseUrl;
         private readonly string tokenEndpoint;
@@ -36,12 +37,16 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
             IServiceCollection services,
             Uri ssoBaseUrl,
             string tokenEndpoint,
-            ClientCredentialsTokenManagementBuilder clientCredentialsTokenManagementBuilder)
+            ClientCredentialsTokenManagementBuilder clientCredentialsTokenManagementBuilder,
+            string httpClientName,
+            Action<HttpClient>? configureHttpClient)
         {
+            cctmBuilder = clientCredentialsTokenManagementBuilder;
+            this.configureHttpClient = configureHttpClient;
+            this.httpClientName = httpClientName;
             this.services = services;
             this.ssoBaseUrl = ssoBaseUrl;
             this.tokenEndpoint = tokenEndpoint;
-            cctmBuilder = clientCredentialsTokenManagementBuilder;
         }
 
         // Methods.
@@ -62,7 +67,10 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
             });
 
             // Register http client.
-            services.AddClientCredentialsHttpClient(EthernaInternalHttpClientName, EthernaInternalCreditTokenClientName);
+            services.AddClientCredentialsHttpClient(
+                httpClientName,
+                EthernaInternalCreditTokenClientName,
+                configureHttpClient);
 
             // Register service.
             services.AddSingleton<IEthernaInternalCreditClient>(serviceProvider =>
@@ -70,7 +78,7 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
                 var clientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
                 return new EthernaInternalCreditClient(
                     creditServiceBaseUrl,
-                    clientFactory.CreateClient(EthernaInternalHttpClientName));
+                    clientFactory.CreateClient(httpClientName));
             });
 
             return this;
@@ -92,7 +100,10 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
             });
 
             // Register http client.
-            services.AddClientCredentialsHttpClient(EthernaInternalHttpClientName, EthernaInternalSsoTokenClientName);
+            services.AddClientCredentialsHttpClient(
+                httpClientName,
+                EthernaInternalSsoTokenClientName,
+                configureHttpClient);
 
             // Register service.
             services.AddSingleton<IEthernaInternalSsoClient>(serviceProvider =>
@@ -100,7 +111,7 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
                 var clientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
                 return new EthernaInternalSsoClient(
                     ssoBaseUrl,
-                    clientFactory.CreateClient(EthernaInternalHttpClientName));
+                    clientFactory.CreateClient(httpClientName));
             });
 
             return this;
