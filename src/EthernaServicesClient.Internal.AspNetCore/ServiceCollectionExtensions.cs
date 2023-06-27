@@ -22,11 +22,16 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
 {
     public static class ServiceCollectionExtensions
     {
+        // Consts.
+        public const string DefaultEthernaInternalHttpClientName = "ethernaInternalHttpClient";
+
         // Methods.
         public static IEthernaInternalClientsBuilder AddEthernaInternalClients(
             this IServiceCollection services,
             Uri ssoBaseUrl,
-            bool requireHttps = true)
+            bool requireHttps = true,
+            string httpClientName = DefaultEthernaInternalHttpClientName,
+            Action<HttpClient>? configureHttpClient = null)
         {
             if (ssoBaseUrl is null)
                 throw new ArgumentNullException(nameof(ssoBaseUrl));
@@ -46,7 +51,9 @@ namespace Etherna.ServicesClient.Internal.AspNetCore
                 services,
                 ssoBaseUrl,
                 tokenEndpoint,
-                clientCredentialsTokenManagementBuilder);
+                clientCredentialsTokenManagementBuilder,
+                httpClientName,
+                configureHttpClient);
         }
 
         // Helpers.

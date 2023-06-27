@@ -16,6 +16,7 @@ using Etherna.Authentication.Native;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace Etherna.ServicesClient.Users.Native
 {
@@ -30,14 +31,16 @@ namespace Etherna.ServicesClient.Users.Native
             string authority,
             string apiKey,
             IEnumerable<string> scopes,
-            string httpClientName = DefaultEthernaUserHttpClientName)
+            string httpClientName = DefaultEthernaUserHttpClientName,
+            Action<HttpClient>? configureHttpClient = null)
         {
             // Register Etherna OpenId Connect client with "password" flow.
             services.AddEthernaApiKeyOidcClient(
                 authority,
                 apiKey,
                 scopes,
-                httpClientName);
+                httpClientName,
+                configureHttpClient);
 
             return new EthernaUserClientsBuilder(
                 services,
@@ -52,7 +55,8 @@ namespace Etherna.ServicesClient.Users.Native
             string? clientSecret,
             int returnUrlPort,
             IEnumerable<string> scopes,
-            string httpClientName = DefaultEthernaUserHttpClientName)
+            string httpClientName = DefaultEthernaUserHttpClientName,
+            Action<HttpClient>? configureHttpClient = null)
         {
             // Register Etherna OpenId Connect client with "code" flow.
             services.AddEthernaCodeOidcClient(
@@ -61,7 +65,8 @@ namespace Etherna.ServicesClient.Users.Native
                 clientSecret,
                 returnUrlPort,
                 scopes,
-                httpClientName);
+                httpClientName,
+                configureHttpClient);
 
             return new EthernaUserClientsBuilder(
                 services,
