@@ -12,13 +12,13 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient.Internal.AspNetCore;
+using Etherna.Sdk.Internal.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
-namespace Etherna.ServicesClient.AspSampleClient
+namespace Etherna.Sdk.AspSampleClient
 {
     public class Program
     {

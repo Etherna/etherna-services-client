@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EthernaServicesClient.Internal\EthernaServicesClient.Internal.csproj" />
+    <ProjectReference Include="..\..\src\EthernaSdk.Internal\EthernaSdk.Internal.csproj" />
   </ItemGroup>
 
 </Project>
