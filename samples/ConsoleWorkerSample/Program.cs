@@ -12,13 +12,13 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient.Internal;
+using Etherna.Sdk.Internal;
 using IdentityModel.Client;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Etherna.ServicesClient.SampleClient
+namespace Etherna.Sdk.SampleClient
 {
     class Program
     {

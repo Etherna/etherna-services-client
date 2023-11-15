@@ -12,12 +12,12 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.ServicesClient.Internal;
+using Etherna.Sdk.Internal;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
-namespace Etherna.ServicesClient.AspSampleClient.Pages
+namespace Etherna.Sdk.AspSampleClient.Pages
 {
     public class IndexModel : PageModel
     {
