@@ -5,7 +5,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Etherna.ServicesClient.SampleClient</RootNamespace>
     
-    <Authors>Etherna Sagl</Authors>
+    <Authors>Etherna SA</Authors>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
