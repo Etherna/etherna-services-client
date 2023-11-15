@@ -1,4 +1,4 @@
-//   Copyright 2020-present Etherna SA
+﻿//   Copyright 2020-present Etherna SA
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -12,23 +12,19 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Diagnostics;
+using System;
 
-namespace Etherna.Sdk.AspSampleClient.Pages
+namespace Etherna.Sdk.Internal.AspNetCore
 {
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [IgnoreAntiforgeryToken]
-    public class ErrorModel : PageModel
+    public interface IEthernaInternalClientsBuilder
     {
-        public string? RequestId { get; set; }
+        IEthernaInternalClientsBuilder AddEthernaCreditClient(
+            Uri creditServiceBaseUrl,
+            string clientId,
+            string clientSecret);
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-
-        public void OnGet()
-        {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-        }
+        IEthernaInternalClientsBuilder AddEthernaSsoClient(
+            string clientId,
+            string clientSecret);
     }
 }

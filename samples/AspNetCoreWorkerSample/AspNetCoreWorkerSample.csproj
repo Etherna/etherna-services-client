@@ -4,13 +4,13 @@
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>Etherna.ServicesClient.AspSampleClient</RootNamespace>
     
-    <Authors>Etherna Sagl</Authors>
+    <Authors>Etherna SA</Authors>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EthernaServicesClient.Internal.AspNetCore\EthernaServicesClient.Internal.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\EthernaSdk.Internal.AspNetCore\EthernaSdk.Internal.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

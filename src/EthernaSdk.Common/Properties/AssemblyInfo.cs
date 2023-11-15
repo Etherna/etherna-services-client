@@ -12,23 +12,9 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Diagnostics;
+using System;
+using System.Runtime.CompilerServices;
 
-namespace Etherna.Sdk.AspSampleClient.Pages
-{
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [IgnoreAntiforgeryToken]
-    public class ErrorModel : PageModel
-    {
-        public string? RequestId { get; set; }
-
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-
-        public void OnGet()
-        {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-        }
-    }
-}
+[assembly: CLSCompliant(false)]
+[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
+[assembly: InternalsVisibleTo("EthernaSdk.Users")]
