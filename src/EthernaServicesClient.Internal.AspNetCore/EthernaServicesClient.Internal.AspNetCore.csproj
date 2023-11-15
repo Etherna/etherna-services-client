@@ -5,7 +5,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>Etherna.ServicesClient.Internal.AspNetCore</RootNamespace>
 
-    <Authors>Etherna Sagl</Authors>
+    <Authors>Etherna SA</Authors>
     <Description>Asp.Net Core adapter for Internal Api client of Etherna services</Description>
 
     <Nullable>enable</Nullable>

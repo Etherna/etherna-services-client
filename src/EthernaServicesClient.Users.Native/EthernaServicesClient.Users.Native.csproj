@@ -5,7 +5,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace>Etherna.ServicesClient.Users.Native</RootNamespace>
 
-    <Authors>Etherna Sagl</Authors>
+    <Authors>Etherna SA</Authors>
     <Description>Native application adapter for User Api client of Etherna services</Description>
 
     <Nullable>enable</Nullable>
