@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ServiceSampleClient": {
+      "commandName": "Project",
+      "commandLineArgs": "-c https://localhost:44369/ -l https://localhost:44379/ -i ethernaDappClientId -ss -sk"
+    }
+  }
+}
