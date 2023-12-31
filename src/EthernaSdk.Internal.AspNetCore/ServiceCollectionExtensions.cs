@@ -33,8 +33,7 @@ namespace Etherna.Sdk.Internal.AspNetCore
             string httpClientName = DefaultEthernaInternalHttpClientName,
             Action<HttpClient>? configureHttpClient = null)
         {
-            if (ssoBaseUrl is null)
-                throw new ArgumentNullException(nameof(ssoBaseUrl));
+            ArgumentNullException.ThrowIfNull(ssoBaseUrl, nameof(ssoBaseUrl));
 
             // Register memory cache to keep tokens.
             services.AddDistributedMemoryCache();

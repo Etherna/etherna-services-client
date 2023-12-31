@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CC8EACB1-0C4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A114E283-B827-40F8-9180-E13DD3C455CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleWorkerSample", "samples\ConsoleWorkerSample\ConsoleWorkerSample.csproj", "{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleInternalClientSample", "samples\ConsoleInternalClientSample\ConsoleInternalClientSample.csproj", "{ABD315B5-5E97-4B65-91AF-A445FB1B9DF8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B6130FF-9DC4-444E-B69D-55172877D168}"
 	ProjectSection(SolutionItems) = preProject
@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B6130FF
 		tools\etherna-sso-api.nswag = tools\etherna-sso-api.nswag
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreWorkerSample", "samples\AspNetCoreWorkerSample\AspNetCoreWorkerSample.csproj", "{D5A982B9-FD90-4141-93D8-F2CE979B2435}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreInternalClientSample", "samples\AspNetCoreInternalClientSample\AspNetCoreInternalClientSample.csproj", "{D5A982B9-FD90-4141-93D8-F2CE979B2435}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaSdk.Common", "src\EthernaSdk.Common\EthernaSdk.Common.csproj", "{D5AE670E-13E4-47DC-84C5-ECF5900427D1}"
 EndProject
@@ -43,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\myget-unstable-deploy.yml = .github\workflows\myget-unstable-deploy.yml
 		.github\workflows\nuget-stable-deploy.yml = .github\workflows\nuget-stable-deploy.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUserClientSample", "samples\ConsoleUserClientSample\ConsoleUserClientSample.csproj", "{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +80,10 @@ Global
 		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{4A40D713-9B2C-4C7B-8E1A-58F7C5FB5DD4} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
 		{A5C47534-973E-47E3-8E96-AE4B32A5D09F} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
 		{0E5080C1-2D28-481C-99EB-7F0EB0EE60B0} = {C3177472-ED49-496E-B6A6-078780C322C4}
+		{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC} = {A114E283-B827-40F8-9180-E13DD3C455CD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7539252-E55D-43C2-B2C5-C9A77D191087}
