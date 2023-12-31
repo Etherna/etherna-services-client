@@ -18,7 +18,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Etherna.Sdk.SampleClient
+namespace ConsoleInternalClientSample
 {
     class Program
     {
