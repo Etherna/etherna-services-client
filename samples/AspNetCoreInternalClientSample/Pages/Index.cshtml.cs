@@ -1,4 +1,4 @@
-﻿//   Copyright 2020-present Etherna SA
+//   Copyright 2020-present Etherna SA
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -17,33 +17,32 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
-namespace Etherna.Sdk.AspSampleClient.Pages
+namespace AspNetCoreInternalClientSample.Pages;
+
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    // Fields.
+    private readonly IConfiguration configuration;
+    private readonly IEthernaInternalCreditClient creditClient;
+
+    // Constructor.
+    public IndexModel(
+        IConfiguration configuration,
+        IEthernaInternalCreditClient creditClient)
     {
-        // Fields.
-        private readonly IConfiguration configuration;
-        private readonly IEthernaInternalCreditClient creditClient;
+        this.configuration = configuration;
+        this.creditClient = creditClient;
+    }
 
-        // Constructor.
-        public IndexModel(
-            IConfiguration configuration,
-            IEthernaInternalCreditClient creditClient)
-        {
-            this.configuration = configuration;
-            this.creditClient = creditClient;
-        }
+    // Properties.
+    public double CreditBalance { get; set; }
+    public bool IsUnlimitedCredit { get; set; }
 
-        // Properties.
-        public double CreditBalance { get; set; }
-        public bool IsUnlimitedCredit { get; set; }
-
-        // Methods.
-        public async Task OnGetAsync()
-        {
-            var credit = await creditClient.ServiceInteract.CreditAsync(configuration["SampleConfig:Address"]!);
-            CreditBalance = credit.Balance;
-            IsUnlimitedCredit = credit.IsUnlimited;
-        }
+    // Methods.
+    public async Task OnGetAsync()
+    {
+        var credit = await creditClient.ServiceInteract.CreditAsync(configuration["SampleConfig:Address"]!);
+        CreditBalance = credit.Balance;
+        IsUnlimitedCredit = credit.IsUnlimited;
     }
 }

@@ -13,13 +13,20 @@
 //   limitations under the License.
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
-namespace Etherna.Sdk.AspSampleClient.Pages
+namespace AspNetCoreInternalClientSample.Pages;
+
+public class PrivacyModel : PageModel
 {
-    public class PrivacyModel : PageModel
+    private readonly ILogger<PrivacyModel> _logger;
+
+    public PrivacyModel(ILogger<PrivacyModel> logger)
     {
-        public void OnGet()
-        {
-        }
+        _logger = logger;
+    }
+
+    public void OnGet()
+    {
     }
 }
