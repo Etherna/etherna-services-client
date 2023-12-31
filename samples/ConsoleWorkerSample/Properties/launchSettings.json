@@ -2,7 +2,7 @@
   "profiles": {
     "ServiceSampleClient": {
       "commandName": "Project",
-      "commandLineArgs": "-c https://localhost:44369/ -a 0x6F8A31ea8d7C8D7b1988290d62836147a2eE66eC -l https://localhost:44379/ -i ethernaGatewayCreditClientId -s ethernaGatewayCreditClientSecret"
+      "commandLineArgs": "-c https://localhost:44369/ -a 0xF60Fbc6A72dde156f24A08C414197AE3CF5399E0 -l https://localhost:44379/ -i ethernaGatewayCreditClientId -s ethernaGatewayCreditClientSecret"
     }
   }
 }

@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B6130FF
 		tools\etherna-sso-api.nswag = tools\etherna-sso-api.nswag
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreWorkerSample", "samples\AspNetCoreWorkerSample\AspNetCoreWorkerSample.csproj", "{D5A982B9-FD90-4141-93D8-F2CE979B2435}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreInternalClientSample", "samples\AspNetCoreInternalClientSample\AspNetCoreInternalClientSample.csproj", "{D5A982B9-FD90-4141-93D8-F2CE979B2435}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaSdk.Common", "src\EthernaSdk.Common\EthernaSdk.Common.csproj", "{D5AE670E-13E4-47DC-84C5-ECF5900427D1}"
 EndProject
