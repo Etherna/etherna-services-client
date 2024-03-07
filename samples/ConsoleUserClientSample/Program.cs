@@ -88,8 +88,8 @@ namespace ConsoleUserClientSample
             if (string.IsNullOrWhiteSpace(apiKey)) //"code" grant flow
             {
                 ethernaClientsBuilder = services.AddEthernaUserClientsWithCodeAuth(
-                    ssoBaseUrl,
-                    ssoClientId,
+                    ssoBaseUrl!,
+                    ssoClientId!,
                     ssoClientSecret,
                     3000,
                     new[] { "userApi.credit" });
@@ -97,11 +97,11 @@ namespace ConsoleUserClientSample
             else //"password" grant flow
             {
                 ethernaClientsBuilder = services.AddEthernaUserClientsWithApiKeyAuth(
-                    ssoBaseUrl,
+                    ssoBaseUrl!,
                     apiKey,
                     new[] { "userApi.credit" });
             }
-            ethernaClientsBuilder.AddEthernaCreditClient(new Uri(creditBaseUrl));
+            ethernaClientsBuilder.AddEthernaCreditClient(new Uri(creditBaseUrl!));
             
             // Get client.
             var serviceProvider = services.BuildServiceProvider();
