@@ -2724,7 +2724,7 @@ namespace Etherna.Sdk.GeneratedClients.Index
         /// <param name="hash">The video hash</param>
         /// <returns>Success</returns>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<VideoManifestStatusDto> ValidationGetAsync(string hash, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<VideoManifestStatusDto> ValidationGet2Async(string hash, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2763,7 +2763,7 @@ namespace Etherna.Sdk.GeneratedClients.Index
         /// <param name="body">The list of video manifest hashes</param>
         /// <returns>Success</returns>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VideoManifestStatusDto>> BulkValidationPutAsync(System.Collections.Generic.IEnumerable<string> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VideoManifestStatusDto>> BulkValidationPut2Async(System.Collections.Generic.IEnumerable<string> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -4623,7 +4623,7 @@ namespace Etherna.Sdk.GeneratedClients.Index
         /// <param name="hash">The video hash</param>
         /// <returns>Success</returns>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<VideoManifestStatusDto> ValidationGetAsync(string hash, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<VideoManifestStatusDto> ValidationGet2Async(string hash, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (hash == null)
                 throw new System.ArgumentNullException("hash");
@@ -5035,7 +5035,7 @@ namespace Etherna.Sdk.GeneratedClients.Index
         /// <param name="body">The list of video manifest hashes</param>
         /// <returns>Success</returns>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VideoManifestStatusDto>> BulkValidationPutAsync(System.Collections.Generic.IEnumerable<string> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<VideoManifestStatusDto>> BulkValidationPut2Async(System.Collections.Generic.IEnumerable<string> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
