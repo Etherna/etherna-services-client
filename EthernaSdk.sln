@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5B6130FF
 		tools\etherna-gateway-api.nswag = tools\etherna-gateway-api.nswag
 		tools\etherna-index-api.nswag = tools\etherna-index-api.nswag
 		tools\etherna-sso-api.nswag = tools\etherna-sso-api.nswag
+		tools\README.md = tools\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreInternalClientSample", "samples\AspNetCoreInternalClientSample\AspNetCoreInternalClientSample.csproj", "{D5A982B9-FD90-4141-93D8-F2CE979B2435}"
