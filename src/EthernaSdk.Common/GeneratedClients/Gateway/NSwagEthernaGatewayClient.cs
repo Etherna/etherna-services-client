@@ -37,7 +37,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IPostageClient
+    internal partial interface IPostageClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -285,7 +285,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IResourcesClient
+    internal partial interface IResourcesClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -1508,7 +1508,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface ISystemClient
+    internal partial interface ISystemClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -1914,7 +1914,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IUsersClient
+    internal partial interface IUsersClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -2985,7 +2985,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ChainStateDto
+    internal partial class ChainStateDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("block")]
@@ -3006,7 +3006,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PostageBatchDto
+    internal partial class PostageBatchDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("id")]
@@ -3048,7 +3048,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PostageBatchRefDto
+    internal partial class PostageBatchRefDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("batchId")]
@@ -3063,7 +3063,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ProblemDetails
+    internal partial class ProblemDetails
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("type")]
@@ -3093,7 +3093,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ResourcePinStatusDto
+    internal partial class ResourcePinStatusDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("freePinningEndOfLife")]
@@ -3111,7 +3111,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserCreditDto
+    internal partial class UserCreditDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("isUnlimited")]
@@ -3123,7 +3123,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserDto
+    internal partial class UserDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("etherAddress")]
@@ -3138,7 +3138,7 @@ namespace Etherna.Sdk.GeneratedClients.Gateway
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class WelcomePackDto
+    internal partial class WelcomePackDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("isFreePostageBatchConsumed")]

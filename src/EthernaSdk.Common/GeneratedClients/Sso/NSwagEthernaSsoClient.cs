@@ -37,7 +37,7 @@ namespace Etherna.Sdk.GeneratedClients.Sso
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IIdentityClient
+    internal partial interface IIdentityClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -581,7 +581,7 @@ namespace Etherna.Sdk.GeneratedClients.Sso
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IServiceInteractClient
+    internal partial interface IServiceInteractClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -847,7 +847,7 @@ namespace Etherna.Sdk.GeneratedClients.Sso
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PrivateUserDto
+    internal partial class PrivateUserDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("accountType")]
@@ -877,7 +877,7 @@ namespace Etherna.Sdk.GeneratedClients.Sso
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ProblemDetails
+    internal partial class ProblemDetails
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("type")]
@@ -907,7 +907,7 @@ namespace Etherna.Sdk.GeneratedClients.Sso
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserContactInfoDto
+    internal partial class UserContactInfoDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("email")]
@@ -919,7 +919,7 @@ namespace Etherna.Sdk.GeneratedClients.Sso
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserDto
+    internal partial class UserDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("etherAddress")]

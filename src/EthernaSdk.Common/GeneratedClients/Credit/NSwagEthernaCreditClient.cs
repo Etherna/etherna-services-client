@@ -37,7 +37,7 @@ namespace Etherna.Sdk.GeneratedClients.Credit
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IServiceInteractClient
+    internal partial interface IServiceInteractClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -521,7 +521,7 @@ namespace Etherna.Sdk.GeneratedClients.Credit
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IUserClient
+    internal partial interface IUserClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -939,7 +939,7 @@ namespace Etherna.Sdk.GeneratedClients.Credit
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CreditDto
+    internal partial class CreditDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("balance")]
@@ -951,7 +951,7 @@ namespace Etherna.Sdk.GeneratedClients.Credit
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class OperationLogDto
+    internal partial class OperationLogDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("amount")]
@@ -978,7 +978,7 @@ namespace Etherna.Sdk.GeneratedClients.Credit
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ProblemDetails
+    internal partial class ProblemDetails
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("type")]
