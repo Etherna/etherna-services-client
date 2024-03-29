@@ -1,5 +1,5 @@
 ﻿using Etherna.Authentication.Native;
-using Etherna.Sdk.Users;
+using Etherna.Sdk.Users.Clients;
 using Etherna.Sdk.Users.Native;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
@@ -127,7 +127,7 @@ namespace ConsoleUserClientSample
             }
 
             // Consume service api.
-            var credit = await client.UserClient.CreditAsync();
+            var credit = await client.GetUserCreditAsync();
             Console.WriteLine($"Current user balance: {credit.Balance} xDai");
         }
     }

@@ -1,4 +1,4 @@
-﻿//   Copyright 2020-present Etherna SA
+// Copyright 2020-present Etherna SA
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -12,12 +12,17 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.GeneratedClients.Sso;
-
-namespace Etherna.Sdk.Internal
+namespace Etherna.Sdk.Common.DtoModels
 {
-    public interface IEthernaInternalSsoClient
+    public class UserContactInfoDto
     {
-        IServiceInteractClient ServiceInteract { get; }
+        internal UserContactInfoDto(Etherna.Sdk.Common.GenClients.Sso.UserContactInfoDto contactInfo)
+        {
+            Email = contactInfo.Email;
+            PhoneNumber = contactInfo.PhoneNumber;
+        }
+        
+        public string? Email { get; }
+        public string? PhoneNumber { get; }
     }
 }

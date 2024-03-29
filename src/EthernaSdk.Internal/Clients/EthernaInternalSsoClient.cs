@@ -12,29 +12,32 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.GeneratedClients.Sso;
+using Etherna.Sdk.Common.GenClients.Sso;
 using System;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using UserContactInfoDto = Etherna.Sdk.Common.DtoModels.UserContactInfoDto;
 
-namespace Etherna.Sdk.Internal
+namespace Etherna.Sdk.Internal.Clients
 {
     public class EthernaInternalSsoClient : IEthernaInternalSsoClient
     {
         // Fields.
-        private readonly Uri baseUrl;
-        private readonly HttpClient httpClient;
+        private readonly ServiceInteractClient generatedClient;
 
         // Constructor.
-        public EthernaInternalSsoClient(
-            Uri baseUrl,
-            HttpClient httpClient)
+        public EthernaInternalSsoClient(Uri baseUrl, HttpClient httpClient)
         {
-            this.baseUrl = baseUrl ?? throw new ArgumentNullException(nameof(baseUrl));
-            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            ArgumentNullException.ThrowIfNull(baseUrl, nameof(baseUrl));
+
+            generatedClient = new ServiceInteractClient(baseUrl.ToString(), httpClient);
         }
 
-        // Properties.
-        public IServiceInteractClient ServiceInteract =>
-            new ServiceInteractClient(baseUrl.AbsoluteUri, httpClient);
+        // Methods.
+        public async Task<UserContactInfoDto> ContactsAsync(
+            string userAddress,
+            CancellationToken cancellationToken = default) =>
+            new(await generatedClient.ContactsAsync(userAddress, cancellationToken).ConfigureAwait(false));
     }
 }

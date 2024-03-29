@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Internal;
+using Etherna.Sdk.Internal.Clients;
 using IdentityModel.Client;
 using System;
 using System.Net.Http;
@@ -86,7 +86,7 @@ namespace ConsoleInternalClientSample
             var client = new EthernaInternalCreditClient(new Uri(creditBaseUrl!), httpClient);
 
             // Consume service api.
-            var credit = await client.ServiceInteract.CreditAsync(address!);
+            var credit = await client.GetUserCreditAsync(address!);
             Console.WriteLine($"Current balance: {credit.Balance} xDai");
         }
 

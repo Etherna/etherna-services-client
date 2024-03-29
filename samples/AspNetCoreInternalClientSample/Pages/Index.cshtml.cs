@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Internal;
+using Etherna.Sdk.Internal.Clients;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
@@ -41,7 +41,7 @@ public class IndexModel : PageModel
     // Methods.
     public async Task OnGetAsync()
     {
-        var credit = await creditClient.ServiceInteract.CreditAsync(configuration["SampleConfig:Address"]!);
+        var credit = await creditClient.GetUserCreditAsync(configuration["SampleConfig:Address"]!);
         CreditBalance = credit.Balance;
         IsUnlimitedCredit = credit.IsUnlimited;
     }

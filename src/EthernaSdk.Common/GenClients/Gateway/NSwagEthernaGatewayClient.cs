@@ -32,7 +32,7 @@
 #pragma warning disable 8604 // Disable "CS8604 Possible null reference argument for parameter"
 #pragma warning disable 8625 // Disable "CS8625 Cannot convert null literal to non-nullable reference type"
 
-namespace Etherna.Sdk.GeneratedClients.Gateway
+namespace Etherna.Sdk.Common.GenClients.Gateway
 {
     using System = global::System;
 

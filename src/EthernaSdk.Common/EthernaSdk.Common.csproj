@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <RootNamespace>Etherna.Sdk</RootNamespace>
+    <RootNamespace>Etherna.Sdk.Common</RootNamespace>
 
     <Authors>Etherna SA</Authors>
     <Description>A common library for Etherna service clients</Description>

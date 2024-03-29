@@ -12,6 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
+using Etherna.Sdk.Users.Clients;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;

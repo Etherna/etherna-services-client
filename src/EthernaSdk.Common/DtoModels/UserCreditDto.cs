@@ -1,4 +1,4 @@
-﻿//   Copyright 2020-present Etherna SA
+// Copyright 2020-present Etherna SA
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -12,12 +12,19 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.GeneratedClients.Credit;
+using Etherna.Sdk.Common.GenClients.Credit;
 
-namespace Etherna.Sdk.Internal
+namespace Etherna.Sdk.Common.DtoModels
 {
-    public interface IEthernaInternalCreditClient
+    public class UserCreditDto
     {
-        IServiceInteractClient ServiceInteract { get; }
+        internal UserCreditDto(CreditDto credit)
+        {
+            Balance = credit.Balance;
+            IsUnlimited = credit.IsUnlimited;
+        }
+        
+        public double Balance { get; }
+        public bool IsUnlimited { get; }
     }
 }

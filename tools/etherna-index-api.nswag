@@ -55,7 +55,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Etherna.Sdk.GeneratedClients.Index",
+      "namespace": "Etherna.Sdk.Common.GenClients.Index",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -92,7 +92,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../src/EthernaSdk.Common/GeneratedClients/Index/NSwagEthernaIndexClient.cs",
+      "output": "../src/EthernaSdk.Common/GenClients/Index/NSwagEthernaIndexClient.cs",
       "newLineBehavior": "Auto"
     }
   }
