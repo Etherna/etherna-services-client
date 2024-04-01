@@ -14,23 +14,21 @@
 
 namespace Etherna.Sdk.Common.DtoModels
 {
-    public class UserCreditDto
+    public class ResourcePinStatusDto
     {
         // Constructors.
-        internal UserCreditDto(GenClients.Credit.CreditDto credit)
+        internal ResourcePinStatusDto(GenClients.Gateway.ResourcePinStatusDto pinStatus)
         {
-            Balance = credit.Balance;
-            IsUnlimited = credit.IsUnlimited;
-        }
-
-        internal UserCreditDto(GenClients.Gateway.UserCreditDto credit)
-        {
-            Balance = credit.Balance;
-            IsUnlimited = credit.IsUnlimited;
+            FreePinningEndOfLife = pinStatus.FreePinningEndOfLife;
+            IsPinned = pinStatus.IsPinned;
+            IsPinningInProgress = pinStatus.IsPinningInProgress;
+            IsPinningRequired = pinStatus.IsPinningRequired;
         }
 
         // Properties.
-        public double Balance { get; }
-        public bool IsUnlimited { get; }
+        public System.DateTimeOffset? FreePinningEndOfLife { get; }
+        public bool IsPinned { get; }
+        public bool IsPinningInProgress { get; }
+        public bool IsPinningRequired { get; }
     }
 }

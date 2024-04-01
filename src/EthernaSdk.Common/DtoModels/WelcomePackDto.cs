@@ -1,4 +1,4 @@
-﻿//   Copyright 2020-present Etherna SA
+// Copyright 2020-present Etherna SA
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -12,15 +12,17 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.GeneratedClients.Gateway;
-
-namespace Etherna.Sdk.Users
+namespace Etherna.Sdk.Common.DtoModels
 {
-    public interface IEthernaUserGatewayClient
+    public class WelcomePackDto
     {
-        IPostageClient PostageClient { get; }
-        IResourcesClient ResourcesClient { get; }
-        ISystemClient SystemClient { get; }
-        IUsersClient UsersClient { get; }
+        // Constructors.
+        internal WelcomePackDto(GenClients.Gateway.WelcomePackDto welcomePack)
+        {
+            IsFreePostageBatchConsumed = welcomePack.IsFreePostageBatchConsumed;
+        }
+        
+        // Properties.
+        public bool IsFreePostageBatchConsumed { get; }
     }
 }

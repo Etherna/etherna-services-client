@@ -14,23 +14,19 @@
 
 namespace Etherna.Sdk.Common.DtoModels
 {
-    public class UserCreditDto
+    public class PostageBatchRefDto
     {
         // Constructors.
-        internal UserCreditDto(GenClients.Credit.CreditDto credit)
+        internal PostageBatchRefDto(GenClients.Gateway.PostageBatchRefDto postageBatchRef)
         {
-            Balance = credit.Balance;
-            IsUnlimited = credit.IsUnlimited;
+            BatchId = postageBatchRef.BatchId;
+            Label = postageBatchRef.Label;
+            OwnerNodeId = postageBatchRef.OwnerNodeId;
         }
-
-        internal UserCreditDto(GenClients.Gateway.UserCreditDto credit)
-        {
-            Balance = credit.Balance;
-            IsUnlimited = credit.IsUnlimited;
-        }
-
+        
         // Properties.
-        public double Balance { get; }
-        public bool IsUnlimited { get; }
+        public string BatchId { get; }
+        public string? Label { get; }
+        public string OwnerNodeId { get; }
     }
 }

@@ -12,20 +12,28 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.GenClients.Sso;
 using System.Collections.Generic;
 
 namespace Etherna.Sdk.Common.DtoModels
 {
     public class UserInfoDto
     {
-        internal UserInfoDto(UserDto userInfo)
+        // Constructors.
+        internal UserInfoDto(GenClients.Gateway.UserDto userInfo)
         {
             EtherAddress = userInfo.EtherAddress;
             EtherPreviousAddresses = userInfo.EtherPreviousAddresses;
             Username = userInfo.Username;
         }
-        
+
+        internal UserInfoDto(GenClients.Sso.UserDto userInfo)
+        {
+            EtherAddress = userInfo.EtherAddress;
+            EtherPreviousAddresses = userInfo.EtherPreviousAddresses;
+            Username = userInfo.Username;
+        }
+
+        // Properties.
         public string EtherAddress { get; }
         public IEnumerable<string> EtherPreviousAddresses { get; }
         public string? Username { get; }

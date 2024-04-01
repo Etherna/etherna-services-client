@@ -14,23 +14,23 @@
 
 namespace Etherna.Sdk.Common.DtoModels
 {
-    public class UserCreditDto
+    public class ChainStateDto
     {
         // Constructors.
-        internal UserCreditDto(GenClients.Credit.CreditDto credit)
+        internal ChainStateDto(Etherna.Sdk.Common.GenClients.Gateway.ChainStateDto chainState)
         {
-            Balance = credit.Balance;
-            IsUnlimited = credit.IsUnlimited;
+            Block = chainState.Block;
+            CurrentPrice = chainState.CurrentPrice;
+            SourceNodeId = chainState.SourceNodeId;
+            TimeStamp = chainState.TimeStamp;
+            TotalAmount = chainState.TotalAmount;
         }
-
-        internal UserCreditDto(GenClients.Gateway.UserCreditDto credit)
-        {
-            Balance = credit.Balance;
-            IsUnlimited = credit.IsUnlimited;
-        }
-
+        
         // Properties.
-        public double Balance { get; }
-        public bool IsUnlimited { get; }
+        public long Block { get; }
+        public long CurrentPrice { get; }
+        public string SourceNodeId { get; }
+        public System.DateTimeOffset TimeStamp { get; }
+        public long TotalAmount { get; }
     }
 }
