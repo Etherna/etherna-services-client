@@ -1,16 +1,16 @@
-﻿//   Copyright 2020-present Etherna SA
+﻿// Copyright 2020-present Etherna SA
 // 
-//   Licensed under the Apache License, Version 2.0 (the "License");
-//   you may not use this file except in compliance with the License.
-//   You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 // 
-//       http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using Etherna.Sdk.Common.GenClients.Index;
 using Etherna.Sdk.Common.Models;
@@ -76,94 +76,90 @@ namespace Etherna.Sdk.Users.Clients
             CancellationToken cancellationToken = default) =>
             (await generatedVideosClient.BulkValidation2Async(videoIds, cancellationToken).ConfigureAwait(false)).Select(s => new VideoValidationStatus(s));
 
-        public Task<IEnumerable<VideoValidationStatus>> GetBulkVideoValidationStatusByManifestsAsync(IEnumerable<string> manifestHashes,
+        public async Task<IEnumerable<VideoValidationStatus>> GetBulkVideoValidationStatusByManifestsAsync(
+            IEnumerable<string> manifestHashes,
+            CancellationToken cancellationToken = default) =>
+            (await generatedVideosClient.BulkValidationPut2Async(manifestHashes, cancellationToken).ConfigureAwait(false)).Select(s => new VideoValidationStatus(s));
+
+        public async Task<PaginatedResult<VideoPreview>> GetLastPublishedVideosAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default)
+        {
+            var result = await generatedVideosClient.Latest3Async(page, take, cancellationToken).ConfigureAwait(false);
+            return new PaginatedResult<VideoPreview>(
+                result.Elements.Select(v => new VideoPreview(v)),
+                result.TotalElements,
+                result.PageSize,
+                result.CurrentPage,
+                result.MaxPage);
+        }
+
+        public async Task<PaginatedResult<IndexUserInfo>> GetRegisteredUsersAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default)
+        {
+            var result = await generatedUsersClient.List2Async(page, take, cancellationToken).ConfigureAwait(false);
+            return new PaginatedResult<IndexUserInfo>(
+                result.Elements.Select(u => new IndexUserInfo(u)),
+                result.TotalElements,
+                result.PageSize,
+                result.CurrentPage,
+                result.MaxPage);
+        }
+
+        public async Task<IndexParameters> GetIndexParametersAsync(CancellationToken cancellationToken = default) =>
+            new(await generatedSystemClient.ParametersAsync(cancellationToken).ConfigureAwait(false));
+
+        public async Task<IndexUserInfo> GetUserInfoByAddressAsync(string address, CancellationToken cancellationToken = default) =>
+            new(await generatedUsersClient.UsersGetAsync(address, cancellationToken).ConfigureAwait(false));
+
+        public async Task<Video> GetVideoByIdAsync(string videoId, CancellationToken cancellationToken = default) =>
+            new(await generatedVideosClient.Find2Async(videoId, cancellationToken).ConfigureAwait(false));
+
+        public async Task<Video> GetVideoByManifestAsync(string manifestHash, CancellationToken cancellationToken = default) =>
+            new(await generatedVideosClient.Manifest2Async(manifestHash, cancellationToken).ConfigureAwait(false));
+
+        public async Task<PaginatedResult<Comment>> GetVideoCommentsAsync(string videoId, int? page = null, int? take = null,
             CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var result = await generatedVideosClient.Comments3Async(videoId, page, take, cancellationToken).ConfigureAwait(false);
+            return new PaginatedResult<Comment>(
+                result.Elements.Select(c => new Comment(c)),
+                result.TotalElements,
+                result.PageSize,
+                result.CurrentPage,
+                result.MaxPage);
         }
 
-        public Task<UserInfo> GetCurrentUserAsync(CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PaginatedResult<VideoPreview>> GetLastPublishedVideosAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PaginatedResult<UserInfo>> GetRegisteredUsersAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IndexParameters> GetIndexParametersAsync(CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserInfo> GetUserInfoByAddressAsync(string address, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Video> GetVideoByIdAsync(string videoId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Video> GetVideoByManifestAsync(string manifestHash, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PaginatedResult<Comment>> GetVideoCommentsAsync(string videoId, int? page = null, int? take = null,
+        public async Task<PaginatedResult<Video>> GetVideosByOwnerAsync(string userAddress, int? page = null,
+            int? take = null,
             CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var result = await generatedUsersClient.Videos3Async(userAddress, page, take, cancellationToken).ConfigureAwait(false);
+            return new PaginatedResult<Video>(
+                result.Elements.Select(v => new Video(v)),
+                result.TotalElements,
+                result.PageSize,
+                result.CurrentPage,
+                result.MaxPage);
         }
 
-        public Task<PaginatedResult<Video>> GetVideosByOwnerAsync(string userAddress, int? page = null, int? take = null,
-            CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<VideoValidationStatus>> GetVideoValidationStatusByIdAsync(string videoId, CancellationToken cancellationToken = default) =>
+            (await generatedVideosClient.Validation2Async(videoId, cancellationToken).ConfigureAwait(false)).Select(v => new VideoValidationStatus(v));
 
-        public Task<IEnumerable<VideoValidationStatus>> GetVideoValidationStatusByIdAsync(string videoId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<VideoValidationStatus> GetVideoValidationStatusByManifestAsync(string manifestHash, CancellationToken cancellationToken = default) =>
+            new VideoValidationStatus(await generatedVideosClient.ValidationGet2Async(manifestHash, cancellationToken).ConfigureAwait(false));
 
-        public Task<VideoValidationStatus> GetVideoValidationStatusByManifestAsync(string manifestHash, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public Task ModerateCommentAsync(string commentId, CancellationToken cancellationToken = default) =>
+            generatedModerationClient.CommentsAsync(commentId, cancellationToken);
 
-        public Task ModerateCommentAsync(string commentId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public Task ModerateVideoAsync(string videoId, CancellationToken cancellationToken = default) =>
+            generatedModerationClient.VideosAsync(videoId, cancellationToken);
 
-        public Task ModerateVideoAsync(string videoId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public Task OwnerRemoveVideoAsync(string videoId, CancellationToken cancellationToken = default) =>
+            generatedVideosClient.VideosDeleteAsync(videoId, cancellationToken);
 
-        public Task OwnerRemoveVideoAsync(string videoId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<string> PublishNewVideoAsync(string manifestHash, CancellationToken cancellationToken = default) =>
+            generatedVideosClient.VideosPostAsync(new VideoCreateInput { ManifestHash = manifestHash }, cancellationToken);
 
-        public Task<string> PublishNewVideoAsync(string manifestHash, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task ReportUnsuitableVideoAsync(string videoId, string manifestHash, string description,
-            CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public Task ReportUnsuitableVideoAsync(string videoId, string manifestHash, string description, CancellationToken cancellationToken = default) =>
+            generatedVideosClient.ReportsAsync(videoId, manifestHash, description, cancellationToken);
 
         public Task<PaginatedResult<VideoPreview>> SearchVideosAsync(string? query = null, int? page = null, int? take = null,
             CancellationToken cancellationToken = default)
@@ -171,20 +167,13 @@ namespace Etherna.Sdk.Users.Clients
             throw new NotImplementedException();
         }
 
-        public Task UpdateOwnedVideoCommentAsync(string commentId, string newCommentText,
-            CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public Task UpdateOwnedVideoCommentAsync(string commentId, string newCommentText, CancellationToken cancellationToken = default) =>
+            generatedVideosClient.CommentsPutAsync(commentId, newCommentText, cancellationToken);
 
-        public Task UpdateVideoManifestAsync(string videoId, string newManifestHash, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public Task UpdateVideoManifestAsync(string videoId, string newManifestHash, CancellationToken cancellationToken = default) =>
+            generatedVideosClient.Update2Async(videoId, newManifestHash, cancellationToken);
 
-        public Task VotesVideoAsync(string id, VoteValue value, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public Task VotesVideoAsync(string id, VoteValue value, CancellationToken cancellationToken = default) =>
+            generatedVideosClient.VotesAsync(id, Enum.Parse<Value>(value.ToString()), cancellationToken);
     }
 }

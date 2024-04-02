@@ -1,16 +1,16 @@
-﻿//   Copyright 2020-present Etherna SA
+﻿// Copyright 2020-present Etherna SA
 // 
-//   Licensed under the Apache License, Version 2.0 (the "License");
-//   you may not use this file except in compliance with the License.
-//   You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 // 
-//       http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using Etherna.Sdk.Common.Models;
 using System.Collections.Generic;
@@ -78,10 +78,6 @@ namespace Etherna.Sdk.Users.Clients
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
         Task<IEnumerable<VideoValidationStatus>> GetBulkVideoValidationStatusByManifestsAsync(IEnumerable<string> manifestHashes, CancellationToken cancellationToken = default);
 
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        Task<UserInfo> GetCurrentUserAsync(CancellationToken cancellationToken = default);
-
         /// <summary>
         /// Get list of last uploaded videos.
         /// </summary>
@@ -100,7 +96,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Current page on list</returns>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        Task<PaginatedResult<UserInfo>> GetRegisteredUsersAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default);
+        Task<PaginatedResult<IndexUserInfo>> GetRegisteredUsersAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get list of configuration parameters.
@@ -116,7 +112,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="address">The user ether address</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        Task<UserInfo> GetUserInfoByAddressAsync(string address, CancellationToken cancellationToken = default);
+        Task<IndexUserInfo> GetUserInfoByAddressAsync(string address, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get video info by id.
