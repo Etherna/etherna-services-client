@@ -13,11 +13,11 @@
 //   limitations under the License.
 
 using Etherna.Sdk.Common.GenClients.Sso;
+using Etherna.Sdk.Common.Models;
 using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using UserContactInfoDto = Etherna.Sdk.Common.DtoModels.UserContactInfoDto;
 
 namespace Etherna.Sdk.Internal.Clients
 {
@@ -35,7 +35,7 @@ namespace Etherna.Sdk.Internal.Clients
         }
 
         // Methods.
-        public async Task<UserContactInfoDto> ContactsAsync(
+        public async Task<UserContactInfo> ContactsAsync(
             string userAddress,
             CancellationToken cancellationToken = default) =>
             new(await generatedClient.ContactsAsync(userAddress, cancellationToken).ConfigureAwait(false));

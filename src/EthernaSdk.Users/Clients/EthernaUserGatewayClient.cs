@@ -12,20 +12,14 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.DtoModels;
 using Etherna.Sdk.Common.GenClients.Gateway;
+using Etherna.Sdk.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ChainStateDto = Etherna.Sdk.Common.DtoModels.ChainStateDto;
-using PostageBatchDto = Etherna.Sdk.Common.DtoModels.PostageBatchDto;
-using PostageBatchRefDto = Etherna.Sdk.Common.DtoModels.PostageBatchRefDto;
-using ResourcePinStatusDto = Etherna.Sdk.Common.DtoModels.ResourcePinStatusDto;
-using UserCreditDto = Etherna.Sdk.Common.DtoModels.UserCreditDto;
-using WelcomePackDto = Etherna.Sdk.Common.DtoModels.WelcomePackDto;
 
 namespace Etherna.Sdk.Users.Clients
 {
@@ -91,13 +85,13 @@ namespace Etherna.Sdk.Users.Clients
         public Task FundResourcePinningAsync(string resourceHash, CancellationToken cancellationToken = default) =>
             generatedResourcesClient.PinPostAsync(resourceHash, cancellationToken);
 
-        public async Task<ChainStateDto> GetChainStateAsync(CancellationToken cancellationToken = default) =>
+        public async Task<ChainState> GetChainStateAsync(CancellationToken cancellationToken = default) =>
             new(await generatedSystemClient.ChainstateAsync(cancellationToken).ConfigureAwait(false));
 
-        public async Task<UserInfoDto> GetCurrentUserAsync(CancellationToken cancellationToken = default) =>
+        public async Task<UserInfo> GetCurrentUserAsync(CancellationToken cancellationToken = default) =>
             new(await generatedUsersClient.CurrentAsync(cancellationToken).ConfigureAwait(false));
 
-        public async Task<UserCreditDto> GetCurrentUserCreditAsync(CancellationToken cancellationToken = default) =>
+        public async Task<UserCredit> GetCurrentUserCreditAsync(CancellationToken cancellationToken = default) =>
             new(await generatedUsersClient.CreditAsync(cancellationToken).ConfigureAwait(false));
 
         public Task<double> GetDownloadBytePriceAsync(CancellationToken cancellationToken = default) =>
@@ -111,18 +105,18 @@ namespace Etherna.Sdk.Users.Clients
             CancellationToken cancellationToken = default) =>
             await generatedUsersClient.PinnedResourcesAsync(cancellationToken).ConfigureAwait(false);
 
-        public async Task<PostageBatchDto> GetPostageBatchAsync(
+        public async Task<PostageBatch> GetPostageBatchAsync(
             string batchId,
             CancellationToken cancellationToken = default) =>
             new(await generatedUsersClient.BatchesGetAsync(batchId, cancellationToken).ConfigureAwait(false));
 
-        public async Task<IEnumerable<PostageBatchRefDto>> GetOwnedPostageBatchesAsync(
+        public async Task<IEnumerable<PostageBatchRef>> GetOwnedPostageBatchesAsync(
             string? labelContainsFilter = null,
             CancellationToken cancellationToken = default) =>
             (await generatedUsersClient.BatchesGetSearchAsync(labelContainsFilter, cancellationToken).ConfigureAwait(false))
-            .Select(pbr => new PostageBatchRefDto(pbr));
+            .Select(pbr => new PostageBatchRef(pbr));
 
-        public async Task<ResourcePinStatusDto> GetResourcePinStatusAsync(
+        public async Task<ResourcePinStatus> GetResourcePinStatusAsync(
             string resourceHash,
             CancellationToken cancellationToken = default) =>
             new(await generatedResourcesClient.PinGetAsync(resourceHash, cancellationToken).ConfigureAwait(false));
@@ -137,7 +131,7 @@ namespace Etherna.Sdk.Users.Clients
             CancellationToken cancellationToken = default) =>
             await generatedResourcesClient.UsersAsync(resourceHash, cancellationToken).ConfigureAwait(false);
 
-        public async Task<WelcomePackDto> GetWelcomePackInfoAsync(CancellationToken cancellationToken = default) =>
+        public async Task<WelcomePack> GetWelcomePackInfoAsync(CancellationToken cancellationToken = default) =>
             new(await generatedUsersClient.WelcomeGetAsync(cancellationToken).ConfigureAwait(false));
 
         public Task RequireWelcomePackAsync(CancellationToken cancellationToken = default) =>

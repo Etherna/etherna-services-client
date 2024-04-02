@@ -12,17 +12,23 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class WelcomePackDto
+    public class ResourcePinStatus
     {
         // Constructors.
-        internal WelcomePackDto(GenClients.Gateway.WelcomePackDto welcomePack)
+        internal ResourcePinStatus(GenClients.Gateway.ResourcePinStatusDto pinStatus)
         {
-            IsFreePostageBatchConsumed = welcomePack.IsFreePostageBatchConsumed;
+            FreePinningEndOfLife = pinStatus.FreePinningEndOfLife;
+            IsPinned = pinStatus.IsPinned;
+            IsPinningInProgress = pinStatus.IsPinningInProgress;
+            IsPinningRequired = pinStatus.IsPinningRequired;
         }
-        
+
         // Properties.
-        public bool IsFreePostageBatchConsumed { get; }
+        public System.DateTimeOffset? FreePinningEndOfLife { get; }
+        public bool IsPinned { get; }
+        public bool IsPinningInProgress { get; }
+        public bool IsPinningRequired { get; }
     }
 }

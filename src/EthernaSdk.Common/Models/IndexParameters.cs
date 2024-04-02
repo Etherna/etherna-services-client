@@ -12,17 +12,10 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class UserContactInfoDto
+    public class IndexParameters
     {
-        internal UserContactInfoDto(Etherna.Sdk.Common.GenClients.Sso.UserContactInfoDto contactInfo)
-        {
-            Email = contactInfo.Email;
-            PhoneNumber = contactInfo.PhoneNumber;
-        }
         
-        public string? Email { get; }
-        public string? PhoneNumber { get; }
     }
 }

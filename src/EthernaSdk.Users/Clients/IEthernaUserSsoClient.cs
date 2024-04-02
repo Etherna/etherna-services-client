@@ -12,8 +12,8 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.DtoModels;
 using Etherna.Sdk.Common.GenClients.Sso;
+using Etherna.Sdk.Common.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,7 +27,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Current user private information</returns>
         /// <exception cref="EthernaSsoApiException">A server side error occurred.</exception>
-        Task<PrivateUserInfoDto> GetPrivateUserInfoAsync(CancellationToken cancellationToken = default);
+        Task<PrivateUserInfo> GetPrivateUserInfoAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get information about user by its ethereum address.
@@ -36,7 +36,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>User information</returns>
         /// <exception cref="EthernaSsoApiException">A server side error occurred.</exception>
-        Task<UserInfoDto> GetUserInfoByAddressAsync(string userAddress, CancellationToken cancellationToken = default);
+        Task<UserInfo> GetUserInfoByAddressAsync(string userAddress, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get information about user by its username.
@@ -45,7 +45,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>User information</returns>
         /// <exception cref="EthernaSsoApiException">A server side error occurred.</exception>
-        Task<UserInfoDto> GetUserInfoByUsernameAsync(string username, CancellationToken cancellationToken = default);
+        Task<UserInfo> GetUserInfoByUsernameAsync(string username, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Verify if an email is registered.

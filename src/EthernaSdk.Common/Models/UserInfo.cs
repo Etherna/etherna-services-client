@@ -14,19 +14,19 @@
 
 using System.Collections.Generic;
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class UserInfoDto
+    public class UserInfo
     {
         // Constructors.
-        internal UserInfoDto(GenClients.Gateway.UserDto userInfo)
+        internal UserInfo(GenClients.Gateway.UserDto userInfo)
         {
             EtherAddress = userInfo.EtherAddress;
             EtherPreviousAddresses = userInfo.EtherPreviousAddresses;
             Username = userInfo.Username;
         }
 
-        internal UserInfoDto(GenClients.Sso.UserDto userInfo)
+        internal UserInfo(GenClients.Sso.UserDto userInfo)
         {
             EtherAddress = userInfo.EtherAddress;
             EtherPreviousAddresses = userInfo.EtherPreviousAddresses;

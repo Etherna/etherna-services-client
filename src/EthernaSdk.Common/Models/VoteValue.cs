@@ -12,21 +12,10 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class PostageBatchRefDto
+    public class VoteValue
     {
-        // Constructors.
-        internal PostageBatchRefDto(GenClients.Gateway.PostageBatchRefDto postageBatchRef)
-        {
-            BatchId = postageBatchRef.BatchId;
-            Label = postageBatchRef.Label;
-            OwnerNodeId = postageBatchRef.OwnerNodeId;
-        }
         
-        // Properties.
-        public string BatchId { get; }
-        public string? Label { get; }
-        public string OwnerNodeId { get; }
     }
 }

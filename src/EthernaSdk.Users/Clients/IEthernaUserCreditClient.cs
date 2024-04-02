@@ -12,8 +12,8 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.DtoModels;
 using Etherna.Sdk.Common.GenClients.Credit;
+using Etherna.Sdk.Common.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +34,7 @@ namespace Etherna.Sdk.Users.Clients
         /// </summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaCreditApiException">A server side error occurred.</exception>
-        Task<UserCreditDto> GetUserCreditAsync(CancellationToken cancellationToken = default);
+        Task<UserCredit> GetUserCreditAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get transaction logs for current user
@@ -44,7 +44,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Current page on list</returns>
         /// <exception cref="EthernaCreditApiException">A server side error occurred.</exception>
-        Task<IEnumerable<UserOpLogDto>> GetUserOpLogsAsync(
+        Task<IEnumerable<UserOpLog>> GetUserOpLogsAsync(
             int? page = null,
             int? take = null,
             CancellationToken cancellationToken = default);

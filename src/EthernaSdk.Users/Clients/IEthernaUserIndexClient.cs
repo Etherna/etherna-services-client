@@ -1,0 +1,256 @@
+﻿//   Copyright 2020-present Etherna SA
+// 
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+// 
+//       http://www.apache.org/licenses/LICENSE-2.0
+// 
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+
+using Etherna.Sdk.Common.Models;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using EthernaIndexApiException = Etherna.Sdk.Common.GenClients.Index.EthernaIndexApiException;
+
+namespace Etherna.Sdk.Users.Clients
+{
+    public interface IEthernaUserIndexClient
+    {
+        /// <summary>
+        /// Force new validation of video manifest.
+        /// </summary>
+        /// <param name="manifestHash">Hash manifest</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task AdminForceNewValidationByManifestHashAsync(string manifestHash, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Force new validation of video manifests.
+        /// </summary>
+        /// <param name="videoId">Video id</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task AdminForceNewValidationByVideoIdAsync(string videoId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Admin starts new full video re-index
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task AdminReindexAllVideosAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Create a new comment on a video with current user.
+        /// </summary>
+        /// <param name="videoId">Video id</param>
+        /// <param name="commentText">Comment text</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<Comment> CreateCommentAsync(string videoId, string commentText, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Delete a comment owned by current user.
+        /// </summary>
+        /// <param name="commentId">Comment id</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task DeleteOwnedCommentAsync(string commentId, CancellationToken cancellationToken = default);
+        
+        /// <summary>
+        /// Get bulk validation info by multiple video ids.
+        /// </summary>
+        /// <param name="videoIds">The list of video id</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<IEnumerable<VideoValidationStatus>> GetBulkVideoValidationStatusByIdsAsync(IEnumerable<string> videoIds, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get bulk validation info by multiple manifest hashes.
+        /// </summary>
+        /// <param name="manifestHashes">The list of video manifest hashes</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<IEnumerable<VideoValidationStatus>> GetBulkVideoValidationStatusByManifestsAsync(IEnumerable<string> manifestHashes, CancellationToken cancellationToken = default);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<UserInfo> GetCurrentUserAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get list of last uploaded videos.
+        /// </summary>
+        /// <param name="page">Current page of results</param>
+        /// <param name="take">Number of items to retrieve. Max 100</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Current page on list</returns>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<PaginatedResult<VideoPreview>> GetLastPublishedVideosAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get a complete list of users.
+        /// </summary>
+        /// <param name="page">Current page of results</param>
+        /// <param name="take">Number of items to retrieve. Max 100</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Current page on list</returns>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<PaginatedResult<UserInfo>> GetRegisteredUsersAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get list of configuration parameters.
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Configuration parameters</returns>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<IndexParameters> GetIndexParametersAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get user info by address.
+        /// </summary>
+        /// <param name="address">The user ether address</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<UserInfo> GetUserInfoByAddressAsync(string address, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get video info by id.
+        /// </summary>
+        /// <param name="videoId">The video id</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<Video> GetVideoByIdAsync(string videoId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get video info by manifest hash.
+        /// </summary>
+        /// <param name="manifestHash">The video manifest hash</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<Video> GetVideoByManifestAsync(string manifestHash, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get paginated video comments by id
+        /// </summary>
+        /// <param name="videoId">Video id</param>
+        /// <param name="page">Current page of results</param>
+        /// <param name="take">Number of items to retrieve. Max 100</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Current page on list</returns>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<PaginatedResult<Comment>> GetVideoCommentsAsync(string videoId, int? page = null, int? take = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get list of videos uploaded by an user.
+        /// </summary>
+        /// <param name="userAddress">Address of user</param>
+        /// <param name="page">Current page of results</param>
+        /// <param name="take">Number of items to retrieve. Max 100</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>List of user's videos</returns>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<PaginatedResult<Video>> GetVideosByOwnerAsync(string userAddress, int? page = null, int? take = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get validation info by id.
+        /// </summary>
+        /// <param name="videoId">Video id</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<IEnumerable<VideoValidationStatus>> GetVideoValidationStatusByIdAsync(string videoId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Get validation info by manifest hash.
+        /// </summary>
+        /// <param name="manifestHash">The video hash</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<VideoValidationStatus> GetVideoValidationStatusByManifestAsync(string manifestHash, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Moderate comment as unsuitable for the index
+        /// </summary>
+        /// <param name="commentId">Id of the comment</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task ModerateCommentAsync(string commentId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Moderate video as unsuitable for the index
+        /// </summary>
+        /// <param name="videoId">Id of the video</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task ModerateVideoAsync(string videoId, CancellationToken cancellationToken = default);
+        
+        /// <summary>
+        /// Delete a video from index. Only author is authorized
+        /// </summary>
+        /// <param name="videoId">Id of the video</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task OwnerRemoveVideoAsync(string videoId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Create a new video with current user.
+        /// </summary>
+        /// <param name="manifestHash">Manifest hash of the new video</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>New video id</returns>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<string> PublishNewVideoAsync(string manifestHash, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Report a video content with current user.
+        /// </summary>
+        /// <param name="videoId">Video id</param>
+        /// <param name="manifestHash">Hash manifest</param>
+        /// <param name="description">Report description</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task ReportUnsuitableVideoAsync(string videoId, string manifestHash, string description, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Search videos.
+        /// </summary>
+        /// <param name="query">Query to search in title and description</param>
+        /// <param name="page">Current page of results</param>
+        /// <param name="take">Number of items to retrieve. Max 100</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Videos</returns>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task<PaginatedResult<VideoPreview>> SearchVideosAsync(string? query = null, int? page = null, int? take = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Edit a video comment with current author user.
+        /// </summary>
+        /// <param name="commentId">Comment id</param>
+        /// <param name="newCommentText">Comment text</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task UpdateOwnedVideoCommentAsync(string commentId, string newCommentText, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Update video manifest.
+        /// </summary>
+        /// <param name="videoId">The video id</param>
+        /// <param name="newManifestHash">The new video manifest hash</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task UpdateVideoManifestAsync(string videoId, string newManifestHash, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Vote a video content with current user.
+        /// </summary>
+        /// <param name="id">Video id</param>
+        /// <param name="value">Vote value</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
+        Task VotesVideoAsync(string id, VoteValue value, CancellationToken cancellationToken = default);
+    }
+}

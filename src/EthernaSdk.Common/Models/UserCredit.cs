@@ -12,25 +12,25 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class ChainStateDto
+    public class UserCredit
     {
         // Constructors.
-        internal ChainStateDto(Etherna.Sdk.Common.GenClients.Gateway.ChainStateDto chainState)
+        internal UserCredit(GenClients.Credit.CreditDto credit)
         {
-            Block = chainState.Block;
-            CurrentPrice = chainState.CurrentPrice;
-            SourceNodeId = chainState.SourceNodeId;
-            TimeStamp = chainState.TimeStamp;
-            TotalAmount = chainState.TotalAmount;
+            Balance = credit.Balance;
+            IsUnlimited = credit.IsUnlimited;
         }
-        
+
+        internal UserCredit(GenClients.Gateway.UserCreditDto credit)
+        {
+            Balance = credit.Balance;
+            IsUnlimited = credit.IsUnlimited;
+        }
+
         // Properties.
-        public long Block { get; }
-        public long CurrentPrice { get; }
-        public string SourceNodeId { get; }
-        public System.DateTimeOffset TimeStamp { get; }
-        public long TotalAmount { get; }
+        public double Balance { get; }
+        public bool IsUnlimited { get; }
     }
 }

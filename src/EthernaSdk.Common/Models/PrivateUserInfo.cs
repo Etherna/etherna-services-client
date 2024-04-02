@@ -15,11 +15,11 @@
 using Etherna.Sdk.Common.GenClients.Sso;
 using System.Collections.Generic;
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class PrivateUserInfoDto
+    public class PrivateUserInfo
     {
-        internal PrivateUserInfoDto(PrivateUserDto privateInfo)
+        internal PrivateUserInfo(PrivateUserDto privateInfo)
         {
             AccountType = privateInfo.AccountType;
             Email = privateInfo.Email;

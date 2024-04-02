@@ -12,8 +12,8 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.DtoModels;
 using Etherna.Sdk.Common.GenClients.Sso;
+using Etherna.Sdk.Common.Models;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -35,13 +35,13 @@ namespace Etherna.Sdk.Users.Clients
         }
 
         // Methods.
-        public async Task<PrivateUserInfoDto> GetPrivateUserInfoAsync(CancellationToken cancellationToken = default) =>
+        public async Task<PrivateUserInfo> GetPrivateUserInfoAsync(CancellationToken cancellationToken = default) =>
             new(await generatedClient.IdentityAsync(cancellationToken).ConfigureAwait(false));
 
-        public async Task<UserInfoDto> GetUserInfoByAddressAsync(string userAddress, CancellationToken cancellationToken = default) =>
+        public async Task<UserInfo> GetUserInfoByAddressAsync(string userAddress, CancellationToken cancellationToken = default) =>
             new(await generatedClient.AddressAsync(userAddress, cancellationToken).ConfigureAwait(false));
 
-        public async Task<UserInfoDto> GetUserInfoByUsernameAsync(string username, CancellationToken cancellationToken = default) =>
+        public async Task<UserInfo> GetUserInfoByUsernameAsync(string username, CancellationToken cancellationToken = default) =>
             new(await generatedClient.UsernameAsync(username, cancellationToken).ConfigureAwait(false));
 
         public Task<bool> IsEmailRegisteredAsync(string email, CancellationToken cancellationToken = default) =>

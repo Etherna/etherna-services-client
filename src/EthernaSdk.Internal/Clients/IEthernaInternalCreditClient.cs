@@ -12,8 +12,8 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.DtoModels;
 using Etherna.Sdk.Common.GenClients.Credit;
+using Etherna.Sdk.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -29,7 +29,7 @@ namespace Etherna.Sdk.Internal.Clients
         /// <param name="userAddress">The user address</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaCreditApiException">A server side error occurred.</exception>
-        Task<UserCreditDto> GetUserCreditAsync(
+        Task<UserCredit> GetUserCreditAsync(
             string userAddress,
             CancellationToken cancellationToken = default);
 
@@ -42,7 +42,7 @@ namespace Etherna.Sdk.Internal.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Logs list from query</returns>
         /// <exception cref="EthernaCreditApiException">A server side error occurred.</exception>
-        Task<IEnumerable<UserOpLogDto>> GetUserOpLogsAsync(
+        Task<IEnumerable<UserOpLog>> GetUserOpLogsAsync(
             string userAddress,
             DateTimeOffset? fromDate = null,
             DateTimeOffset? toDate = null,

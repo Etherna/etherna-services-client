@@ -12,8 +12,8 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.DtoModels;
 using Etherna.Sdk.Common.GenClients.Credit;
+using Etherna.Sdk.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,17 +37,17 @@ namespace Etherna.Sdk.Internal.Clients
         }
 
         // Methods.
-        public async Task<UserCreditDto> GetUserCreditAsync(
+        public async Task<UserCredit> GetUserCreditAsync(
             string userAddress,
             CancellationToken cancellationToken = default) =>
             new(await generatedClient.CreditAsync(userAddress, cancellationToken).ConfigureAwait(false));
 
-        public async Task<IEnumerable<UserOpLogDto>> GetUserOpLogsAsync(
+        public async Task<IEnumerable<UserOpLog>> GetUserOpLogsAsync(
             string userAddress,
             DateTimeOffset? fromDate = null,
             DateTimeOffset? toDate = null,
             CancellationToken cancellationToken = default) =>
-            (await generatedClient.OplogsAsync(userAddress, fromDate, toDate, cancellationToken).ConfigureAwait(false)).Select(op => new UserOpLogDto(op));
+            (await generatedClient.OplogsAsync(userAddress, fromDate, toDate, cancellationToken).ConfigureAwait(false)).Select(op => new UserOpLog(op));
 
         public Task UpdateUserBalanceAsync(
             string userAddress,

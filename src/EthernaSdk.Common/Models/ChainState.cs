@@ -12,23 +12,25 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class ResourcePinStatusDto
+    public class ChainState
     {
         // Constructors.
-        internal ResourcePinStatusDto(GenClients.Gateway.ResourcePinStatusDto pinStatus)
+        internal ChainState(GenClients.Gateway.ChainStateDto chainState)
         {
-            FreePinningEndOfLife = pinStatus.FreePinningEndOfLife;
-            IsPinned = pinStatus.IsPinned;
-            IsPinningInProgress = pinStatus.IsPinningInProgress;
-            IsPinningRequired = pinStatus.IsPinningRequired;
+            Block = chainState.Block;
+            CurrentPrice = chainState.CurrentPrice;
+            SourceNodeId = chainState.SourceNodeId;
+            TimeStamp = chainState.TimeStamp;
+            TotalAmount = chainState.TotalAmount;
         }
-
+        
         // Properties.
-        public System.DateTimeOffset? FreePinningEndOfLife { get; }
-        public bool IsPinned { get; }
-        public bool IsPinningInProgress { get; }
-        public bool IsPinningRequired { get; }
+        public long Block { get; }
+        public long CurrentPrice { get; }
+        public string SourceNodeId { get; }
+        public System.DateTimeOffset TimeStamp { get; }
+        public long TotalAmount { get; }
     }
 }

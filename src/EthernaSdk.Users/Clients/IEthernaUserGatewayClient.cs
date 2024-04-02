@@ -12,15 +12,12 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.DtoModels;
+using Etherna.Sdk.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ChainStateDto = Etherna.Sdk.Common.DtoModels.ChainStateDto;
 using EthernaGatewayApiException = Etherna.Sdk.Common.GenClients.Gateway.EthernaGatewayApiException;
-using ResourcePinStatusDto = Etherna.Sdk.Common.DtoModels.ResourcePinStatusDto;
-using UserCreditDto = Etherna.Sdk.Common.DtoModels.UserCreditDto;
 
 namespace Etherna.Sdk.Users.Clients
 {
@@ -76,15 +73,15 @@ namespace Etherna.Sdk.Users.Clients
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<ChainStateDto> GetChainStateAsync(CancellationToken cancellationToken = default);
+        Task<ChainState> GetChainStateAsync(CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<UserInfoDto> GetCurrentUserAsync(CancellationToken cancellationToken = default);
+        Task<UserInfo> GetCurrentUserAsync(CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<UserCreditDto> GetCurrentUserCreditAsync(CancellationToken cancellationToken = default);
+        Task<UserCredit> GetCurrentUserCreditAsync(CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
@@ -101,17 +98,17 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="batchId">Postage batch Id</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<PostageBatchDto> GetPostageBatchAsync(string batchId, CancellationToken cancellationToken = default);
+        Task<PostageBatch> GetPostageBatchAsync(string batchId, CancellationToken cancellationToken = default);
 
         /// <param name="labelContainsFilter">Filter only postage batches with label containing this string. Optional</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<IEnumerable<PostageBatchRefDto>> GetOwnedPostageBatchesAsync(string? labelContainsFilter = null, CancellationToken cancellationToken = default);
+        Task<IEnumerable<PostageBatchRef>> GetOwnedPostageBatchesAsync(string? labelContainsFilter = null, CancellationToken cancellationToken = default);
 
         /// <param name="resourceHash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<ResourcePinStatusDto> GetResourcePinStatusAsync(string resourceHash, CancellationToken cancellationToken = default);
+        Task<ResourcePinStatus> GetResourcePinStatusAsync(string resourceHash, CancellationToken cancellationToken = default);
 
         /// <param name="resourceHash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -125,7 +122,7 @@ namespace Etherna.Sdk.Users.Clients
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<WelcomePackDto> GetWelcomePackInfoAsync(CancellationToken cancellationToken = default);
+        Task<WelcomePack> GetWelcomePackInfoAsync(CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>

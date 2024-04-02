@@ -12,25 +12,21 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class UserCreditDto
+    public class PostageBatchRef
     {
         // Constructors.
-        internal UserCreditDto(GenClients.Credit.CreditDto credit)
+        internal PostageBatchRef(GenClients.Gateway.PostageBatchRefDto postageBatchRef)
         {
-            Balance = credit.Balance;
-            IsUnlimited = credit.IsUnlimited;
+            BatchId = postageBatchRef.BatchId;
+            Label = postageBatchRef.Label;
+            OwnerNodeId = postageBatchRef.OwnerNodeId;
         }
-
-        internal UserCreditDto(GenClients.Gateway.UserCreditDto credit)
-        {
-            Balance = credit.Balance;
-            IsUnlimited = credit.IsUnlimited;
-        }
-
+        
         // Properties.
-        public double Balance { get; }
-        public bool IsUnlimited { get; }
+        public string BatchId { get; }
+        public string? Label { get; }
+        public string OwnerNodeId { get; }
     }
 }

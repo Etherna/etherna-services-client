@@ -1,4 +1,4 @@
-﻿//   Copyright 2020-present Etherna SA
+// Copyright 2020-present Etherna SA
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -12,17 +12,17 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.GeneratedClients.Index;
-
-namespace Etherna.Sdk.Users
+namespace Etherna.Sdk.Common.Models
 {
-    public interface IEthernaUserIndexClient
+    public class UserContactInfo
     {
-        ICommentsClient CommentsClient { get; }
-        IModerationClient ModerationClient { get; }
-        ISearchClient SearchClient { get; }
-        ISystemClient SystemClient { get; }
-        IUsersClient UsersClient { get; }
-        IVideosClient VideosClient { get; }
+        internal UserContactInfo(Etherna.Sdk.Common.GenClients.Sso.UserContactInfoDto contactInfo)
+        {
+            Email = contactInfo.Email;
+            PhoneNumber = contactInfo.PhoneNumber;
+        }
+        
+        public string? Email { get; }
+        public string? PhoneNumber { get; }
     }
 }

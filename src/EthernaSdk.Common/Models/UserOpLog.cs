@@ -15,11 +15,11 @@
 using Etherna.Sdk.Common.GenClients.Credit;
 using System;
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class UserOpLogDto
+    public class UserOpLog
     {
-        internal UserOpLogDto(OperationLogDto opLog)
+        internal UserOpLog(OperationLogDto opLog)
         {
             Amount = opLog.Amount;
             Author = opLog.Author;

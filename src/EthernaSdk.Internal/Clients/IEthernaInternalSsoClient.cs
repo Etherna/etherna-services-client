@@ -12,7 +12,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-using Etherna.Sdk.Common.DtoModels;
+using Etherna.Sdk.Common.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +27,6 @@ namespace Etherna.Sdk.Internal.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>User contact information</returns>
         /// <exception cref="Common.Sso.EthernaSsoApiException">A server side error occurred.</exception>
-        Task<UserContactInfoDto> ContactsAsync(string userAddress, CancellationToken cancellationToken = default);
+        Task<UserContactInfo> ContactsAsync(string userAddress, CancellationToken cancellationToken = default);
     }
 }

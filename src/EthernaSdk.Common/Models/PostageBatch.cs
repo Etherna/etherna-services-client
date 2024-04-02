@@ -12,12 +12,12 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-namespace Etherna.Sdk.Common.DtoModels
+namespace Etherna.Sdk.Common.Models
 {
-    public class PostageBatchDto
+    public class PostageBatch
     {
         // Constructors.
-        internal PostageBatchDto(GenClients.Gateway.PostageBatchDto postageBatch)
+        internal PostageBatch(GenClients.Gateway.PostageBatchDto postageBatch)
         {
             Id = postageBatch.Id;
             BatchTtl = postageBatch.BatchTTL;
