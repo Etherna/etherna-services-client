@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Exceptions;
+using Etherna.BeeNet.Models;
 using Etherna.Sdk.Common.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ChainState = Etherna.Sdk.Common.Models.ChainState;
 using EthernaGatewayApiException = Etherna.Sdk.Common.GenClients.Gateway.EthernaGatewayApiException;
+using PostageBatch = Etherna.Sdk.Common.Models.PostageBatch;
 
 namespace Etherna.Sdk.Users.Clients
 {
@@ -37,13 +42,35 @@ namespace Etherna.Sdk.Users.Clients
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<IDictionary<string, bool>> AreResourcesDownloadFundedAsync(IEnumerable<string> resourceHashes, CancellationToken cancellationToken = default);
 
-        /// <param name="depth">New postage batch depth</param>
+        /// <summary>Buy a new postage batch.</summary>
         /// <param name="amount">New postage batch amount</param>
+        /// <param name="depth">New postage batch depth</param>
         /// <param name="label">New postage batch label</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>A temporary postage batch reference Id</returns>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<string> CreateNewPostageBatchAsync(int depth, long amount, string? label = null, CancellationToken cancellationToken = default);
+        Task<string> BuyPostageBatchAsync(
+            long amount,
+            int depth,
+            string? label = null,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>Create an initial feed root manifest</summary>
+        /// <param name="owner">Owner</param>
+        /// <param name="topic">Topic</param>
+        /// <param name="postageBatchId">ID of Postage Batch that is used to upload data with</param>
+        /// <param name="type">Feed indexing scheme (default: sequence)</param>
+        /// <param name="swarmPin">Represents if the uploaded data should be also locally pinned on the node.
+        /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
+        /// <returns>Reference hash</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<string> CreateFeedAsync(
+            string owner,
+            string topic,
+            string postageBatchId,
+            string? type = null,
+            bool swarmPin = false,
+            CancellationToken cancellationToken = default);
 
         /// <param name="resourceHash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -70,10 +97,35 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task FundResourcePinningAsync(string resourceHash, CancellationToken cancellationToken = default);
+        
+        /// <summary>Get referenced data</summary>
+        /// <param name="resourceHash">Swarm address reference to content</param>
+        /// <param name="swarmCache">Determines if the download data should be cached on the node. By default the download will be cached</param>
+        /// <param name="swarmRedundancyStrategy">Specify the retrieve strategy on redundant data. The numbers stand for NONE, DATA, PROX and RACE, respectively. Strategy NONE means no prefetching takes place. Strategy DATA means only data chunks are prefetched. Strategy PROX means only chunks that are close to the node are prefetched. Strategy RACE means all chunks are prefetched: n data chunks and k parity chunks. The first n chunks to arrive are used to reconstruct the file. Multiple strategies can be used in a fallback cascade if the swarm redundancy fallback mode is set to true. The default strategy is NONE, DATA, falling back to PROX, falling back to RACE</param>
+        /// <param name="swarmRedundancyFallbackMode">Specify if the retrieve strategies (chunk prefetching on redundant data) are used in a fallback cascade. The default is true.</param>
+        /// <param name="swarmChunkRetrievalTimeout">Specify the timeout for chunk retrieval. The default is 30 seconds.</param>
+        /// <returns>Retrieved content specified by reference</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<Stream> GetBytesAsync(
+            string resourceHash,
+            bool? swarmCache = null,
+            RedundancyStrategy? swarmRedundancyStrategy = null,
+            bool? swarmRedundancyFallbackMode = null,
+            string? swarmChunkRetrievalTimeout = null,
+            CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<ChainState> GetChainStateAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>Get Chunk</summary>
+        /// <param name="resourceHash">Swarm address of chunk</param>
+        /// <returns>Retrieved chunk content</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<Stream> GetChunkAsync(
+            string resourceHash,
+            bool? swarmCache = null,
+            CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
@@ -86,6 +138,40 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<IEnumerable<string>> GetDownloadFundedResourcesByUserAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>Find feed update</summary>
+        /// <param name="owner">Owner</param>
+        /// <param name="topic">Topic</param>
+        /// <param name="at">Timestamp of the update (default: now)</param>
+        /// <param name="after">Start index (default: 0)</param>
+        /// <param name="type">Feed indexing scheme (default: sequence)</param>
+        /// <returns>Latest feed update</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<string> GetFeedAsync(
+            string owner,
+            string topic,
+            int? at = null,
+            int? after = null,
+            string? type = null,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>Get file or index document from a collection of files</summary>
+        /// <param name="resourceHash">Swarm address of content</param>
+        /// <param name="path">Path to the file in the collection.</param>
+        /// <param name="swarmCache">Determines if the download data should be cached on the node. By default the download will be cached</param>
+        /// <param name="swarmRedundancyStrategy">Specify the retrieve strategy on redundant data. The numbers stand for NONE, DATA, PROX and RACE, respectively. Strategy NONE means no prefetching takes place. Strategy DATA means only data chunks are prefetched. Strategy PROX means only chunks that are close to the node are prefetched. Strategy RACE means all chunks are prefetched: n data chunks and k parity chunks. The first n chunks to arrive are used to reconstruct the file. Multiple strategies can be used in a fallback cascade if the swarm redundancy fallback mode is set to true. The default strategy is NONE, DATA, falling back to PROX, falling back to RACE</param>
+        /// <param name="swarmRedundancyFallbackMode">Specify if the retrieve strategies (chunk prefetching on redundant data) are used in a fallback cascade. The default is true.</param>
+        /// <param name="swarmChunkRetrievalTimeout">Specify the timeout for chunk retrieval. The default is 30 seconds.</param>
+        /// <returns>Ok</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<FileResponse> GetFileAsync(
+            string resourceHash,
+            string? path = null,
+            bool? swarmCache = null,
+            RedundancyStrategy? swarmRedundancyStrategy = null,
+            bool? swarmRedundancyFallbackMode = null,
+            string? swarmChunkRetrievalTimeout = null,
+            CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
@@ -124,6 +210,20 @@ namespace Etherna.Sdk.Users.Clients
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task RequireWelcomePackAsync(CancellationToken cancellationToken = default);
 
+        /// <summary>Send to recipient or target with Postal Service for Swarm</summary>
+        /// <param name="topic">Topic name</param>
+        /// <param name="targets">Target message address prefix. If multiple targets are specified, only one would be matched.</param>
+        /// <param name="postageBatchId">ID of Postage Batch that is used to upload data with</param>
+        /// <param name="recipient">Recipient publickey</param>
+        /// <returns>Subscribed to topic</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task SendPssAsync(
+            string topic,
+            string targets,
+            string postageBatchId,
+            string? recipient = null,
+            CancellationToken cancellationToken = default);
+
         /// <param name="postageBatchId">The postage batch Id</param>
         /// <param name="amount">The amount to top up</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -135,5 +235,83 @@ namespace Etherna.Sdk.Users.Clients
         /// <returns>New postage batch Id</returns>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<string?> TryGetNewPostageBatchIdFromPostageRefAsync(string postageReferenceId, CancellationToken cancellationToken = default);
+        
+        /// <summary>Upload Chunk</summary>
+        /// <param name="postageBatchId">ID of Postage Batch that is used to upload data with</param>
+        /// <param name="swarmTag">Associate upload with an existing Tag UID</param>
+        /// <param name="swarmPin">Represents if the uploaded data should be also locally pinned on the node.
+        /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
+        /// <param name="swarmDeferredUpload">Determines if the uploaded data should be sent to the network immediately or in a deferred fashion. By default the upload will be deferred.</param>
+        /// <returns>Ok</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<string> UploadChunkAsync(
+            string postageBatchId,
+            bool swarmPin = false,
+            bool swarmDeferredUpload = true,
+            Stream? body = null,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>Upload data</summary>
+        /// <param name="postageBatchId">ID of Postage Batch that is used to upload data with</param>
+        /// <param name="swarmTag">Associate upload with an existing Tag UID</param>
+        /// <param name="swarmPin">Represents if the uploaded data should be also locally pinned on the node.
+        /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
+        /// <param name="swarmEncrypt">Represents the encrypting state of the file
+        /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
+        /// <param name="swarmDeferredUpload">Determines if the uploaded data should be sent to the network immediately or in a deferred fashion. By default the upload will be deferred.</param>
+        /// <returns>Reference hash</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<string> UploadBytesAsync(
+            string postageBatchId,
+            Stream content,
+            bool swarmPin = false, 
+            bool swarmDeferredUpload = true,
+            RedundancyLevel swarmRedundancyLevel = RedundancyLevel.None0,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>Upload file or a collection of files</summary>
+        /// <param name="postageBatchId">ID of Postage Batch that is used to upload data with</param>
+        /// <param name="content">Input file content</param>
+        /// <param name="name">Filename when uploading single file</param>
+        /// <param name="contentType">The specified content-type is preserved for download of the asset</param>
+        /// <param name="swarmTag">Associate upload with an existing Tag UID</param>
+        /// <param name="swarmPin">Represents if the uploaded data should be also locally pinned on the node.
+        /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
+        /// <param name="swarmEncrypt">Represents the encrypting state of the file
+        /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
+        /// <param name="swarmCollection">Upload file/files as a collection</param>
+        /// <param name="swarmIndexDocument">Default file to be referenced on path, if exists under that path</param>
+        /// <param name="swarmErrorDocument">Configure custom error document to be returned when a specified path can not be found in collection</param>
+        /// <param name="swarmDeferredUpload">Determines if the uploaded data should be sent to the network immediately or in a deferred fashion. By default the upload will be deferred.</param>
+        /// <param name="swarmRedundancyLevel">Add redundancy to the data being uploaded so that downloaders can download it with better UX. 0 value is default and does not add any redundancy to the file.</param>
+        /// <returns>Reference hash</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<string> UploadFileAsync(
+            string postageBatchId,
+            Stream content,
+            string? name = null,
+            string? contentType = null,
+            bool swarmPin = false,
+            bool swarmDeferredUpload = true,
+            RedundancyLevel swarmRedundancyLevel = RedundancyLevel.None0,
+            CancellationToken cancellationToken = default);
+
+        /// <summary>Upload single owner chunk</summary>
+        /// <param name="owner">Owner</param>
+        /// <param name="id">Id</param>
+        /// <param name="signature">Signature</param>
+        /// <param name="content">The SOC binary data is composed of the span (8 bytes) and the at most 4KB payload.</param>
+        /// <param name="swarmPin">Represents if the uploaded data should be also locally pinned on the node.
+        /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
+        /// <returns>Reference hash</returns>
+        /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
+        Task<string> UploadSocAsync(
+            string owner,
+            string id,
+            string signature,
+            string postageBatchId,
+            Stream content,
+            bool swarmPin = false,
+            CancellationToken cancellationToken = default);
     }
 }
