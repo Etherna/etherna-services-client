@@ -13,5 +13,23 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 
-[assembly: CLSCompliant(false)]
+namespace Etherna.Sdk.Common.Models
+{
+    public class SsoUserInfo
+    {
+        // Constructors.
+        internal SsoUserInfo(GenClients.Sso.UserDto userInfo)
+        {
+            EtherAddress = userInfo.EtherAddress;
+            EtherPreviousAddresses = userInfo.EtherPreviousAddresses;
+            Username = userInfo.Username;
+        }
+
+        // Properties.
+        public string EtherAddress { get; }
+        public IEnumerable<string> EtherPreviousAddresses { get; }
+        public string? Username { get; }
+    }
+}

@@ -30,7 +30,7 @@
       "generatePrepareRequestAndProcessResponseAsAsyncMethods": false,
       "exposeJsonSerializerSettings": false,
       "clientClassAccessModifier": "internal",
-      "typeAccessModifier": "public",
+      "typeAccessModifier": "internal",
       "generateContractsOutput": false,
       "contractsNamespace": null,
       "contractsOutputFilePath": null,
@@ -55,7 +55,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Etherna.Sdk.GeneratedClients.Gateway",
+      "namespace": "Etherna.Sdk.Common.GenClients.Gateway",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -92,7 +92,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../src/EthernaSdk.Common/GeneratedClients/Gateway/NSwagEthernaGatewayClient.cs",
+      "output": "../src/EthernaSdk.Common/GenClients/Gateway/NSwagEthernaGatewayClient.cs",
       "newLineBehavior": "Auto"
     }
   }

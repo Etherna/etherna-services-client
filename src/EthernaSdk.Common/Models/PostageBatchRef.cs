@@ -1,4 +1,4 @@
-﻿// Copyright 2020-present Etherna SA
+// Copyright 2020-present Etherna SA
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-
-namespace AspNetCoreInternalClientSample.Pages;
-
-public class PrivacyModel : PageModel
+namespace Etherna.Sdk.Common.Models
 {
-    private readonly ILogger<PrivacyModel> _logger;
-
-    public PrivacyModel(ILogger<PrivacyModel> logger)
+    public class PostageBatchRef
     {
-        _logger = logger;
-    }
-
-    public void OnGet()
-    {
+        // Constructors.
+        internal PostageBatchRef(GenClients.Gateway.PostageBatchRefDto postageBatchRef)
+        {
+            BatchId = postageBatchRef.BatchId;
+            Label = postageBatchRef.Label;
+            OwnerNodeId = postageBatchRef.OwnerNodeId;
+        }
+        
+        // Properties.
+        public string BatchId { get; }
+        public string? Label { get; }
+        public string OwnerNodeId { get; }
     }
 }

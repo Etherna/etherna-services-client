@@ -12,6 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Etherna.Sdk.Common.GenClients.Index;
+using System.Collections.Generic;
+using System.Linq;
 
-[assembly: CLSCompliant(false)]
+namespace Etherna.Sdk.Common.Models
+{
+    public class Image
+    {
+        // Constructors.
+        internal Image(Image2Dto image)
+        {
+            AspectRatio = image.AspectRatio;
+            Blurhash = image.Blurhash;
+            Sources = image.Sources.Select(s => new ImageSource(s));
+        }
+        
+        // Properties.
+        public float AspectRatio { get; }
+        public string Blurhash { get; }
+        public IEnumerable<ImageSource> Sources { get; }
+    }
+}

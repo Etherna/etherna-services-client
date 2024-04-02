@@ -1,4 +1,4 @@
-﻿// Copyright 2020-present Etherna SA
+// Copyright 2020-present Etherna SA
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+using Etherna.Sdk.Common.GenClients.Index;
 
-namespace AspNetCoreInternalClientSample.Pages;
-
-public class PrivacyModel : PageModel
+namespace Etherna.Sdk.Common.Models
 {
-    private readonly ILogger<PrivacyModel> _logger;
-
-    public PrivacyModel(ILogger<PrivacyModel> logger)
+    public class VideoSource
     {
-        _logger = logger;
-    }
+        // Constructors.
+        internal VideoSource(VideoSourceDto videoSource)
+        {
+            Type = videoSource.Type;
+            Quality = videoSource.Quality;
+            Path = videoSource.Path;
+            Size = videoSource.Size;
+        }
 
-    public void OnGet()
-    {
+        // Properties.
+        public string Type { get; }
+        public string? Quality { get; }
+        public string Path { get; }
+        public long Size { get; }
     }
 }

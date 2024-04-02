@@ -1,4 +1,4 @@
-﻿// Copyright 2020-present Etherna SA
+// Copyright 2020-present Etherna SA
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-
-namespace AspNetCoreInternalClientSample.Pages;
-
-public class PrivacyModel : PageModel
+namespace Etherna.Sdk.Common.Models
 {
-    private readonly ILogger<PrivacyModel> _logger;
-
-    public PrivacyModel(ILogger<PrivacyModel> logger)
+    public class UserCredit
     {
-        _logger = logger;
-    }
+        // Constructors.
+        internal UserCredit(GenClients.Credit.CreditDto credit)
+        {
+            Balance = credit.Balance;
+            IsUnlimited = credit.IsUnlimited;
+        }
 
-    public void OnGet()
-    {
+        internal UserCredit(GenClients.Gateway.UserCreditDto credit)
+        {
+            Balance = credit.Balance;
+            IsUnlimited = credit.IsUnlimited;
+        }
+
+        // Properties.
+        public double Balance { get; }
+        public bool IsUnlimited { get; }
     }
 }
