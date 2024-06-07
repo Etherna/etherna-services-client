@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Models;
 using Etherna.Sdk.Common.GenClients.Index;
 
 namespace Etherna.Sdk.Common.Models
@@ -21,10 +22,11 @@ namespace Etherna.Sdk.Common.Models
         // Constructors.
         internal VideoPreview(VideoPreviewDto videoPreview)
         {
+            if (videoPreview.Hash is not null)
+                Address = videoPreview.Hash;
             Id = videoPreview.Id;
             CreatedAt = videoPreview.CreatedAt;
             Duration = videoPreview.Duration;
-            Hash = videoPreview.Hash;
             OwnerAddress = videoPreview.OwnerAddress;
             Thumbnail = new Image(videoPreview.Thumbnail);
             Title = videoPreview.Title;
@@ -32,10 +34,10 @@ namespace Etherna.Sdk.Common.Models
         }
         
         // Properties.
+        public SwarmAddress? Address { get; }
         public string Id { get; }
         public long? CreatedAt { get; }
         public long? Duration { get; }
-        public string? Hash { get; }
         public string OwnerAddress { get; }
         public Image Thumbnail { get; }
         public string? Title { get; }

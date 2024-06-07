@@ -34,7 +34,7 @@ namespace Etherna.Sdk.Common.Models
         
         // Properties.
         public string Id { get; }
-        public System.DateTimeOffset CreationDateTime { get; }
+        public DateTimeOffset CreationDateTime { get; }
         public VoteValue? CurrentVoteValue { get; }
         public VideoManifest LastValidManifest { get; }
         public string OwnerAddress { get; }
