@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Models;
+
 namespace Etherna.Sdk.Common.Models
 {
     public class ChainState
@@ -20,17 +22,17 @@ namespace Etherna.Sdk.Common.Models
         internal ChainState(GenClients.Gateway.ChainStateDto chainState)
         {
             Block = chainState.Block;
-            CurrentPrice = chainState.CurrentPrice;
+            CurrentPrice = BzzBalance.FromPlurLong(chainState.CurrentPrice);
             SourceNodeId = chainState.SourceNodeId;
             TimeStamp = chainState.TimeStamp;
-            TotalAmount = chainState.TotalAmount;
+            TotalAmount = BzzBalance.FromPlurLong(chainState.TotalAmount);
         }
         
         // Properties.
         public long Block { get; }
-        public long CurrentPrice { get; }
+        public BzzBalance CurrentPrice { get; }
         public string SourceNodeId { get; }
         public System.DateTimeOffset TimeStamp { get; }
-        public long TotalAmount { get; }
+        public BzzBalance TotalAmount { get; }
     }
 }

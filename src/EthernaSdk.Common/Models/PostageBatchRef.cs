@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Models;
+
 namespace Etherna.Sdk.Common.Models
 {
     public class PostageBatchRef
@@ -25,7 +27,7 @@ namespace Etherna.Sdk.Common.Models
         }
         
         // Properties.
-        public string BatchId { get; }
+        public PostageBatchId BatchId { get; }
         public string? Label { get; }
         public string OwnerNodeId { get; }
     }
