@@ -174,7 +174,7 @@ namespace Etherna.Sdk.Users.Clients
                 batchId.ToString(), cancellationToken).ConfigureAwait(false);
             return new PostageBatch(
                 batchDto.Id,
-                batchDto.Value ?? 0,
+                BzzBalance.FromPlurLong(batchDto.Value ?? 0),
                 batchDto.BlockNumber ?? 0,
                 batchDto.Depth,
                 batchDto.Exists ?? false,
