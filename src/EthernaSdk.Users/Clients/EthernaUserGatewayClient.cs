@@ -73,11 +73,11 @@ namespace Etherna.Sdk.Users.Clients
             .ToDictionary(pair => new SwarmAddress(pair.Key), pair => pair.Value);
 
         public Task<string> BuyPostageBatchAsync(
-            long amount,
+            BzzBalance amount,
             int depth,
             string? label = null,
             CancellationToken cancellationToken = default) =>
-            generatedUsersClient.BatchesPostAsync(depth, amount, label, cancellationToken);
+            generatedUsersClient.BatchesPostAsync(depth, amount.ToPlurLong(), label, cancellationToken);
 
         public Task<SwarmAddress> CreateFeedAsync(
             string owner,
