@@ -31,7 +31,6 @@ namespace Etherna.Sdk.Users.Clients
     public sealed class EthernaUserGatewayClient : IEthernaUserGatewayClient
     {
         // Fields.
-        private readonly IBeeClient beeClient;
         private readonly PostageClient generatedPostageClient;
         private readonly ResourcesClient generatedResourcesClient;
         private readonly SystemClient generatedSystemClient;
@@ -45,14 +44,17 @@ namespace Etherna.Sdk.Users.Clients
         {
             ArgumentNullException.ThrowIfNull(baseUrl, nameof(baseUrl));
 
-            this.beeClient = beeClient;
+            BeeClient = beeClient;
             generatedPostageClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedResourcesClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedSystemClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedUsersClient = new(baseUrl.AbsoluteUri, httpClient);
         }
-
+        
         // Properties.
+        public IBeeClient BeeClient { get; }
+
+        // Methods.
         public Task AdminSetFreeResourcePinningAsync(
             SwarmAddress address,
             DateTimeOffset? freePinEndOfLife = null,
@@ -81,7 +83,7 @@ namespace Etherna.Sdk.Users.Clients
             string? type = null,
             bool swarmPin = false,
             CancellationToken cancellationToken = default) =>
-            beeClient.CreateFeedAsync(owner, topic, batchId, type, swarmPin, cancellationToken);
+            BeeClient.CreateFeedAsync(owner, topic, batchId, type, swarmPin, cancellationToken);
 
         public Task<bool> DefundResourceDownloadAsync(
             SwarmAddress address,
@@ -112,7 +114,7 @@ namespace Etherna.Sdk.Users.Clients
             bool? swarmRedundancyFallbackMode = null,
             string? swarmChunkRetrievalTimeout = null,
             CancellationToken cancellationToken = default) =>
-            beeClient.GetBytesAsync(address, swarmCache, swarmRedundancyStrategy, swarmRedundancyFallbackMode, swarmChunkRetrievalTimeout, cancellationToken);
+            BeeClient.GetBytesAsync(address, swarmCache, swarmRedundancyStrategy, swarmRedundancyFallbackMode, swarmChunkRetrievalTimeout, cancellationToken);
 
         public async Task<ChainState> GetChainStateAsync(CancellationToken cancellationToken = default) =>
             new(await generatedSystemClient.ChainstateAsync(cancellationToken).ConfigureAwait(false));
@@ -121,7 +123,7 @@ namespace Etherna.Sdk.Users.Clients
             SwarmAddress address,
             bool? swarmCache = null,
             CancellationToken cancellationToken = default) =>
-            beeClient.GetChunkStreamAsync(address, swarmCache, cancellationToken);
+            BeeClient.GetChunkStreamAsync(address, swarmCache, cancellationToken);
 
         public async Task<UserCredit> GetCurrentUserCreditAsync(CancellationToken cancellationToken = default) =>
             new(await generatedUsersClient.CreditAsync(cancellationToken).ConfigureAwait(false));
@@ -141,7 +143,7 @@ namespace Etherna.Sdk.Users.Clients
             int? after = null,
             string? type = null,
             CancellationToken cancellationToken = default) =>
-            await beeClient.GetFeedAsync(owner, topic, at, after, type, cancellationToken).ConfigureAwait(false);
+            await BeeClient.GetFeedAsync(owner, topic, at, after, type, cancellationToken).ConfigureAwait(false);
 
         public Task<FileResponse> GetFileAsync(
             SwarmAddress address,
@@ -151,9 +153,9 @@ namespace Etherna.Sdk.Users.Clients
             bool? swarmRedundancyFallbackMode = null,
             string? swarmChunkRetrievalTimeout = null,
             CancellationToken cancellationToken = default) => path is null
-            ? beeClient.GetFileAsync(address, swarmCache, swarmRedundancyStrategy,
+            ? BeeClient.GetFileAsync(address, swarmCache, swarmRedundancyStrategy,
                 swarmRedundancyFallbackMode, swarmChunkRetrievalTimeout, cancellationToken)
-            : beeClient.GetFileWithPathAsync(address, path, swarmRedundancyStrategy,
+            : BeeClient.GetFileWithPathAsync(address, path, swarmRedundancyStrategy,
                 swarmRedundancyFallbackMode, swarmChunkRetrievalTimeout, cancellationToken);
 
         public async Task<IEnumerable<SwarmAddress>> GetPinFundedResourcesAsync(
@@ -213,7 +215,7 @@ namespace Etherna.Sdk.Users.Clients
             PostageBatchId batchId,
             string? recipient = null,
             CancellationToken cancellationToken = default) =>
-            beeClient.SendPssAsync(topic, targets, batchId, recipient, cancellationToken);
+            BeeClient.SendPssAsync(topic, targets, batchId, recipient, cancellationToken);
 
         public Task TopUpPostageBatchAsync(
             PostageBatchId batchId,
@@ -243,7 +245,7 @@ namespace Etherna.Sdk.Users.Clients
             bool swarmDeferredUpload = true,
             Stream? body = null,
             CancellationToken cancellationToken = default) =>
-            beeClient.UploadChunkAsync(
+            BeeClient.UploadChunkAsync(
                 batchId,
                 swarmPin: swarmPin,
                 swarmDeferredUpload: swarmDeferredUpload,
@@ -257,7 +259,7 @@ namespace Etherna.Sdk.Users.Clients
             bool swarmDeferredUpload = true,
             RedundancyLevel swarmRedundancyLevel = RedundancyLevel.None,
             CancellationToken cancellationToken = default) =>
-            beeClient.UploadBytesAsync(
+            BeeClient.UploadBytesAsync(
                 batchId,
                 content,
                 swarmPin: swarmPin,
@@ -274,7 +276,7 @@ namespace Etherna.Sdk.Users.Clients
             bool swarmDeferredUpload = true,
             RedundancyLevel swarmRedundancyLevel = RedundancyLevel.None,
             CancellationToken cancellationToken = default) =>
-            beeClient.UploadFileAsync(
+            BeeClient.UploadFileAsync(
                 batchId,
                 content,
                 name: name,
@@ -292,7 +294,7 @@ namespace Etherna.Sdk.Users.Clients
             Stream content,
             bool swarmPin = false,
             CancellationToken cancellationToken = default) =>
-            beeClient.UploadSocAsync(
+            BeeClient.UploadSocAsync(
                 owner: owner,
                 id: id,
                 sig: signature,

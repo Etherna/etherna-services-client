@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet;
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Common.Models;
 using System;
@@ -26,6 +27,10 @@ namespace Etherna.Sdk.Users.Clients
 {
     public interface IEthernaUserGatewayClient
     {
+        // Properties.
+        IBeeClient BeeClient { get; }
+        
+        // Methods.
         /// <summary>
         /// Admins can set a free pin period for a resource
         /// </summary>
