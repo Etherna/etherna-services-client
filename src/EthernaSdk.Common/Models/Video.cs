@@ -26,7 +26,8 @@ namespace Etherna.Sdk.Common.Models
             CreationDateTime = video.CreationDateTime;
             if (video.CurrentVoteValue.HasValue)
                 CurrentVoteValue = Enum.Parse<VoteValue>(video.CurrentVoteValue.Value.ToString());
-            LastValidManifest = new(video.LastValidManifest);
+            if (video.LastValidManifest is not null)
+                LastValidManifest = new(video.LastValidManifest);
             OwnerAddress = video.OwnerAddress;
             TotDownvotes = video.TotDownvotes;
             TotUpvotes = video.TotUpvotes;
@@ -36,7 +37,7 @@ namespace Etherna.Sdk.Common.Models
         public string Id { get; }
         public DateTimeOffset CreationDateTime { get; }
         public VoteValue? CurrentVoteValue { get; }
-        public VideoManifest LastValidManifest { get; }
+        public VideoManifest? LastValidManifest { get; }
         public string OwnerAddress { get; }
         public long TotDownvotes { get; }
         public long TotUpvotes { get; }
