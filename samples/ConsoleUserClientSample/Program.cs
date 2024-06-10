@@ -16,7 +16,9 @@ using Etherna.Authentication.Native;
 using Etherna.Sdk.Users.Clients;
 using Etherna.Sdk.Users.Native;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace ConsoleUserClientSample
 {
