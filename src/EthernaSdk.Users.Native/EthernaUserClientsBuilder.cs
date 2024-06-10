@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet;
 using Etherna.Sdk.Users.Clients;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -59,10 +60,17 @@ namespace Etherna.Sdk.Users.Native
             // Register client.
             services.AddSingleton<IEthernaUserGatewayClient>(serviceProvider =>
             {
-                var clientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
+                var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
+                var httpClient = httpClientFactory.CreateClient(httpClientName);
+                
+                var beeClient = new BeeClient(
+                    gatewayBaseUrl,
+                    httpClient);
+                
                 return new EthernaUserGatewayClient(
                     gatewayBaseUrl,
-                    clientFactory.CreateClient(httpClientName));
+                    beeClient,
+                    httpClient);
             });
 
             return this;

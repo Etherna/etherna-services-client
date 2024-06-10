@@ -28,10 +28,10 @@ using FileResponse = Etherna.BeeNet.Models.FileResponse;
 
 namespace Etherna.Sdk.Users.Clients
 {
-    public sealed class EthernaUserGatewayClient : IEthernaUserGatewayClient, IDisposable
+    public sealed class EthernaUserGatewayClient : IEthernaUserGatewayClient
     {
         // Fields.
-        private readonly BeeClient beeClient;
+        private readonly IBeeClient beeClient;
         private readonly PostageClient generatedPostageClient;
         private readonly ResourcesClient generatedResourcesClient;
         private readonly SystemClient generatedSystemClient;
@@ -40,21 +40,16 @@ namespace Etherna.Sdk.Users.Clients
         // Constructor.
         public EthernaUserGatewayClient(
             Uri baseUrl,
+            IBeeClient beeClient,
             HttpClient httpClient)
         {
             ArgumentNullException.ThrowIfNull(baseUrl, nameof(baseUrl));
 
-            beeClient = new BeeClient(baseUrl.ToString(), customHttpClient: httpClient);
+            this.beeClient = beeClient;
             generatedPostageClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedResourcesClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedSystemClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedUsersClient = new(baseUrl.AbsoluteUri, httpClient);
-        }
-
-        // Dispose.
-        public void Dispose()
-        {
-            beeClient.Dispose();
         }
 
         // Properties.
