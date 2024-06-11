@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Models;
 using Etherna.Sdk.Common.GenClients.Index;
 
 namespace Etherna.Sdk.Common.Models
@@ -23,14 +24,14 @@ namespace Etherna.Sdk.Common.Models
         {
             Type = videoSource.Type;
             Quality = videoSource.Quality;
-            Path = videoSource.Path;
+            Address = videoSource.Path;
             Size = videoSource.Size;
         }
 
         // Properties.
+        public SwarmAddress Address { get; }
         public string Type { get; }
         public string? Quality { get; }
-        public string Path { get; }
         public long Size { get; }
     }
 }

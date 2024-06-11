@@ -23,7 +23,7 @@ namespace Etherna.Sdk.Common.Models
         internal VideoPreview(VideoPreviewDto videoPreview)
         {
             if (videoPreview.Hash is not null)
-                Address = videoPreview.Hash;
+                Hash = videoPreview.Hash;
             Id = videoPreview.Id;
             CreatedAt = videoPreview.CreatedAt;
             Duration = videoPreview.Duration;
@@ -34,10 +34,10 @@ namespace Etherna.Sdk.Common.Models
         }
         
         // Properties.
-        public SwarmAddress? Address { get; }
         public string Id { get; }
         public long? CreatedAt { get; }
         public long? Duration { get; }
+        public SwarmHash? Hash { get; }
         public string OwnerAddress { get; }
         public Image Thumbnail { get; }
         public string? Title { get; }

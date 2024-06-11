@@ -25,16 +25,16 @@ namespace Etherna.Sdk.Common.Models
         // Constructors.
         internal VideoValidationStatus(VideoManifestStatusDto videoValidationStatus)
         {
-            Address = videoValidationStatus.Hash;
             ErrorDetails = videoValidationStatus.ErrorDetails.Select(e => new VideoValidationErrorDetail(e));
+            Hash = videoValidationStatus.Hash;
             IsValid = videoValidationStatus.IsValid;
             ValidationTime = videoValidationStatus.ValidationTime;
             VideoId = videoValidationStatus.VideoId;
         }
         
         // Properties.
-        public SwarmAddress Address { get; }
         public IEnumerable<VideoValidationErrorDetail> ErrorDetails { get; }
+        public SwarmHash Hash { get; }
         public bool? IsValid { get; }
         public DateTimeOffset? ValidationTime { get; }
         public string VideoId { get; }

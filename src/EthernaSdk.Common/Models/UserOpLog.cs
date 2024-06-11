@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Models;
 using Etherna.Sdk.Common.GenClients.Credit;
 using System;
 
@@ -30,7 +31,7 @@ namespace Etherna.Sdk.Common.Models
             UserAddress = opLog.UserAddress;
         }
         
-        public double Amount { get; }
+        public XDaiBalance Amount { get; }
         public string Author { get; }
         public DateTimeOffset CreationDateTime { get; }
         public bool? IsApplied { get; }

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Models;
 using Etherna.Sdk.Internal.Clients;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
@@ -35,7 +36,7 @@ public class IndexModel : PageModel
     }
 
     // Properties.
-    public double CreditBalance { get; set; }
+    public XDaiBalance CreditBalance { get; set; }
     public bool IsUnlimitedCredit { get; set; }
 
     // Methods.

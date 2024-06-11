@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Models;
+
 namespace Etherna.Sdk.Common.Models
 {
     public class UserCredit
@@ -30,7 +32,7 @@ namespace Etherna.Sdk.Common.Models
         }
 
         // Properties.
-        public double Balance { get; }
+        public XDaiBalance Balance { get; }
         public bool IsUnlimited { get; }
     }
 }

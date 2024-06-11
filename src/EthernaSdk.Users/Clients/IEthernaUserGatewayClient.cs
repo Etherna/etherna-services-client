@@ -34,20 +34,20 @@ namespace Etherna.Sdk.Users.Clients
         /// <summary>
         /// Admins can set a free pin period for a resource
         /// </summary>
-        /// <param name="address">The swarm resource hash</param>
+        /// <param name="hash">The swarm resource hash</param>
         /// <param name="freePinEndOfLife">End of free period. Null for disable</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task AdminSetFreeResourcePinningAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             DateTimeOffset? freePinEndOfLife = null,
             CancellationToken cancellationToken = default);
 
-        /// <param name="resourceAddresses">The swarm resource hashes list</param>
+        /// <param name="resourceHashes">The swarm resource hashes list</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<IDictionary<SwarmAddress, bool>> AreResourcesDownloadFundedAsync(
-            IEnumerable<SwarmAddress> resourceAddresses,
+        Task<IDictionary<SwarmHash, bool>> AreResourcesDownloadFundedAsync(
+            IEnumerable<SwarmHash> resourceHashes,
             CancellationToken cancellationToken = default);
 
         /// <summary>Buy a new postage batch.</summary>
@@ -72,7 +72,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
         /// <returns>Reference hash</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
-        Task<SwarmAddress> CreateFeedAsync(
+        Task<SwarmHash> CreateFeedAsync(
             string owner,
             string topic,
             PostageBatchId batchId,
@@ -80,18 +80,18 @@ namespace Etherna.Sdk.Users.Clients
             bool swarmPin = false,
             CancellationToken cancellationToken = default);
 
-        /// <param name="address">The swarm resource hash</param>
+        /// <param name="hash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<bool> DefundResourceDownloadAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             CancellationToken cancellationToken = default);
 
-        /// <param name="address">The swarm resource hash</param>
+        /// <param name="hash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<bool> DefundResourcePinningAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             CancellationToken cancellationToken = default);
 
         /// <param name="batchId">Postage batch Id</param>
@@ -103,22 +103,22 @@ namespace Etherna.Sdk.Users.Clients
             int depth,
             CancellationToken cancellationToken = default);
 
-        /// <param name="address">The swarm resource hash</param>
+        /// <param name="hash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task FundResourceDownloadAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             CancellationToken cancellationToken = default);
 
-        /// <param name="address">The swarm resource hash</param>
+        /// <param name="hash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task FundResourcePinningAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             CancellationToken cancellationToken = default);
         
         /// <summary>Get referenced data</summary>
-        /// <param name="address">Swarm address reference to content</param>
+        /// <param name="hash">Swarm address reference to content</param>
         /// <param name="swarmCache">Determines if the download data should be cached on the node. By default the download will be cached</param>
         /// <param name="swarmRedundancyStrategy">Specify the retrieve strategy on redundant data. The numbers stand for NONE, DATA, PROX and RACE, respectively. Strategy NONE means no prefetching takes place. Strategy DATA means only data chunks are prefetched. Strategy PROX means only chunks that are close to the node are prefetched. Strategy RACE means all chunks are prefetched: n data chunks and k parity chunks. The first n chunks to arrive are used to reconstruct the file. Multiple strategies can be used in a fallback cascade if the swarm redundancy fallback mode is set to true. The default strategy is NONE, DATA, falling back to PROX, falling back to RACE</param>
         /// <param name="swarmRedundancyFallbackMode">Specify if the retrieve strategies (chunk prefetching on redundant data) are used in a fallback cascade. The default is true.</param>
@@ -126,7 +126,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <returns>Retrieved content specified by reference</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
         Task<Stream> GetBytesAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             bool? swarmCache = null,
             RedundancyStrategy? swarmRedundancyStrategy = null,
             bool? swarmRedundancyFallbackMode = null,
@@ -138,11 +138,11 @@ namespace Etherna.Sdk.Users.Clients
         Task<ChainState> GetChainStateAsync(CancellationToken cancellationToken = default);
 
         /// <summary>Get Chunk</summary>
-        /// <param name="address">Swarm address of chunk</param>
+        /// <param name="hash">Swarm address of chunk</param>
         /// <returns>Retrieved chunk content</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
         Task<Stream> GetChunkAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             bool? swarmCache = null,
             CancellationToken cancellationToken = default);
 
@@ -156,7 +156,7 @@ namespace Etherna.Sdk.Users.Clients
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<IEnumerable<SwarmAddress>> GetDownloadFundedResourcesByUserAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<SwarmHash>> GetDownloadFundedResourcesByUserAsync(CancellationToken cancellationToken = default);
 
         /// <summary>Find feed update</summary>
         /// <param name="owner">Owner</param>
@@ -166,7 +166,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="type">Feed indexing scheme (default: sequence)</param>
         /// <returns>Latest feed update</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
-        Task<SwarmAddress> GetFeedAsync(
+        Task<SwarmHash> GetFeedAsync(
             string owner,
             string topic,
             int? at = null,
@@ -176,7 +176,6 @@ namespace Etherna.Sdk.Users.Clients
 
         /// <summary>Get file or index document from a collection of files</summary>
         /// <param name="address">Swarm address of content</param>
-        /// <param name="path">Path to the file in the collection.</param>
         /// <param name="swarmCache">Determines if the download data should be cached on the node. By default the download will be cached</param>
         /// <param name="swarmRedundancyStrategy">Specify the retrieve strategy on redundant data. The numbers stand for NONE, DATA, PROX and RACE, respectively. Strategy NONE means no prefetching takes place. Strategy DATA means only data chunks are prefetched. Strategy PROX means only chunks that are close to the node are prefetched. Strategy RACE means all chunks are prefetched: n data chunks and k parity chunks. The first n chunks to arrive are used to reconstruct the file. Multiple strategies can be used in a fallback cascade if the swarm redundancy fallback mode is set to true. The default strategy is NONE, DATA, falling back to PROX, falling back to RACE</param>
         /// <param name="swarmRedundancyFallbackMode">Specify if the retrieve strategies (chunk prefetching on redundant data) are used in a fallback cascade. The default is true.</param>
@@ -185,7 +184,6 @@ namespace Etherna.Sdk.Users.Clients
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
         Task<FileResponse> GetFileAsync(
             SwarmAddress address,
-            string? path = null,
             bool? swarmCache = null,
             RedundancyStrategy? swarmRedundancyStrategy = null,
             bool? swarmRedundancyFallbackMode = null,
@@ -194,7 +192,7 @@ namespace Etherna.Sdk.Users.Clients
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
-        Task<IEnumerable<SwarmAddress>> GetPinFundedResourcesAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<SwarmHash>> GetPinFundedResourcesAsync(CancellationToken cancellationToken = default);
 
         /// <param name="batchId">Postage batch Id</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -210,25 +208,25 @@ namespace Etherna.Sdk.Users.Clients
             string? labelContainsFilter = null,
             CancellationToken cancellationToken = default);
 
-        /// <param name="address">The swarm resource hash</param>
+        /// <param name="hash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<ResourcePinStatus> GetResourcePinStatusAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             CancellationToken cancellationToken = default);
 
-        /// <param name="address">The swarm resource hash</param>
+        /// <param name="hash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<IEnumerable<string>> GetUsersFundingResourceDownloadAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             CancellationToken cancellationToken = default);
 
-        /// <param name="address">The swarm resource hash</param>
+        /// <param name="hash">The swarm resource hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<IEnumerable<string>> GetUsersFundingResourcePinningAsync(
-            SwarmAddress address,
+            SwarmHash hash,
             CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -278,7 +276,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="swarmDeferredUpload">Determines if the uploaded data should be sent to the network immediately or in a deferred fashion. By default the upload will be deferred.</param>
         /// <returns>Ok</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
-        Task<SwarmAddress> UploadChunkAsync(
+        Task<SwarmHash> UploadChunkAsync(
             PostageBatchId batchId,
             bool swarmPin = false,
             bool swarmDeferredUpload = true,
@@ -295,7 +293,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="swarmDeferredUpload">Determines if the uploaded data should be sent to the network immediately or in a deferred fashion. By default the upload will be deferred.</param>
         /// <returns>Reference hash</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
-        Task<SwarmAddress> UploadBytesAsync(
+        Task<SwarmHash> UploadBytesAsync(
             PostageBatchId batchId,
             Stream content,
             bool swarmPin = false, 
@@ -320,7 +318,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="swarmRedundancyLevel">Add redundancy to the data being uploaded so that downloaders can download it with better UX. 0 value is default and does not add any redundancy to the file.</param>
         /// <returns>Reference hash</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
-        Task<SwarmAddress> UploadFileAsync(
+        Task<SwarmHash> UploadFileAsync(
             PostageBatchId batchId,
             Stream content,
             string? name = null,
@@ -338,7 +336,7 @@ namespace Etherna.Sdk.Users.Clients
         /// <param name="swarmPin">Represents if the uploaded data should be also locally pinned on the node.</param>
         /// <returns>Reference hash</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
-        Task<SwarmAddress> UploadSocAsync(
+        Task<SwarmHash> UploadSocAsync(
             string owner,
             string id,
             string signature,

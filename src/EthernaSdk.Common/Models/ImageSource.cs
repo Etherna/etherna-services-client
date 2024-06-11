@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Etherna.BeeNet.Models;
 using Etherna.Sdk.Common.GenClients.Index;
 
 namespace Etherna.Sdk.Common.Models
@@ -22,13 +23,13 @@ namespace Etherna.Sdk.Common.Models
         internal ImageSource(ImageSourceDto imageSource)
         {
             Type = imageSource.Type;
-            Path = imageSource.Path;
+            Address = imageSource.Path;
             Width = imageSource.Width;
         }
         
         // Properties.
+        public SwarmAddress Address { get; }
         public string? Type { get; }
-        public string Path { get; }
         public int Width { get; }
     }
 }
