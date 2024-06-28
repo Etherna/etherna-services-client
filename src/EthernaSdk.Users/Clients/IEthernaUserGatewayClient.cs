@@ -267,20 +267,22 @@ namespace Etherna.Sdk.Users.Clients
         Task<PostageBatchId?> TryGetNewPostageBatchIdFromPostageRefAsync(
             string postageReferenceId,
             CancellationToken cancellationToken = default);
-        
+
         /// <summary>Upload Chunk</summary>
         /// <param name="batchId">ID of Postage Batch that is used to upload data with</param>
-        /// <param name="swarmTag">Associate upload with an existing Tag UID</param>
+        /// <param name="chunkData"></param>
         /// <param name="swarmPin">Represents if the uploaded data should be also locally pinned on the node.
-        /// <br/>Warning! Not available for nodes that run in Gateway mode!</param>
+        ///     <br/>Warning! Not available for nodes that run in Gateway mode!</param>
         /// <param name="swarmDeferredUpload">Determines if the uploaded data should be sent to the network immediately or in a deferred fashion. By default the upload will be deferred.</param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="swarmTag">Associate upload with an existing Tag UID</param>
         /// <returns>Ok</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
         Task<SwarmHash> UploadChunkAsync(
             PostageBatchId batchId,
+            Stream chunkData,
             bool swarmPin = false,
             bool swarmDeferredUpload = true,
-            Stream? body = null,
             CancellationToken cancellationToken = default);
 
         /// <summary>Upload data</summary>

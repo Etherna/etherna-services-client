@@ -238,15 +238,15 @@ namespace Etherna.Sdk.Users.Clients
 
         public Task<SwarmHash> UploadChunkAsync(
             PostageBatchId batchId,
+            Stream chunkData,
             bool swarmPin = false,
             bool swarmDeferredUpload = true,
-            Stream? body = null,
             CancellationToken cancellationToken = default) =>
             BeeClient.UploadChunkAsync(
                 batchId,
+                chunkData,
                 swarmPin: swarmPin,
                 swarmDeferredUpload: swarmDeferredUpload,
-                body: body,
                 cancellationToken: cancellationToken);
 
         public Task<SwarmHash> UploadBytesAsync(
