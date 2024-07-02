@@ -175,6 +175,7 @@ namespace Etherna.Sdk.Users.Clients
                 batchDto.ImmutableFlag ?? false,
                 batchDto.Usable,
                 batchDto.Label,
+                null,
                 TimeSpan.FromSeconds(batchDto.BatchTTL ?? 0),
                 (uint)(batchDto.Utilization ?? 0));
         }
@@ -263,6 +264,23 @@ namespace Etherna.Sdk.Users.Clients
                 swarmDeferredUpload: swarmDeferredUpload,
                 swarmRedundancyLevel: swarmRedundancyLevel,
                 cancellationToken: cancellationToken);
+        
+#if NET7_0_OR_GREATER
+        public Task<SwarmHash> UploadDirectoryAsync(
+            PostageBatchId batchId,
+            string directoryPath,
+            bool swarmPin = false,
+            bool swarmDeferredUpload = true,
+            RedundancyLevel swarmRedundancyLevel = RedundancyLevel.None,
+            CancellationToken cancellationToken = default) =>
+            BeeClient.UploadDirectoryAsync(
+                batchId,
+                directoryPath,
+                swarmPin: swarmPin,
+                swarmDeferredUpload: swarmDeferredUpload,
+                swarmRedundancyLevel: swarmRedundancyLevel,
+                cancellationToken: cancellationToken);
+#endif
 
         public Task<SwarmHash> UploadFileAsync(
             PostageBatchId batchId,
