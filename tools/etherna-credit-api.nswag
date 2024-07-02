@@ -55,7 +55,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Etherna.Sdk.Common.GenClients.Credit",
+      "namespace": "Etherna.Sdk.Credit.GenClients",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -92,7 +92,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../src/EthernaSdk.Common/GenClients/Credit/NSwagEthernaCreditClient.cs",
+      "output": "../src/EthernaSdk.Credit/GenClients/NSwagEthernaCreditClient.cs",
       "newLineBehavior": "Auto"
     }
   }

@@ -55,7 +55,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Etherna.Sdk.Common.GenClients.Sso",
+      "namespace": "Etherna.Sdk.Sso.GenClients",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -92,7 +92,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../src/EthernaSdk.Common/GenClients/Sso/NSwagEthernaSsoClient.cs",
+      "output": "../src/EthernaSdk.Sso/GenClients/NSwagEthernaSsoClient.cs",
       "newLineBehavior": "Auto"
     }
   }

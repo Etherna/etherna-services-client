@@ -12,7 +12,8 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.Sdk.Common.Models;
+using Etherna.Sdk.Sso.GenClients;
+using Etherna.Sdk.Sso.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,12 +22,12 @@ namespace Etherna.Sdk.Internal.Clients
     public interface IEthernaInternalSsoClient
     {
         /// <summary>
-        /// Get contact information about an user.
+        /// Get contact information about a user.
         /// </summary>
         /// <param name="userAddress">User's ethereum address</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>User contact information</returns>
-        /// <exception cref="Common.Sso.EthernaSsoApiException">A server side error occurred.</exception>
+        /// <exception cref="EthernaSsoApiException">A server side error occurred.</exception>
         Task<UserContactInfo> ContactsAsync(string userAddress, CancellationToken cancellationToken = default);
     }
 }

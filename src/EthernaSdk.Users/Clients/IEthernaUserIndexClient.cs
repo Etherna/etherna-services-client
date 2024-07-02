@@ -13,11 +13,12 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Common.Models;
+using Etherna.Sdk.Index.GenClients;
+using Etherna.Sdk.Index.Models;
+using Etherna.Sdk.Users.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using EthernaIndexApiException = Etherna.Sdk.Common.GenClients.Index.EthernaIndexApiException;
 
 namespace Etherna.Sdk.Users.Clients
 {

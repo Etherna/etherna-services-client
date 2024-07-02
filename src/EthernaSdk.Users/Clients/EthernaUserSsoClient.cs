@@ -12,8 +12,8 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.Sdk.Common.GenClients.Sso;
-using Etherna.Sdk.Common.Models;
+using Etherna.Sdk.Sso.GenClients;
+using Etherna.Sdk.Sso.Models;
 using System;
 using System.Net.Http;
 using System.Threading;
