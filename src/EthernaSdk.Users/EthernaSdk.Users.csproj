@@ -12,7 +12,7 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
 
-    <RepositoryUrl>https://github.com/Etherna/etherna-services-client</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Etherna/etherna-sdk-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
@@ -37,7 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EthernaSdk.Common\EthernaSdk.Common.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Credit\EthernaSdk.Credit.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Gateway\EthernaSdk.Gateway.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Index\EthernaSdk.Index.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Sso\EthernaSdk.Sso.csproj" />
   </ItemGroup>
 
   <ItemGroup>

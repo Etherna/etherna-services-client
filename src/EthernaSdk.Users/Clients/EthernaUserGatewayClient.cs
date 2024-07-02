@@ -14,8 +14,8 @@
 
 using Etherna.BeeNet;
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Common.GenClients.Gateway;
-using Etherna.Sdk.Common.Models;
+using Etherna.Sdk.Gateway.GenClients;
+using Etherna.Sdk.Gateway.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +23,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ChainState = Etherna.Sdk.Common.Models.ChainState;
+using ChainState = Etherna.Sdk.Gateway.Models.ChainState;
 using FileResponse = Etherna.BeeNet.Models.FileResponse;
 
 namespace Etherna.Sdk.Users.Clients
