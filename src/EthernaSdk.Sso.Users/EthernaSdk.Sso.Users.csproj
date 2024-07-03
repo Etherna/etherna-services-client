@@ -37,9 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EthernaSdk.Credit.Common\EthernaSdk.Credit.Common.csproj" />
-    <ProjectReference Include="..\EthernaSdk.Gateway\EthernaSdk.Gateway.csproj" />
-    <ProjectReference Include="..\EthernaSdk.Index.Common\EthernaSdk.Index.Common.csproj" />
     <ProjectReference Include="..\EthernaSdk.Sso.Common\EthernaSdk.Sso.Common.csproj" />
   </ItemGroup>
 
