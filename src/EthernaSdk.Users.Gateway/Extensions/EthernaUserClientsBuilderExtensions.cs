@@ -19,7 +19,8 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
-namespace Etherna.Sdk.Users.Gateway.Extensions
+// ReSharper disable CheckNamespace
+namespace Etherna.Sdk.Users
 {
     public static class EthernaUserClientsBuilderExtensions
     {

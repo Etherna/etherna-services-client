@@ -13,9 +13,8 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.Authentication.Native;
-using Etherna.Sdk.Users.Credit.Clients;
-using Etherna.Sdk.Users.Credit.Extensions;
 using Etherna.Sdk.Users;
+using Etherna.Sdk.Users.Credit.Clients;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.ComponentModel;
@@ -23,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleUserClientSample
 {
-    class Program
+    public static class Program
     {
         // Consts.
         private const string HelpText = $"""
