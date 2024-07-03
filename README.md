@@ -8,19 +8,18 @@ A .Net client to consume Etherna services API.
 
 Etherna SDK .Net offers different NuGet packages with different scopes:
 
-* **EthernaSdk.Common** offers raw generated clients from open api definitions, shared by all other projects.
+* Clients dedicated to user's applications, where user's interaction may be required.  
+  Authenticate with "oauth code" or "api key" flows, and manages access token expiration.
+  * **EthernaSdk.Users.Credit** - Credit dedicated client
+  * **EthernaSdk.Users.Gateway** - Gateway dedicated client
+  * **EthernaSdk.Users.Index** - Index dedicated client
+  * **EthernaSdk.Users.Sso** - Sso dedicated client
 
 * **EthernaSdk.Internal** exposes clients dedicated to internal "service to service" api requests.  
-These clients are specific to internal use, consumed only by worker applications.
+  These clients are specific to internal use, consumed only by worker applications.
 
 * **EthernaSdk.Internal.AspNetCore** implements a registration adapter for Asp.Net Core projects, dedicated to internal Api clients.  
-Offers "client credentials" flow authentication, and manages access token expiration.
-
-* **EthernaSdk.Users** exposes clients dedicated to user's api requets.  
-These clients are dedicated to user's applications, where user's interaction may be required.
-
-* **EthernaSdk.Users.Native** implements a registration adapter for native user applications.  
-Offers user authentication with "oauth code" and "api key" flows, and manages access token expiration with etherna services clients.
+  Offers "client credentials" flow authentication, and manages access token expiration.
 
 ## Issue reports
 
