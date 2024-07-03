@@ -12,9 +12,24 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.Sdk.Index.GenClients;
 using System;
-using System.Runtime.CompilerServices;
 
-[assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Users.Index")]
+namespace Etherna.Sdk.Users.Index.Models
+{
+    public class IndexUserInfo
+    {
+        // Constructors.
+        internal IndexUserInfo(UserDto userInfo)
+        {
+            Id = userInfo.Id;
+            Address = userInfo.Address;
+            CreationDateTime = userInfo.CreationDateTime;
+        }
+
+        // Properties.
+        public string Id { get; }
+        public string? Address { get; }
+        public DateTimeOffset CreationDateTime { get; }
+    }
+}

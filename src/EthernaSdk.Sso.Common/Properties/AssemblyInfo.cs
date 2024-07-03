@@ -17,4 +17,4 @@ using System.Runtime.CompilerServices;
 
 [assembly: CLSCompliant(false)]
 [assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Sso.Users")]
+[assembly: InternalsVisibleTo("EthernaSdk.Users.Sso")]

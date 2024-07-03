@@ -12,9 +12,24 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Runtime.CompilerServices;
+using Etherna.BeeNet.Models;
+using Etherna.Sdk.Gateway.GenClients;
 
-[assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Users.Index")]
+namespace Etherna.Sdk.Users.Gateway.Models
+{
+    public class PostageBatchRef
+    {
+        // Constructors.
+        internal PostageBatchRef(PostageBatchRefDto postageBatchRef)
+        {
+            BatchId = postageBatchRef.BatchId;
+            Label = postageBatchRef.Label;
+            OwnerNodeId = postageBatchRef.OwnerNodeId;
+        }
+        
+        // Properties.
+        public PostageBatchId BatchId { get; }
+        public string? Label { get; }
+        public string OwnerNodeId { get; }
+    }
+}

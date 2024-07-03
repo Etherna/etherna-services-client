@@ -12,9 +12,24 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Runtime.CompilerServices;
+using Etherna.Sdk.Sso.GenClients;
+using System.Collections.Generic;
 
-[assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Users.Index")]
+namespace Etherna.Sdk.Users.Sso.Models
+{
+    public class SsoUserInfo
+    {
+        // Constructors.
+        internal SsoUserInfo(UserDto userInfo)
+        {
+            EtherAddress = userInfo.EtherAddress;
+            EtherPreviousAddresses = userInfo.EtherPreviousAddresses;
+            Username = userInfo.Username;
+        }
+
+        // Properties.
+        public string EtherAddress { get; }
+        public IEnumerable<string> EtherPreviousAddresses { get; }
+        public string? Username { get; }
+    }
+}

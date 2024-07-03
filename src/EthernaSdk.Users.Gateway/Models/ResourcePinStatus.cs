@@ -12,9 +12,25 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Runtime.CompilerServices;
+using Etherna.Sdk.Gateway.GenClients;
 
-[assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Users.Index")]
+namespace Etherna.Sdk.Users.Gateway.Models
+{
+    public class ResourcePinStatus
+    {
+        // Constructors.
+        internal ResourcePinStatus(ResourcePinStatusDto pinStatus)
+        {
+            FreePinningEndOfLife = pinStatus.FreePinningEndOfLife;
+            IsPinned = pinStatus.IsPinned;
+            IsPinningInProgress = pinStatus.IsPinningInProgress;
+            IsPinningRequired = pinStatus.IsPinningRequired;
+        }
+
+        // Properties.
+        public System.DateTimeOffset? FreePinningEndOfLife { get; }
+        public bool IsPinned { get; }
+        public bool IsPinningInProgress { get; }
+        public bool IsPinningRequired { get; }
+    }
+}

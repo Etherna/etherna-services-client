@@ -13,8 +13,9 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.Authentication.Native;
-using Etherna.Sdk.Credit.Users.Clients;
-using Etherna.Sdk.Users.Native;
+using Etherna.Sdk.Users.Credit.Clients;
+using Etherna.Sdk.Users.Credit.Extensions;
+using Etherna.Sdk.Users;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.ComponentModel;
@@ -104,20 +105,20 @@ namespace ConsoleUserClientSample
             if (string.IsNullOrWhiteSpace(apiKey)) //"code" grant flow
             {
                 ethernaClientsBuilder = services.AddEthernaUserClientsWithCodeAuth(
-                    ssoBaseUrl!,
                     ssoClientId!,
                     ssoClientSecret,
                     3000,
-                    new[] { "userApi.credit" });
+                    new[] { "userApi.credit" },
+                    authority: ssoBaseUrl!);
             }
             else //"password" grant flow
             {
                 ethernaClientsBuilder = services.AddEthernaUserClientsWithApiKeyAuth(
-                    ssoBaseUrl!,
                     apiKey,
-                    new[] { "userApi.credit" });
+                    new[] { "userApi.credit" },
+                    authority: ssoBaseUrl!);
             }
-            ethernaClientsBuilder.AddEthernaCreditClient(new Uri(creditBaseUrl!));
+            ethernaClientsBuilder.AddEthernaCreditClient(creditBaseUrl!);
             
             // Get client.
             var serviceProvider = services.BuildServiceProvider();

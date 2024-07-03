@@ -12,9 +12,24 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Runtime.CompilerServices;
+using Etherna.BeeNet.Models;
+using Etherna.Sdk.Index.GenClients;
 
-[assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Users.Index")]
+namespace Etherna.Sdk.Users.Index.Models
+{
+    public class ImageSource
+    {
+        // Constructors.
+        internal ImageSource(ImageSourceDto imageSource)
+        {
+            Type = imageSource.Type;
+            Address = imageSource.Path;
+            Width = imageSource.Width;
+        }
+        
+        // Properties.
+        public SwarmAddress Address { get; }
+        public string? Type { get; }
+        public int Width { get; }
+    }
+}

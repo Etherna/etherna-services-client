@@ -35,8 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaSdk.Internal", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaSdk.Internal.AspNetCore", "src\EthernaSdk.Internal.AspNetCore\EthernaSdk.Internal.AspNetCore.csproj", "{5B3FAC56-98AE-4B6B-B1B3-E1117B046717}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EthernaSdk.Users.Native", "src\EthernaSdk.Users.Native\EthernaSdk.Users.Native.csproj", "{A5C47534-973E-47E3-8E96-AE4B32A5D09F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{0E5080C1-2D28-481C-99EB-7F0EB0EE60B0}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\myget-unstable-deploy.yml = .github\workflows\myget-unstable-deploy.yml
@@ -59,13 +57,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Index.Common", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Sso.Common", "src\EthernaSdk.Sso.Common\EthernaSdk.Sso.Common.csproj", "{D72742F9-FDD4-419D-BD90-A363C26B05D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Credit.Users", "src\EthernaSdk.Credit.Users\EthernaSdk.Credit.Users.csproj", "{74934EC0-BA92-45A9-AE08-7B5A7DED139D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Users.Credit", "src\EthernaSdk.Users.Credit\EthernaSdk.Users.Credit.csproj", "{74934EC0-BA92-45A9-AE08-7B5A7DED139D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Gateway.Users", "src\EthernaSdk.Gateway.Users\EthernaSdk.Gateway.Users.csproj", "{63A00122-1BDE-4FF8-B264-8494ADD0CE50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Users.Gateway", "src\EthernaSdk.Users.Gateway\EthernaSdk.Users.Gateway.csproj", "{63A00122-1BDE-4FF8-B264-8494ADD0CE50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Index.Users", "src\EthernaSdk.Index.Users\EthernaSdk.Index.Users.csproj", "{12E471BE-447C-4943-85B0-820ECCCA23FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Users.Index", "src\EthernaSdk.Users.Index\EthernaSdk.Users.Index.csproj", "{12E471BE-447C-4943-85B0-820ECCCA23FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Sso.Users", "src\EthernaSdk.Sso.Users\EthernaSdk.Sso.Users.csproj", "{B6B2F88B-40F9-4A17-9D19-0FF77D91A566}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Users.Sso", "src\EthernaSdk.Users.Sso\EthernaSdk.Users.Sso.csproj", "{B6B2F88B-40F9-4A17-9D19-0FF77D91A566}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.UsersCommon", "src\EthernaSdk.UsersCommon\EthernaSdk.UsersCommon.csproj", "{D8CE487F-0827-4980-B015-A388298EFC28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,10 +89,6 @@ Global
 		{5B3FAC56-98AE-4B6B-B1B3-E1117B046717}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B3FAC56-98AE-4B6B-B1B3-E1117B046717}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B3FAC56-98AE-4B6B-B1B3-E1117B046717}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5C47534-973E-47E3-8E96-AE4B32A5D09F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ECD19FE-8EB4-4C2C-95F3-686AF75A91EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -129,6 +125,10 @@ Global
 		{B6B2F88B-40F9-4A17-9D19-0FF77D91A566}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6B2F88B-40F9-4A17-9D19-0FF77D91A566}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6B2F88B-40F9-4A17-9D19-0FF77D91A566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8CE487F-0827-4980-B015-A388298EFC28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8CE487F-0827-4980-B015-A388298EFC28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8CE487F-0827-4980-B015-A388298EFC28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8CE487F-0827-4980-B015-A388298EFC28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,7 +142,6 @@ Global
 		{BB98CBDD-77E8-4B2C-B25F-EAA422890E09} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
 		{057561F8-0527-4BFC-9868-DC6756B2A6B4} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
 		{E3760BC1-A37A-469F-B402-762C2C1853E3} = {CC8EACB1-0C4A-456E-9A99-AEE5BB64CADF}
-		{A5C47534-973E-47E3-8E96-AE4B32A5D09F} = {E3760BC1-A37A-469F-B402-762C2C1853E3}
 		{5B3FAC56-98AE-4B6B-B1B3-E1117B046717} = {057561F8-0527-4BFC-9868-DC6756B2A6B4}
 		{E3FB5F6A-0B53-474F-9BDF-9AB21CCD52C8} = {057561F8-0527-4BFC-9868-DC6756B2A6B4}
 		{1357B529-A2ED-48F3-BDAC-4109D3998597} = {BB98CBDD-77E8-4B2C-B25F-EAA422890E09}
@@ -153,6 +152,7 @@ Global
 		{63A00122-1BDE-4FF8-B264-8494ADD0CE50} = {E3760BC1-A37A-469F-B402-762C2C1853E3}
 		{12E471BE-447C-4943-85B0-820ECCCA23FC} = {E3760BC1-A37A-469F-B402-762C2C1853E3}
 		{B6B2F88B-40F9-4A17-9D19-0FF77D91A566} = {E3760BC1-A37A-469F-B402-762C2C1853E3}
+		{D8CE487F-0827-4980-B015-A388298EFC28} = {E3760BC1-A37A-469F-B402-762C2C1853E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7539252-E55D-43C2-B2C5-C9A77D191087}

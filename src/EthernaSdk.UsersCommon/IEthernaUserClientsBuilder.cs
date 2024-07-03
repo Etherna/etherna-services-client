@@ -12,9 +12,15 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Runtime.CompilerServices;
 
-[assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Users.Index")]
+namespace Etherna.Sdk.Users
+{
+    public interface IEthernaUserClientsBuilder
+    {
+        string HttpClientName { get; }
+        IServiceCollection Services { get; }
+        Uri SsoBaseUrl { get; }
+    }
+}

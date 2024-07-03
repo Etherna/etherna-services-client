@@ -12,9 +12,26 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Runtime.CompilerServices;
+using Etherna.BeeNet.Models;
+using Etherna.Sdk.Index.GenClients;
 
-[assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Users.Index")]
+namespace Etherna.Sdk.Users.Index.Models
+{
+    public class VideoSource
+    {
+        // Constructors.
+        internal VideoSource(VideoSourceDto videoSource)
+        {
+            Type = videoSource.Type;
+            Quality = videoSource.Quality;
+            Address = videoSource.Path;
+            Size = videoSource.Size;
+        }
+
+        // Properties.
+        public SwarmAddress Address { get; }
+        public string Type { get; }
+        public string? Quality { get; }
+        public long Size { get; }
+    }
+}

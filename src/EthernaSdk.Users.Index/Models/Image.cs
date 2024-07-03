@@ -12,9 +12,25 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Runtime.CompilerServices;
+using Etherna.Sdk.Index.GenClients;
+using System.Collections.Generic;
+using System.Linq;
 
-[assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("EthernaSdk.Internal")]
-[assembly: InternalsVisibleTo("EthernaSdk.Users.Index")]
+namespace Etherna.Sdk.Users.Index.Models
+{
+    public class Image
+    {
+        // Constructors.
+        internal Image(Image2Dto image)
+        {
+            AspectRatio = image.AspectRatio;
+            Blurhash = image.Blurhash;
+            Sources = image.Sources.Select(s => new ImageSource(s));
+        }
+        
+        // Properties.
+        public float AspectRatio { get; }
+        public string Blurhash { get; }
+        public IEnumerable<ImageSource> Sources { get; }
+    }
+}
