@@ -43,7 +43,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EthernaSdk.Users\EthernaSdk.Users.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Credit.Users\EthernaSdk.Credit.Users.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Gateway.Users\EthernaSdk.Gateway.Users.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Index.Users\EthernaSdk.Index.Users.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Sso.Users\EthernaSdk.Sso.Users.csproj" />
   </ItemGroup>
 
 </Project>

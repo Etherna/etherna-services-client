@@ -13,7 +13,7 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.Sdk.Credit.GenClients;
-using Etherna.Sdk.Credit.Models;
+using Etherna.Sdk.Internal.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

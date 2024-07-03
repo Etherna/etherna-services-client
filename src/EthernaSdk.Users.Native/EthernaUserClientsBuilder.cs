@@ -13,7 +13,10 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet;
-using Etherna.Sdk.Users.Clients;
+using Etherna.Sdk.Credit.Users.Clients;
+using Etherna.Sdk.Gateway.Users.Clients;
+using Etherna.Sdk.Index.Users.Clients;
+using Etherna.Sdk.Sso.Users.Clients;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;

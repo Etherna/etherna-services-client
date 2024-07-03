@@ -13,7 +13,7 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.Authentication.Native;
-using Etherna.Sdk.Users.Clients;
+using Etherna.Sdk.Credit.Users.Clients;
 using Etherna.Sdk.Users.Native;
 using Microsoft.Extensions.DependencyInjection;
 using System;

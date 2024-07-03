@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <RootNamespace>Etherna.Sdk.Internal</RootNamespace>
+    <RootNamespace>Etherna.Sdk.Sso.Users</RootNamespace>
 
     <Authors>Etherna SA</Authors>
-    <Description>Client for Internal Api of Etherna services</Description>
+    <Description>Client for User Api of Etherna Sso service</Description>
 
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
@@ -25,7 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bee.Net.Core" Version="0.3.0-alpha.8" />
+    <PackageReference Include="Bee.Net.Client" Version="0.3.0-alpha.8" />
     <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,6 +38,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EthernaSdk.Credit.Common\EthernaSdk.Credit.Common.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Gateway\EthernaSdk.Gateway.csproj" />
+    <ProjectReference Include="..\EthernaSdk.Index.Common\EthernaSdk.Index.Common.csproj" />
     <ProjectReference Include="..\EthernaSdk.Sso.Common\EthernaSdk.Sso.Common.csproj" />
   </ItemGroup>
 
