@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EthernaSdk.Users.Native\EthernaSdk.Users.Native.csproj" />
+    <ProjectReference Include="..\..\src\EthernaSdk.Users.Credit\EthernaSdk.Users.Credit.csproj" />
   </ItemGroup>
 
 </Project>

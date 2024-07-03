@@ -12,32 +12,38 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.Sdk.Internal.Models;
-using Etherna.Sdk.Sso.GenClients;
+using Etherna.Sdk.Credit.GenClients;
+using Etherna.Sdk.Users.Credit.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Etherna.Sdk.Internal.Clients
+namespace Etherna.Sdk.Users.Credit.Clients
 {
-    public class EthernaInternalSsoClient : IEthernaInternalSsoClient
+    public class EthernaUserCreditClient : IEthernaUserCreditClient
     {
         // Fields.
-        private readonly ServiceInteractClient generatedClient;
+        private readonly UserClient generatedClient;
 
         // Constructor.
-        public EthernaInternalSsoClient(Uri baseUrl, HttpClient httpClient)
+        public EthernaUserCreditClient(Uri baseUrl, HttpClient httpClient)
         {
             ArgumentNullException.ThrowIfNull(baseUrl, nameof(baseUrl));
 
-            generatedClient = new ServiceInteractClient(baseUrl.ToString(), httpClient);
+            generatedClient = new UserClient(baseUrl.ToString(), httpClient);
         }
 
         // Methods.
-        public async Task<UserContactInfo> ContactsAsync(
-            string userAddress,
+        public async Task<UserCredit> GetUserCreditAsync(CancellationToken cancellationToken = default) =>
+            new(await generatedClient.CreditAsync(cancellationToken).ConfigureAwait(false));
+
+        public async Task<IEnumerable<UserOpLog>> GetUserOpLogsAsync(
+            int? page = null,
+            int? take = null,
             CancellationToken cancellationToken = default) =>
-            new(await generatedClient.ContactsAsync(userAddress, cancellationToken).ConfigureAwait(false));
+            (await generatedClient.LogsAsync(page, take, cancellationToken).ConfigureAwait(false)).Select(op => new UserOpLog(op));
     }
 }
