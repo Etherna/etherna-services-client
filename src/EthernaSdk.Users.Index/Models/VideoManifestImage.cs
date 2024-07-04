@@ -12,25 +12,18 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.Sdk.Index.GenClients;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifestImage
+    public class VideoManifestImage(
+        float aspectRatio,
+        string blurhash,
+        IEnumerable<VideoManifestImageSource> sources)
     {
-        // Constructors.
-        internal VideoManifestImage(Image2Dto image)
-        {
-            AspectRatio = image.AspectRatio;
-            Blurhash = image.Blurhash;
-            Sources = image.Sources.Select(s => new VideoManifestImageSource(s));
-        }
-        
         // Properties.
-        public float AspectRatio { get; }
-        public string Blurhash { get; }
-        public IEnumerable<VideoManifestImageSource> Sources { get; }
+        public float AspectRatio { get; } = aspectRatio;
+        public string Blurhash { get; } = blurhash;
+        public IEnumerable<VideoManifestImageSource> Sources { get; } = sources;
     }
 }

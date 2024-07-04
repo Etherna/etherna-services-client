@@ -21,35 +21,19 @@ namespace Etherna.Sdk.Users.Index.Models
     /// <summary>
     /// Video Manifest utility class, able to serialize/deserialize to/from json
     /// </summary>
-    public class VideoManifest
+    public class VideoManifest(
+        float aspectRatio,
+        PostageBatchId? batchId,
+        DateTimeOffset createdAt,
+        string description,
+        TimeSpan duration,
+        string title,
+        string ownerAddress,
+        string? personalData,
+        IEnumerable<VideoManifestVideoSource> sources,
+        VideoManifestImage? thumbnail,
+        DateTimeOffset? updatedAt)
     {
-        // Constructor.
-        public VideoManifest(
-            float aspectRatio,
-            PostageBatchId? batchId,
-            DateTimeOffset createdAt,
-            string description,
-            TimeSpan duration,
-            string title,
-            string ownerAddress,
-            string? personalData,
-            IEnumerable<VideoManifestVideoSource> sources,
-            VideoManifestImage? thumbnail,
-            DateTimeOffset? updatedAt)
-        {
-            AspectRatio = aspectRatio;
-            BatchId = batchId;
-            CreatedAt = createdAt;
-            Description = description;
-            Duration = duration;
-            Title = title;
-            OwnerAddress = ownerAddress;
-            PersonalData = personalData;
-            Sources = sources;
-            Thumbnail = thumbnail;
-            UpdatedAt = updatedAt;
-        }
-        
         // Methods.
         public string SerializeManifestDetail()
         {
@@ -68,16 +52,16 @@ namespace Etherna.Sdk.Users.Index.Models
         }
 
         // Properties.
-        public float AspectRatio { get; }
-        public PostageBatchId? BatchId { get; }
-        public DateTimeOffset CreatedAt { get; }
-        public string Description { get; }
-        public TimeSpan Duration { get; }
-        public string Title { get; }
-        public string OwnerAddress { get; }
-        public string? PersonalData { get; }
-        public IEnumerable<VideoManifestVideoSource> Sources { get; }
-        public VideoManifestImage? Thumbnail { get; }
-        public DateTimeOffset? UpdatedAt { get; }
+        public float AspectRatio { get; } = aspectRatio;
+        public PostageBatchId? BatchId { get; } = batchId;
+        public DateTimeOffset CreatedAt { get; } = createdAt;
+        public string Description { get; } = description;
+        public TimeSpan Duration { get; } = duration;
+        public string Title { get; } = title;
+        public string OwnerAddress { get; } = ownerAddress;
+        public string? PersonalData { get; } = personalData;
+        public IEnumerable<VideoManifestVideoSource> Sources { get; } = sources;
+        public VideoManifestImage? Thumbnail { get; } = thumbnail;
+        public DateTimeOffset? UpdatedAt { get; } = updatedAt;
     }
 }

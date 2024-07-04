@@ -17,7 +17,9 @@ using System;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoValidationErrorDetail
+    public class VideoValidationErrorDetail(
+        string errorMessage,
+        VideoValidationErrorDetail.ErrorTypes errorType)
     {
         public enum ErrorTypes
         {
@@ -36,16 +38,9 @@ namespace Etherna.Sdk.Users.Index.Models
             MissingTitle = 12,
             Unknown = 13
         }
-        
-        // Constructors.
-        internal VideoValidationErrorDetail(ErrorDetailDto errorDetail)
-        {
-            ErrorMessage = errorDetail.ErrorMessage;
-            ErrorType = Enum.Parse<ErrorTypes>(errorDetail.ErrorType.ToString());
-        }
-        
+
         // Properties.
-        public string ErrorMessage { get; }
-        public ErrorTypes ErrorType { get; }
+        public string ErrorMessage { get; } = errorMessage;
+        public ErrorTypes ErrorType { get; } = errorType;
     }
 }

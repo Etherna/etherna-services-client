@@ -16,15 +16,8 @@ using Etherna.BeeNet.Models;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public abstract class SwarmFileBase
+    public abstract class SwarmFileBase(SwarmAddress address)
     {
-        // Constructor.
-        protected SwarmFileBase(
-            SwarmAddress address)
-        {
-            Address = address;
-        }
-        
-        public SwarmAddress Address { get; }
+        public SwarmAddress Address { get; } = address;
     }
 }

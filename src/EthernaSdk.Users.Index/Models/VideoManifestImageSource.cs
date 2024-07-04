@@ -13,23 +13,17 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Index.GenClients;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifestImageSource
+    public class VideoManifestImageSource(
+        SwarmAddress address,
+        string? type,
+        int width)
     {
-        // Constructors.
-        internal VideoManifestImageSource(ImageSourceDto imageSource)
-        {
-            Type = imageSource.Type;
-            Address = imageSource.Path;
-            Width = imageSource.Width;
-        }
-        
         // Properties.
-        public SwarmAddress Address { get; }
-        public string? Type { get; }
-        public int Width { get; }
+        public SwarmAddress Address { get; } = address;
+        public string? Type { get; } = type;
+        public int Width { get; } = width;
     }
 }

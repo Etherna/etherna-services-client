@@ -16,22 +16,14 @@ using Etherna.BeeNet.Models;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class PublishedVideoManifest
+    public class PublishedVideoManifest(
+        SwarmHash hash,
+        VideoManifest manifest,
+        string? version)
     {
-        // Constructor.
-        public PublishedVideoManifest(
-            SwarmHash hash,
-            VideoManifest manifest,
-            string? version)
-        {
-            Hash = hash;
-            Manifest = manifest;
-            Version = version;
-        }
-
         // Properties.
-        public SwarmHash Hash { get; }
-        public VideoManifest Manifest { get; }
-        public string? Version { get; }
+        public SwarmHash Hash { get; } = hash;
+        public VideoManifest Manifest { get; } = manifest;
+        public string? Version { get; } = version;
     }
 }

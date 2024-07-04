@@ -12,25 +12,18 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.Sdk.Index.GenClients;
-
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class IndexParameters
+    public class IndexParameters(
+        int commentMaxLength,
+        int videoDescriptionMaxLength,
+        int videoPersonalDataMaxLength,
+        int videoTitleMaxLength)
     {
-        // Constructors.
-        internal IndexParameters(SystemParametersDto parameters)
-        {
-            CommentMaxLength = parameters.CommentMaxLength;
-            VideoDescriptionMaxLength = parameters.VideoDescriptionMaxLength;
-            VideoPersonalDataMaxLength = parameters.VideoPersonalDataMaxLength;
-            VideoTitleMaxLength = parameters.VideoTitleMaxLength;
-        }
-        
         // Properties.
-        public int CommentMaxLength { get; }
-        public int VideoDescriptionMaxLength { get; }
-        public int VideoPersonalDataMaxLength { get; }
-        public int VideoTitleMaxLength { get; }
+        public int CommentMaxLength { get; } = commentMaxLength;
+        public int VideoDescriptionMaxLength { get; } = videoDescriptionMaxLength;
+        public int VideoPersonalDataMaxLength { get; } = videoPersonalDataMaxLength;
+        public int VideoTitleMaxLength { get; } = videoTitleMaxLength;
     }
 }
