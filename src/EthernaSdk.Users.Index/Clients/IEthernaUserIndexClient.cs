@@ -121,7 +121,7 @@ namespace Etherna.Sdk.Users.Index.Clients
         /// <param name="videoId">The video id</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        Task<Video> GetVideoByIdAsync(string videoId, CancellationToken cancellationToken = default);
+        Task<PublishedVideo> GetVideoByIdAsync(string videoId, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get video info by manifest hash.
@@ -129,7 +129,7 @@ namespace Etherna.Sdk.Users.Index.Clients
         /// <param name="manifestHash">The video manifest hash</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        Task<Video> GetVideoByManifestAsync(SwarmHash manifestHash, CancellationToken cancellationToken = default);
+        Task<PublishedVideo> GetVideoByManifestAsync(SwarmHash manifestHash, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get paginated video comments by id
@@ -151,7 +151,7 @@ namespace Etherna.Sdk.Users.Index.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>List of user's videos</returns>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        Task<PaginatedResult<Video>> GetVideosByOwnerAsync(string userAddress, int? page = null, int? take = null, CancellationToken cancellationToken = default);
+        Task<PaginatedResult<PublishedVideo>> GetVideosByOwnerAsync(string userAddress, int? page = null, int? take = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get validation info by id.

@@ -8,6 +8,7 @@
     <Authors>Etherna SA</Authors>
     <Description>Client for User Api of Etherna Index service</Description>
 
+    <LangVersion>12</LangVersion>
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
@@ -25,7 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bee.Net.Client" Version="0.3.0-alpha.8" />
+    <PackageReference Include="Bee.Net.Client" Version="0.3.0-alpha.10" />
     <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -45,6 +46,10 @@
     <None Include="..\..\COPYING" Pack="true" PackagePath="\" />
     <None Include="..\..\COPYING-LESSER" Pack="true" PackagePath="\" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Serialization\" />
   </ItemGroup>
 
 </Project>

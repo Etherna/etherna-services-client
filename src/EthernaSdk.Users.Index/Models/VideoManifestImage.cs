@@ -18,19 +18,19 @@ using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class Image
+    public class VideoManifestImage
     {
         // Constructors.
-        internal Image(Image2Dto image)
+        internal VideoManifestImage(Image2Dto image)
         {
             AspectRatio = image.AspectRatio;
             Blurhash = image.Blurhash;
-            Sources = image.Sources.Select(s => new ImageSource(s));
+            Sources = image.Sources.Select(s => new VideoManifestImageSource(s));
         }
         
         // Properties.
         public float AspectRatio { get; }
         public string Blurhash { get; }
-        public IEnumerable<ImageSource> Sources { get; }
+        public IEnumerable<VideoManifestImageSource> Sources { get; }
     }
 }

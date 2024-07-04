@@ -111,10 +111,10 @@ namespace Etherna.Sdk.Users.Index.Clients
         public async Task<IndexUserInfo> GetUserInfoByAddressAsync(string address, CancellationToken cancellationToken = default) =>
             new(await generatedUsersClient.UsersGetAsync(address, cancellationToken).ConfigureAwait(false));
 
-        public async Task<Video> GetVideoByIdAsync(string videoId, CancellationToken cancellationToken = default) =>
+        public async Task<PublishedVideo> GetVideoByIdAsync(string videoId, CancellationToken cancellationToken = default) =>
             new(await generatedVideosClient.Find2Async(videoId, cancellationToken).ConfigureAwait(false));
 
-        public async Task<Video> GetVideoByManifestAsync(SwarmHash manifestHash, CancellationToken cancellationToken = default) =>
+        public async Task<PublishedVideo> GetVideoByManifestAsync(SwarmHash manifestHash, CancellationToken cancellationToken = default) =>
             new(await generatedVideosClient.Manifest2Async(manifestHash.ToString(), cancellationToken).ConfigureAwait(false));
 
         public async Task<PaginatedResult<Comment>> GetVideoCommentsAsync(string videoId, int? page = null, int? take = null,
@@ -129,13 +129,13 @@ namespace Etherna.Sdk.Users.Index.Clients
                 result.MaxPage);
         }
 
-        public async Task<PaginatedResult<Video>> GetVideosByOwnerAsync(string userAddress, int? page = null,
+        public async Task<PaginatedResult<PublishedVideo>> GetVideosByOwnerAsync(string userAddress, int? page = null,
             int? take = null,
             CancellationToken cancellationToken = default)
         {
             var result = await generatedUsersClient.Videos3Async(userAddress, page, take, cancellationToken).ConfigureAwait(false);
-            return new PaginatedResult<Video>(
-                result.Elements.Select(v => new Video(v)),
+            return new PaginatedResult<PublishedVideo>(
+                result.Elements.Select(v => new PublishedVideo(v)),
                 result.TotalElements,
                 result.PageSize,
                 result.CurrentPage,

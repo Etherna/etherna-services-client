@@ -13,42 +13,71 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Index.GenClients;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
+    /// <summary>
+    /// Video Manifest utility class, able to serialize/deserialize to/from json
+    /// </summary>
     public class VideoManifest
     {
-        // Constructors.
-        internal VideoManifest(VideoManifest2Dto videoManifest)
+        // Constructor.
+        public VideoManifest(
+            float aspectRatio,
+            PostageBatchId? batchId,
+            DateTimeOffset createdAt,
+            string description,
+            TimeSpan duration,
+            string title,
+            string ownerAddress,
+            string? personalData,
+            IEnumerable<VideoManifestVideoSource> sources,
+            VideoManifestImage? thumbnail,
+            DateTimeOffset? updatedAt)
         {
-            AspectRatio = videoManifest.AspectRatio;
-            if (videoManifest.BatchId is not null)
-                BatchId = videoManifest.BatchId;
-            CreatedAt = videoManifest.CreatedAt;
-            Description = videoManifest.Description;
-            Duration = videoManifest.Duration;
-            Hash = videoManifest.Hash;
-            PersonalData = videoManifest.PersonalData;
-            Sources = videoManifest.Sources.Select(s => new VideoSource(s));
-            Thumbnail = new Image(videoManifest.Thumbnail);
-            Title = videoManifest.Title;
-            UpdatedAt = videoManifest.UpdatedAt;
+            AspectRatio = aspectRatio;
+            BatchId = batchId;
+            CreatedAt = createdAt;
+            Description = description;
+            Duration = duration;
+            Title = title;
+            OwnerAddress = ownerAddress;
+            PersonalData = personalData;
+            Sources = sources;
+            Thumbnail = thumbnail;
+            UpdatedAt = updatedAt;
         }
         
+        // Methods.
+        public string SerializeManifestDetail()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string SerializeManifestPreview()
+        {
+            throw new NotImplementedException();
+        }
+        
+        // Static methods.
+        public VideoManifest DeserializeManifest(string jsonManifest)
+        {
+            throw new NotImplementedException();
+        }
+
         // Properties.
         public float AspectRatio { get; }
         public PostageBatchId? BatchId { get; }
-        public long CreatedAt { get; }
-        public string? Description { get; }
-        public long? Duration { get; }
-        public SwarmHash Hash { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public string Description { get; }
+        public TimeSpan Duration { get; }
+        public string Title { get; }
+        public string OwnerAddress { get; }
         public string? PersonalData { get; }
-        public IEnumerable<VideoSource> Sources { get; }
-        public Image Thumbnail { get; }
-        public string? Title { get; }
-        public long? UpdatedAt { get; }
+        public IEnumerable<VideoManifestVideoSource> Sources { get; }
+        public VideoManifestImage? Thumbnail { get; }
+        public DateTimeOffset? UpdatedAt { get; }
     }
 }

@@ -17,19 +17,21 @@ using Etherna.Sdk.Index.GenClients;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class ImageSource
+    public class VideoManifestVideoSource
     {
         // Constructors.
-        internal ImageSource(ImageSourceDto imageSource)
+        internal VideoManifestVideoSource(VideoSourceDto videoSource)
         {
-            Type = imageSource.Type;
-            Address = imageSource.Path;
-            Width = imageSource.Width;
+            Type = videoSource.Type;
+            Quality = videoSource.Quality;
+            Address = videoSource.Path;
+            Size = videoSource.Size;
         }
-        
+
         // Properties.
         public SwarmAddress Address { get; }
-        public string? Type { get; }
-        public int Width { get; }
+        public string Type { get; }
+        public string? Quality { get; }
+        public long Size { get; }
     }
 }

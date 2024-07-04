@@ -28,7 +28,7 @@ namespace Etherna.Sdk.Users.Index.Models
             CreatedAt = videoPreview.CreatedAt;
             Duration = videoPreview.Duration;
             OwnerAddress = videoPreview.OwnerAddress;
-            Thumbnail = new Image(videoPreview.Thumbnail);
+            Thumbnail = new VideoManifestImage(videoPreview.Thumbnail);
             Title = videoPreview.Title;
             UpdatedAt = videoPreview.UpdatedAt;
         }
@@ -39,7 +39,7 @@ namespace Etherna.Sdk.Users.Index.Models
         public long? Duration { get; }
         public SwarmHash? Hash { get; }
         public string OwnerAddress { get; }
-        public Image Thumbnail { get; }
+        public VideoManifestImage Thumbnail { get; }
         public string? Title { get; }
         public long? UpdatedAt { get; }
     }
