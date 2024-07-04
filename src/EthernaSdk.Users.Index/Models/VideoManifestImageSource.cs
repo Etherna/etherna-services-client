@@ -12,17 +12,15 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet.Models;
-
 namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestImageSource(
-        SwarmAddress address,
+        string path,
         string type,
         int width)
     {
         // Properties.
-        public SwarmAddress Address { get; } = address;
+        public string Path { get; } = path;
         public string Type { get; } = type;
         public int Width { get; } = width;
     }

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
@@ -26,7 +27,7 @@ namespace Etherna.Sdk.Users.Index.Models
     /// </summary>
     public class VideoManifest(
         float aspectRatio,
-        PostageBatchId batchId,
+        PostageBatchId? batchId,
         DateTimeOffset createdAt,
         string description,
         TimeSpan duration,
@@ -38,7 +39,11 @@ namespace Etherna.Sdk.Users.Index.Models
         DateTimeOffset? updatedAt)
     {
         // Fields.
-        private readonly JsonSerializerOptions jsonSerializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        private readonly JsonSerializerOptions jsonSerializerOptions = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
         
         // Methods.
         public string SerializeManifestDetail()
@@ -51,7 +56,7 @@ namespace Etherna.Sdk.Users.Index.Models
                 sources: Sources.Select(s => new Manifest2VideoSourceDto(
                     type: Enum.Parse<Manifest2VideoSourceType>(s.Type),
                     quality: s.Quality,
-                    path: s.Address,
+                    path: s.Path,
                     size: s.Size)));
             return JsonSerializer.Serialize(manifestDetails, jsonSerializerOptions);
         }
@@ -71,19 +76,19 @@ namespace Etherna.Sdk.Users.Index.Models
                         sources: Thumbnail.Sources.Select(s => new Manifest2ThumbnailSourceDto(
                             width: s.Width,
                             type: Enum.Parse<Manifest2ThumbnailSourceType>(s.Type),
-                            path: s.Address))));
+                            path: s.Path))));
             return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         
         // Static methods.
-        public VideoManifest DeserializeManifest(string jsonManifest)
+        public VideoManifest DeserializeManifest(string jsonManifestPreview, string jsonManifestDetail)
         {
             throw new NotImplementedException();
         }
 
         // Properties.
         public float AspectRatio { get; } = aspectRatio;
-        public PostageBatchId BatchId { get; } = batchId;
+        public PostageBatchId BatchId { get; set; } = batchId ?? PostageBatchId.Zero; //can be updated later
         public DateTimeOffset CreatedAt { get; } = createdAt;
         public string Description { get; } = description;
         public TimeSpan Duration { get; } = duration;

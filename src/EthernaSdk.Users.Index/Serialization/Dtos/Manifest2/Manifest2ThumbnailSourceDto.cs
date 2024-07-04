@@ -33,14 +33,11 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         public Manifest2ThumbnailSourceDto(
             int width,
             Manifest2ThumbnailSourceType type,
-            SwarmAddress path)
+            string path)
         {
-            if (path.RelativePath is null)
-                throw new ArgumentException("Path arg can't have null relative path", nameof(path));
-
             Width = width;
             Type = type.ToString();
-            Path = path.RelativePath.ToString();
+            Path = path;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private Manifest2ThumbnailSourceDto() { }

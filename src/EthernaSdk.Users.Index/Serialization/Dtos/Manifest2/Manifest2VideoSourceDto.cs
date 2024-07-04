@@ -32,14 +32,11 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         public Manifest2VideoSourceDto(
             Manifest2VideoSourceType type,
             string? quality,
-            SwarmAddress path,
+            string path,
             long size)
         {
-            if (path.RelativePath is null)
-                throw new ArgumentException("Path arg can't have null relative path", nameof(path));
-            
             Quality = quality;
-            Path = path.RelativePath.ToString();
+            Path = path;
             Size = size;
             Type = type.ToString();
         }
