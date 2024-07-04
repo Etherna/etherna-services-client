@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet.Models;
 using System;
 using System.Collections.Generic;
 
@@ -29,13 +30,13 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         public Manifest2DetailDto(
             string description,
             float aspectRatio,
-            string batchId,
+            PostageBatchId batchId,
             string? personalData,
             IEnumerable<Manifest2VideoSourceDto> sources)
         {
             Description = description;
             AspectRatio = aspectRatio;
-            BatchId = batchId;
+            BatchId = batchId.ToString();
             PersonalData = personalData;
             Sources = sources;
         }

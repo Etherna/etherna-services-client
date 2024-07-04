@@ -18,12 +18,12 @@ namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestImageSource(
         SwarmAddress address,
-        string? type,
+        string type,
         int width)
     {
         // Properties.
         public SwarmAddress Address { get; } = address;
-        public string? Type { get; } = type;
+        public string Type { get; } = type;
         public int Width { get; } = width;
     }
 }

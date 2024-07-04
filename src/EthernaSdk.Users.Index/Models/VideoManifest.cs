@@ -13,8 +13,11 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
+using Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
@@ -23,7 +26,7 @@ namespace Etherna.Sdk.Users.Index.Models
     /// </summary>
     public class VideoManifest(
         float aspectRatio,
-        PostageBatchId? batchId,
+        PostageBatchId batchId,
         DateTimeOffset createdAt,
         string description,
         TimeSpan duration,
@@ -34,15 +37,42 @@ namespace Etherna.Sdk.Users.Index.Models
         VideoManifestImage? thumbnail,
         DateTimeOffset? updatedAt)
     {
+        // Fields.
+        private readonly JsonSerializerOptions jsonSerializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        
         // Methods.
         public string SerializeManifestDetail()
         {
-            throw new NotImplementedException();
+            var manifestDetails = new Manifest2DetailDto(
+                description: Description,
+                aspectRatio: AspectRatio,
+                batchId: BatchId,
+                personalData: PersonalData,
+                sources: Sources.Select(s => new Manifest2VideoSourceDto(
+                    type: Enum.Parse<Manifest2VideoSourceType>(s.Type),
+                    quality: s.Quality,
+                    path: s.Address,
+                    size: s.Size)));
+            return JsonSerializer.Serialize(manifestDetails, jsonSerializerOptions);
         }
 
         public string SerializeManifestPreview()
         {
-            throw new NotImplementedException();
+            var manifestPreview = new Manifest2PreviewDto(
+                title: Title,
+                createdAt: CreatedAt.ToUnixTimeSeconds(),
+                updatedAt: UpdatedAt?.ToUnixTimeSeconds(),
+                ownerAddress: OwnerAddress,
+                duration: (long)Duration.TotalSeconds,
+                thumbnail: Thumbnail is null ? null :
+                    new Manifest2ThumbnailDto(
+                        aspectRatio: Thumbnail.AspectRatio,
+                        blurhash: Thumbnail.Blurhash,
+                        sources: Thumbnail.Sources.Select(s => new Manifest2ThumbnailSourceDto(
+                            width: s.Width,
+                            type: Enum.Parse<Manifest2ThumbnailSourceType>(s.Type),
+                            path: s.Address))));
+            return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         
         // Static methods.
@@ -53,7 +83,7 @@ namespace Etherna.Sdk.Users.Index.Models
 
         // Properties.
         public float AspectRatio { get; } = aspectRatio;
-        public PostageBatchId? BatchId { get; } = batchId;
+        public PostageBatchId BatchId { get; } = batchId;
         public DateTimeOffset CreatedAt { get; } = createdAt;
         public string Description { get; } = description;
         public TimeSpan Duration { get; } = duration;
