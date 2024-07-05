@@ -16,7 +16,7 @@ using System;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class PublishedVideo(
+    public class IndexedVideo(
         string id,
         DateTimeOffset creationDateTime,
         VoteValue? currentVoteValue,

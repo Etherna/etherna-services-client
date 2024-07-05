@@ -84,6 +84,24 @@ namespace Etherna.Sdk.Users.Index.Clients
 
         public Task DeleteOwnedCommentAsync(string commentId, CancellationToken cancellationToken = default) =>
             generatedCommentsClient.CommentsAsync(commentId, cancellationToken);
+        
+        public async Task<IEnumerable<IndexedVideo>> GetAllVideosByOwnerAsync(string userAddress)
+        {
+            var videos = new List<IndexedVideo>();
+            const int maxForPage = 100;
+
+            PaginatedResult<IndexedVideo>? page = null;
+            do
+            {
+                page = await GetVideosByOwnerAsync(
+                    userAddress,
+                    page is null ? 0 : page.CurrentPage + 1,
+                    maxForPage).ConfigureAwait(false);
+                videos.AddRange(page.Elements);
+            } while (page.Elements.Any());
+
+            return videos;
+        }
 
         public async Task<IEnumerable<VideoValidationStatus>> GetBulkVideoValidationStatusByIdsAsync(
             IEnumerable<string> videoIds,
@@ -170,11 +188,11 @@ namespace Etherna.Sdk.Users.Index.Clients
                 creationDateTime: response.CreationDateTime);
         }
 
-        public async Task<PublishedVideo> GetVideoByIdAsync(string videoId,
+        public async Task<IndexedVideo> GetVideoByIdAsync(string videoId,
             CancellationToken cancellationToken = default)
         {
             var response = await generatedVideosClient.Find2Async(videoId, cancellationToken).ConfigureAwait(false);
-            return new PublishedVideo(
+            return new IndexedVideo(
                 id: response.Id,
                 creationDateTime: response.CreationDateTime,
                 currentVoteValue: response.CurrentVoteValue.HasValue ?
@@ -204,18 +222,18 @@ namespace Etherna.Sdk.Users.Index.Clients
                                     path: s.Path,
                                     width: s.Width))),
                             updatedAt: response.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.UpdatedAt.Value)),
-                        version: null) : null,
+                        manifestVersion: null) : null,
                 ownerAddress: response.OwnerAddress,
                 totDownvotes: response.TotDownvotes,
                 totUpvotes: response.TotUpvotes);
         }
 
-        public async Task<PublishedVideo> GetVideoByManifestAsync(
+        public async Task<IndexedVideo> GetVideoByManifestAsync(
             SwarmHash manifestHash,
             CancellationToken cancellationToken = default)
         {
             var response = await generatedVideosClient.Manifest2Async(manifestHash.ToString(), cancellationToken).ConfigureAwait(false);
-            return new PublishedVideo(
+            return new IndexedVideo(
                 id: response.Id,
                 creationDateTime: response.CreationDateTime,
                 currentVoteValue: response.CurrentVoteValue.HasValue ?
@@ -245,7 +263,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                                     path: s.Path,
                                     width: s.Width))),
                             updatedAt: response.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.UpdatedAt.Value)),
-                        version: null) : null,
+                        manifestVersion: null) : null,
                 ownerAddress: response.OwnerAddress,
                 totDownvotes: response.TotDownvotes,
                 totUpvotes: response.TotUpvotes);
@@ -270,13 +288,13 @@ namespace Etherna.Sdk.Users.Index.Clients
                 result.MaxPage);
         }
 
-        public async Task<PaginatedResult<PublishedVideo>> GetVideosByOwnerAsync(string userAddress, int? page = null,
+        public async Task<PaginatedResult<IndexedVideo>> GetVideosByOwnerAsync(string userAddress, int? page = null,
             int? take = null,
             CancellationToken cancellationToken = default)
         {
             var result = await generatedUsersClient.Videos3Async(userAddress, page, take, cancellationToken).ConfigureAwait(false);
-            return new PaginatedResult<PublishedVideo>(
-                result.Elements.Select(v => new PublishedVideo(
+            return new PaginatedResult<IndexedVideo>(
+                result.Elements.Select(v => new IndexedVideo(
                     id: v.Id,
                     creationDateTime: v.CreationDateTime,
                     currentVoteValue: v.CurrentVoteValue.HasValue ?
@@ -306,7 +324,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                                         path: s.Path,
                                         width: s.Width))),
                                 updatedAt: v.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(v.LastValidManifest.UpdatedAt.Value)),
-                            version: null) : null,
+                            manifestVersion: null) : null,
                     ownerAddress: v.OwnerAddress,
                     totDownvotes: v.TotDownvotes,
                     totUpvotes: v.TotUpvotes)),

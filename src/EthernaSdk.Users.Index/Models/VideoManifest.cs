@@ -98,5 +98,13 @@ namespace Etherna.Sdk.Users.Index.Models
         public IEnumerable<VideoManifestVideoSource> Sources { get; } = sources;
         public VideoManifestImage? Thumbnail { get; } = thumbnail;
         public DateTimeOffset? UpdatedAt { get; } = updatedAt;
+        
+        // Methods.
+        public VideoManifestPersonalData? TryParsePersonalData()
+        {
+            if (PersonalData is null) return null;
+            return VideoManifestPersonalData.TryDeserialize(PersonalData, out var personalDataObj)
+                ? personalDataObj : null;
+        }
     }
 }

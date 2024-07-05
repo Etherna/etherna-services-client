@@ -12,8 +12,6 @@
 // You should have received a copy of the GNU Affero General Public License along with Etherna Video Importer.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet.Hasher;
-using Nethereum.Hex.HexConvertors.Extensions;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Users.Index.Serialization.Dtos.PersonalData1
@@ -25,23 +23,23 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.PersonalData1
         public ManifestPersonalDataDto(
             string clientName,
             string clientVersion,
-            string sourceName,
-            string sourceVideoId)
+            string sourceProviderName,
+            string sourceVideoIdHash)
         {
-            var hashProvider = new HashProvider();
-
             CliName = clientName;
             CliV = clientVersion;
-            SrcName = sourceName;
-            SrcVIdHash = hashProvider.ComputeHash(sourceVideoId).ToHex();
+            SrcName = sourceProviderName;
+            SrcVIdHash = sourceVideoIdHash;
         }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private ManifestPersonalDataDto() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         
         // Properties.
-        public string? CliName { get; set; }
-        public string? CliV { get; set; }
-        public string? SrcName { get; set; }
-        public string? SrcVIdHash { get; set; }
+        public string CliName { get; private set; }
+        public string CliV { get; private set; }
+        public string SrcName { get; private set; }
+        public string SrcVIdHash { get; private set; }
         public string V => "1";
     }
 }
