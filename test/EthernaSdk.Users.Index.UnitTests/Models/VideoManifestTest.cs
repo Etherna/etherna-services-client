@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace Etherna.Sdk.Users.Index.Models
                             ownerAddress: "0x7cd4878e21d9ce3da6611ae27a1b73827af81374",
                             personalData: "my personal data",
                             sources: new []{ new VideoManifestVideoSource(
-                                path: "sources/hls/720p.m3u8",
+                                uri: new SwarmUri("sources/hls/720p.m3u8", UriKind.Relative),
                                 type: "hls",
                                 quality: null,
                                 size: 45678)},
@@ -57,7 +58,7 @@ namespace Etherna.Sdk.Users.Index.Models
                                 aspectRatio: 0.123f,
                                 "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
                                 new []{ new VideoManifestImageSource(
-                                    path: "thumb/720-png",
+                                    uri: new SwarmUri("thumb/720-png", UriKind.Relative),
                                     type: "png",
                                     width: 720) }),
                             updatedAt: new DateTimeOffset(2024, 07, 12, 12, 01, 08, TimeSpan.Zero)),

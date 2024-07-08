@@ -33,11 +33,11 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         public Manifest2ThumbnailSourceDto(
             int width,
             Manifest2ThumbnailSourceType type,
-            string path)
+            SwarmUri path)
         {
             Width = width;
             Type = type.ToString();
-            Path = path;
+            Path = path.ToString();
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private Manifest2ThumbnailSourceDto() { }

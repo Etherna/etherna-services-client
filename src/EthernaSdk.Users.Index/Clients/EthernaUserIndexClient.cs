@@ -144,7 +144,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                         blurhash: v.Thumbnail.Blurhash,
                         sources: v.Thumbnail.Sources.Select(s => new VideoManifestImageSource(
                             type: s.Type ?? "jpeg",
-                            path: s.Path,
+                            uri: s.Path,
                             width: s.Width))),
                     title: v.Title,
                     updatedAt: v.UpdatedAt)),
@@ -212,14 +212,14 @@ namespace Etherna.Sdk.Users.Index.Clients
                             sources: response.LastValidManifest.Sources.Select(s => new VideoManifestVideoSource(
                                 type: s.Type,
                                 quality: s.Quality,
-                                path: s.Path,
+                                uri: s.Path,
                                 size: s.Size)),
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: response.LastValidManifest.Thumbnail.AspectRatio,
                                 blurhash: response.LastValidManifest.Thumbnail.Blurhash,
                                 sources: response.LastValidManifest.Thumbnail.Sources.Select(s => new VideoManifestImageSource(
                                     type: s.Type ?? "jpeg",
-                                    path: s.Path,
+                                    uri: s.Path,
                                     width: s.Width))),
                             updatedAt: response.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.UpdatedAt.Value)),
                         manifestVersion: null) : null,
@@ -253,14 +253,14 @@ namespace Etherna.Sdk.Users.Index.Clients
                             sources: response.LastValidManifest.Sources.Select(s => new VideoManifestVideoSource(
                                 type: s.Type,
                                 quality: s.Quality,
-                                path: s.Path,
+                                uri: s.Path,
                                 size: s.Size)),
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: response.LastValidManifest.Thumbnail.AspectRatio,
                                 blurhash: response.LastValidManifest.Thumbnail.Blurhash,
                                 sources: response.LastValidManifest.Thumbnail.Sources.Select(s => new VideoManifestImageSource(
                                     type: s.Type ?? "jpeg",
-                                    path: s.Path,
+                                    uri: s.Path,
                                     width: s.Width))),
                             updatedAt: response.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.UpdatedAt.Value)),
                         manifestVersion: null) : null,
@@ -314,14 +314,14 @@ namespace Etherna.Sdk.Users.Index.Clients
                                 sources: v.LastValidManifest.Sources.Select(s => new VideoManifestVideoSource(
                                     type: s.Type,
                                     quality: s.Quality,
-                                    path: s.Path,
+                                    uri: s.Path,
                                     size: s.Size)),
                                 thumbnail: new VideoManifestImage(
                                     aspectRatio: v.LastValidManifest.Thumbnail.AspectRatio,
                                     blurhash: v.LastValidManifest.Thumbnail.Blurhash,
                                     sources: v.LastValidManifest.Thumbnail.Sources.Select(s => new VideoManifestImageSource(
                                         type: s.Type ?? "jpeg",
-                                        path: s.Path,
+                                        uri: s.Path,
                                         width: s.Width))),
                                 updatedAt: v.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(v.LastValidManifest.UpdatedAt.Value)),
                             manifestVersion: null) : null,

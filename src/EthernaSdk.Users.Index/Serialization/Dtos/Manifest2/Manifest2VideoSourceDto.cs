@@ -32,11 +32,11 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         public Manifest2VideoSourceDto(
             Manifest2VideoSourceType type,
             string? quality,
-            string path,
+            SwarmUri path,
             long size)
         {
             Quality = quality;
-            Path = path;
+            Path = path.ToString();
             Size = size;
             Type = type.ToString();
         }

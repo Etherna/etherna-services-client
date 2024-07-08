@@ -56,7 +56,7 @@ namespace Etherna.Sdk.Users.Index.Models
                 sources: Sources.Select(s => new Manifest2VideoSourceDto(
                     type: Enum.Parse<Manifest2VideoSourceType>(s.Type),
                     quality: s.Quality,
-                    path: s.Path,
+                    path: s.Uri,
                     size: s.Size)));
             return JsonSerializer.Serialize(manifestDetails, jsonSerializerOptions);
         }
@@ -76,7 +76,7 @@ namespace Etherna.Sdk.Users.Index.Models
                         sources: Thumbnail.Sources.Select(s => new Manifest2ThumbnailSourceDto(
                             width: s.Width,
                             type: Enum.Parse<Manifest2ThumbnailSourceType>(s.Type),
-                            path: s.Path))));
+                            path: s.Uri))));
             return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         

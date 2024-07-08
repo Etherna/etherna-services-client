@@ -17,15 +17,15 @@ using Etherna.BeeNet.Models;
 namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestVideoSource(
-        string path,
+        SwarmUri uri,
         string type,
         string? quality,
         long size)
     {
         // Properties.
-        public string Path { get; } = path;
         public string Type { get; } = type;
         public string? Quality { get; } = quality;
         public long Size { get; } = size;
+        public SwarmUri Uri { get; } = uri;
     }
 }
