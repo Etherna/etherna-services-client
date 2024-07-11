@@ -12,7 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet.Hasher;
+using Etherna.BeeNet.Hashing;
 using Etherna.Sdk.Users.Index.Serialization.Dtos.PersonalData1;
 using Nethereum.Hex.HexConvertors.Extensions;
 using System.Text.Json;
@@ -36,12 +36,12 @@ namespace Etherna.Sdk.Users.Index.Models
             string sourceProviderName,
             string sourceVideoId)
         {
-            var hashProvider = new HashProvider();
+            var hasher = new Hasher();
             
             ClientName = clientName;
             ClientVersion = clientVersion;
             SourceProviderName = sourceProviderName;
-            SourceVideoIdHash = hashProvider.ComputeHash(sourceVideoId).ToHex();
+            SourceVideoIdHash = hasher.ComputeHash(sourceVideoId).ToHex();
         }
 
         // Properties.
