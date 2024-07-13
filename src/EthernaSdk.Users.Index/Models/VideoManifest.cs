@@ -52,7 +52,7 @@ namespace Etherna.Sdk.Users.Index.Models
                 description: Description,
                 aspectRatio: AspectRatio,
                 batchId: BatchId,
-                personalData: PersonalData,
+                personalData: PersonalDataRaw,
                 sources: Sources.Select(s => new Manifest2VideoSourceDto(
                     type: Enum.Parse<Manifest2VideoSourceType>(s.Type),
                     quality: s.Quality,
@@ -94,17 +94,18 @@ namespace Etherna.Sdk.Users.Index.Models
         public TimeSpan Duration { get; } = duration;
         public string Title { get; } = title;
         public string OwnerAddress { get; } = ownerAddress;
-        public string? PersonalData { get; } = personalData;
+        public VideoManifestPersonalData? PersonalData { get; } = TryParsePersonalData(personalData);
+        public string? PersonalDataRaw { get; } = personalData;
         public IEnumerable<VideoManifestVideoSource> Sources { get; } = sources;
         public VideoManifestImage? Thumbnail { get; } = thumbnail;
         public DateTimeOffset? UpdatedAt { get; } = updatedAt;
         
         // Methods.
-        public VideoManifestPersonalData? TryParsePersonalData()
+        private static VideoManifestPersonalData? TryParsePersonalData(string? personalDataRaw)
         {
-            if (PersonalData is null) return null;
-            return VideoManifestPersonalData.TryDeserialize(PersonalData, out var personalDataObj)
-                ? personalDataObj : null;
+            if (personalDataRaw is null) return null;
+            return VideoManifestPersonalData.TryDeserialize(personalDataRaw, out var personalData)
+                ? personalData : null;
         }
     }
 }
