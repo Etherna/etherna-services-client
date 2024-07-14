@@ -35,7 +35,7 @@ namespace Etherna.Sdk.Users.Index.Models
         string ownerAddress,
         string? personalData,
         IEnumerable<VideoManifestVideoSource> sources,
-        VideoManifestImage? thumbnail,
+        VideoManifestImage thumbnail,
         DateTimeOffset? updatedAt)
     {
         // Fields.
@@ -69,14 +69,13 @@ namespace Etherna.Sdk.Users.Index.Models
                 updatedAt: UpdatedAt?.ToUnixTimeSeconds(),
                 ownerAddress: OwnerAddress,
                 duration: (long)Duration.TotalSeconds,
-                thumbnail: Thumbnail is null ? null :
-                    new Manifest2ThumbnailDto(
-                        aspectRatio: Thumbnail.AspectRatio,
-                        blurhash: Thumbnail.Blurhash,
-                        sources: Thumbnail.Sources.Select(s => new Manifest2ThumbnailSourceDto(
-                            width: s.Width,
-                            type: Enum.Parse<Manifest2ThumbnailSourceType>(s.Type),
-                            path: s.Uri))));
+                thumbnail: new Manifest2ThumbnailDto(
+                    aspectRatio: Thumbnail.AspectRatio,
+                    blurhash: Thumbnail.Blurhash,
+                    sources: Thumbnail.Sources.Select(s => new Manifest2ThumbnailSourceDto(
+                        width: s.Width,
+                        type: Enum.Parse<Manifest2ThumbnailSourceType>(s.Type),
+                        path: s.Uri))));
             return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         
@@ -97,7 +96,7 @@ namespace Etherna.Sdk.Users.Index.Models
         public VideoManifestPersonalData? PersonalData { get; } = TryParsePersonalData(personalData);
         public string? PersonalDataRaw { get; } = personalData;
         public IEnumerable<VideoManifestVideoSource> Sources { get; } = sources;
-        public VideoManifestImage? Thumbnail { get; } = thumbnail;
+        public VideoManifestImage Thumbnail { get; } = thumbnail;
         public DateTimeOffset? UpdatedAt { get; } = updatedAt;
         
         // Methods.
