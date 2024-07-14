@@ -63,7 +63,7 @@ namespace Etherna.Sdk.Users.Index.Models
                                     width: 720) }),
                             updatedAt: new DateTimeOffset(2024, 07, 12, 12, 01, 08, TimeSpan.Zero)),
                         """{"v":"2.0","title":"I\u0027m a title","createdAt":1720111542,"updatedAt":1720785668,"ownerAddress":"0x7cd4878e21d9ce3da6611ae27a1b73827af81374","duration":42,"thumbnail":{"aspectRatio":0.123,"blurhash":"UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay","sources":[{"width":720,"type":"png","path":"thumb/720-png"}]}}""",
-                        """{"description":"My description","aspectRatio":0.123,"sources":[{"type":"hls","path":"sources/hls/720p.m3u8","size":45678}],"batchId":"f389278a2fa242de94e858e318bbfa7c10489533797ff923f9aa4524fabfcd34","personalData":"my personal data"}""")
+                        """{"description":"My description","aspectRatio":0.123,"batchId":"f389278a2fa242de94e858e318bbfa7c10489533797ff923f9aa4524fabfcd34","personalData":"my personal data","sources":[{"type":"hls","path":"sources/hls/720p.m3u8","size":45678}]}""")
                 };
 
                 return tests.Select(t => new object[] { t });
