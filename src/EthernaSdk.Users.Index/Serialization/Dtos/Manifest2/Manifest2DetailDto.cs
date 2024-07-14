@@ -47,7 +47,6 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         // Properties.
         public string Description { get; private set; }
         public float AspectRatio { get; private set; }
-        public IEnumerable<Manifest2VideoSourceDto> Sources { get; private set; }
         public string BatchId { get; private set; }
         public string? PersonalData
         {
@@ -59,5 +58,6 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
                 _personalData = value;
             }
         }
+        public IEnumerable<Manifest2VideoSourceDto> Sources { get; private set; }
     }
 }

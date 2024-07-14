@@ -46,7 +46,7 @@ namespace Etherna.Sdk.Users.Index.Models
         };
         
         // Methods.
-        public string SerializeManifestDetail()
+        public string SerializeDetailsManifest()
         {
             var manifestDetails = new Manifest2DetailDto(
                 description: Description,
@@ -61,7 +61,7 @@ namespace Etherna.Sdk.Users.Index.Models
             return JsonSerializer.Serialize(manifestDetails, jsonSerializerOptions);
         }
 
-        public string SerializeManifestPreview()
+        public string SerializePreviewManifest()
         {
             var manifestPreview = new Manifest2PreviewDto(
                 title: Title,

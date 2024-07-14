@@ -74,8 +74,8 @@ namespace Etherna.Sdk.Users.Index.Models
         [Theory, MemberData(nameof(SerializeManifestTests))]
         public void SerializeManifest(SerializeManifestTestElement test)
         {
-            var previewResult = test.Manifest.SerializeManifestPreview();
-            var detailResult = test.Manifest.SerializeManifestDetail();
+            var previewResult = test.Manifest.SerializePreviewManifest();
+            var detailResult = test.Manifest.SerializeDetailsManifest();
             
             Assert.Equal(test.ExpectedPreviewResult, previewResult);
             Assert.Equal(test.ExpectedDetailResult, detailResult);
