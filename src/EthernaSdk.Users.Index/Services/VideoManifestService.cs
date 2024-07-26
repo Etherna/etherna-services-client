@@ -68,7 +68,9 @@ namespace Etherna.Sdk.Users.Index.Services
                     chunkStore,
                     postageStamper,
                     RedundancyLevel.None,
-                    false),
+                    false,
+                    0,
+                    null),
                 false);
             
             //add default (preview)
@@ -102,7 +104,7 @@ namespace Etherna.Sdk.Users.Index.Services
                         [ManifestEntry.FilenameKey] = DetailsManifestFileName
                     }));
 
-            return await rootManifest.GetHashAsync().ConfigureAwait(false);
+            return (await rootManifest.GetHashAsync().ConfigureAwait(false)).Hash;
         }
     }
 }
