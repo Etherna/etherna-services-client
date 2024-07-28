@@ -18,5 +18,6 @@ If not, see &lt;https://www.gnu.org/licenses/&gt;.</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=downvotes/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=dtos/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Etherna/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=mantaray/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=upvotes/@EntryIndexedValue">True</s:Boolean>
 	</wpf:ResourceDictionary>

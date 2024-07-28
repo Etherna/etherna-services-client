@@ -13,17 +13,29 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
+using System;
+using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestImageSource(
-        SwarmUri uri,
-        string type,
+        SwarmUri manifestUri,
+        ImageSourceType type,
         int width)
     {
         // Properties.
-        public string Type { get; } = type;
+        public SwarmHash? AbsoluteHash { get; set; }
+        public string FileName => ManifestUri.ToString().Split(SwarmAddress.Separator).Last();
+        public SwarmUri ManifestUri { get; } = manifestUri;
+        public string MimeContentType => Type switch
+        {
+            ImageSourceType.Avif => "image/avif",
+            ImageSourceType.Jpeg => "image/jpeg",
+            ImageSourceType.Png => "image/png",
+            ImageSourceType.Webp => "image/webp",
+            _ => throw new NotSupportedException()
+        };
+        public ImageSourceType Type { get; } = type;
         public int Width { get; } = width;
-        public SwarmUri Uri { get; } = uri;
     }
 }

@@ -63,7 +63,7 @@ namespace Etherna.Sdk.Users.Index.Services
             // Create mantaray root manifest.
             var chunkStore = new LocalDirectoryChunkStore(chunkDirectory, createDirectory);
             var postageStamper = new FakePostageStamper();
-            var rootManifest = new MantarayManifest(
+            var mantarayManifest = new MantarayManifest(
                 () => HasherPipelineBuilder.BuildNewHasherPipeline(
                     chunkStore,
                     postageStamper,
@@ -74,7 +74,7 @@ namespace Etherna.Sdk.Users.Index.Services
                 false);
             
             //add default (preview)
-            rootManifest.Add(
+            mantarayManifest.Add(
                 MantarayManifest.RootPath,
                 ManifestEntry.NewDirectory(
                     new Dictionary<string, string>
@@ -83,7 +83,7 @@ namespace Etherna.Sdk.Users.Index.Services
                     }));
             
             //add preview
-            rootManifest.Add(
+            mantarayManifest.Add(
                 PreviewManifestFileName,
                 ManifestEntry.NewFile(
                     previewManifestHash,
@@ -94,7 +94,7 @@ namespace Etherna.Sdk.Users.Index.Services
                     }));
             
             //add details
-            rootManifest.Add(
+            mantarayManifest.Add(
                 DetailsManifestFileName,
                 ManifestEntry.NewFile(
                     detailsManifestHash,
@@ -103,8 +103,44 @@ namespace Etherna.Sdk.Users.Index.Services
                         [ManifestEntry.ContentTypeKey] = ManifestContentType,
                         [ManifestEntry.FilenameKey] = DetailsManifestFileName
                     }));
+            
+            //add encoded video streams
+            foreach (var videoSource in manifest.VideoSources)
+            {
+                var absoluteHash = videoSource.AbsoluteHash;
+                if (absoluteHash is null)
+                    throw new InvalidOperationException("Video source absolute hash must be set here");
+                
+                mantarayManifest.Add(
+                    videoSource.ManifestUri.ToString(),
+                    ManifestEntry.NewFile(
+                        absoluteHash.Value,
+                        new Dictionary<string, string>
+                            {
+                                [ManifestEntry.ContentTypeKey] = videoSource.MimeContentType,
+                                [ManifestEntry.FilenameKey] = videoSource.FileName
+                            }));
+            }
+            
+            //add encoded thumbnail files
+            foreach (var thumbnailSource in manifest.Thumbnail.Sources)
+            {
+                var absoluteHash = thumbnailSource.AbsoluteHash;
+                if (absoluteHash is null)
+                    throw new InvalidOperationException("Image source absolute hash must be set here");
+                
+                mantarayManifest.Add(
+                    thumbnailSource.ManifestUri.ToString(),
+                    ManifestEntry.NewFile(
+                        absoluteHash.Value,
+                        new Dictionary<string, string>
+                        {
+                            [ManifestEntry.ContentTypeKey] = thumbnailSource.MimeContentType,
+                            [ManifestEntry.FilenameKey] = thumbnailSource.FileName
+                        }));
+            }
 
-            return (await rootManifest.GetHashAsync().ConfigureAwait(false)).Hash;
+            return (await mantarayManifest.GetHashAsync().ConfigureAwait(false)).Hash;
         }
     }
 }

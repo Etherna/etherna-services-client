@@ -49,8 +49,8 @@ namespace Etherna.Sdk.Users.Index.Models
                             title: "I'm a title",
                             ownerAddress: "0x7cd4878e21d9ce3da6611ae27a1b73827af81374",
                             personalData: "my personal data",
-                            sources: new []{ new VideoManifestVideoSource(
-                                uri: new SwarmUri("sources/hls/720p.m3u8", UriKind.Relative),
+                            videoSources: new []{ new VideoManifestVideoSource(
+                                manifestUri: new SwarmUri("sources/hls/720p.m3u8", UriKind.Relative),
                                 type: VideoSourceType.Hls,
                                 quality: null,
                                 size: 45678)},
@@ -58,8 +58,8 @@ namespace Etherna.Sdk.Users.Index.Models
                                 aspectRatio: 0.123f,
                                 "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
                                 new []{ new VideoManifestImageSource(
-                                    uri: new SwarmUri("thumb/720-png", UriKind.Relative),
-                                    type: "png",
+                                    manifestUri: new SwarmUri("thumb/720-png", UriKind.Relative),
+                                    type: ImageSourceType.Png,
                                     width: 720) }),
                             updatedAt: new DateTimeOffset(2024, 07, 12, 12, 01, 08, TimeSpan.Zero)),
                         """{"v":"2.0","title":"I\u0027m a title","createdAt":1720111542,"updatedAt":1720785668,"ownerAddress":"0x7cd4878e21d9ce3da6611ae27a1b73827af81374","duration":42,"thumbnail":{"aspectRatio":0.123,"blurhash":"UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay","sources":[{"width":720,"type":"png","path":"thumb/720-png"}]}}""",

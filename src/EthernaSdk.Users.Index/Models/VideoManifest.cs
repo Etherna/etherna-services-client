@@ -34,7 +34,7 @@ namespace Etherna.Sdk.Users.Index.Models
         string title,
         string ownerAddress,
         string? personalData,
-        IEnumerable<VideoManifestVideoSource> sources,
+        IEnumerable<VideoManifestVideoSource> videoSources,
         VideoManifestImage thumbnail,
         DateTimeOffset? updatedAt)
     {
@@ -53,10 +53,10 @@ namespace Etherna.Sdk.Users.Index.Models
                 aspectRatio: AspectRatio,
                 batchId: BatchId,
                 personalData: PersonalDataRaw,
-                sources: Sources.Select(s => new Manifest2VideoSourceDto(
+                sources: VideoSources.Select(s => new Manifest2VideoSourceDto(
                     type: s.Type,
                     quality: s.Quality,
-                    path: s.Uri,
+                    path: s.ManifestUri,
                     size: s.Size)));
             return JsonSerializer.Serialize(manifestDetails, jsonSerializerOptions);
         }
@@ -74,8 +74,8 @@ namespace Etherna.Sdk.Users.Index.Models
                     blurhash: Thumbnail.Blurhash,
                     sources: Thumbnail.Sources.Select(s => new Manifest2ThumbnailSourceDto(
                         width: s.Width,
-                        type: Enum.Parse<Manifest2ThumbnailSourceType>(s.Type),
-                        path: s.Uri))));
+                        type: s.Type,
+                        path: s.ManifestUri))));
             return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         
@@ -95,9 +95,9 @@ namespace Etherna.Sdk.Users.Index.Models
         public string OwnerAddress { get; } = ownerAddress;
         public VideoManifestPersonalData? PersonalData { get; } = TryParsePersonalData(personalData);
         public string? PersonalDataRaw { get; } = personalData;
-        public IEnumerable<VideoManifestVideoSource> Sources { get; } = sources;
         public VideoManifestImage Thumbnail { get; } = thumbnail;
         public DateTimeOffset? UpdatedAt { get; } = updatedAt;
+        public IEnumerable<VideoManifestVideoSource> VideoSources { get; } = videoSources;
         
         // Methods.
         private static VideoManifestPersonalData? TryParsePersonalData(string? personalDataRaw)

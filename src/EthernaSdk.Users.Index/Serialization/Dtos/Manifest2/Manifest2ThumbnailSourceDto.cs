@@ -13,30 +13,22 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using System;
+using Etherna.Sdk.Users.Index.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public enum Manifest2ThumbnailSourceType
-    {
-        jpeg,
-        png,
-        webp,
-        avif
-    }
-    
+    [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase")]
     public class Manifest2ThumbnailSourceDto
     {
         // Constructors.
         public Manifest2ThumbnailSourceDto(
             int width,
-            Manifest2ThumbnailSourceType type,
+            ImageSourceType type,
             SwarmUri path)
         {
             Width = width;
-            Type = type.ToString();
+            Type = type.ToString().ToLowerInvariant();
             Path = path.ToString();
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

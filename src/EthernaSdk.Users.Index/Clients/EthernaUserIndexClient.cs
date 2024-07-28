@@ -142,10 +142,16 @@ namespace Etherna.Sdk.Users.Index.Clients
                     thumbnail: new VideoManifestImage(
                         aspectRatio: v.Thumbnail.AspectRatio,
                         blurhash: v.Thumbnail.Blurhash,
-                        sources: v.Thumbnail.Sources.Select(s => new VideoManifestImageSource(
-                            type: s.Type ?? "jpeg",
-                            uri: s.Path,
-                            width: s.Width))),
+                        sources: v.Thumbnail.Sources.Select(s =>
+                        {
+                            if (!Enum.TryParse<ImageSourceType>(s.Type, true, out var sourceType))
+                                sourceType = ImageSourceType.Jpeg;
+
+                            return new VideoManifestImageSource(
+                                type: sourceType,
+                                manifestUri: s.Path,
+                                width: s.Width);
+                        })),
                     title: v.Title,
                     updatedAt: v.UpdatedAt)),
                 result.TotalElements,
@@ -209,7 +215,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                             title: response.LastValidManifest.Title ?? "",
                             response.OwnerAddress,
                             personalData: response.LastValidManifest.PersonalData,
-                            sources: response.LastValidManifest.Sources.Select(s =>
+                            videoSources: response.LastValidManifest.Sources.Select(s =>
                             {
                                 if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
                                     sourceType = VideoSourceType.Mp4;
@@ -217,16 +223,22 @@ namespace Etherna.Sdk.Users.Index.Clients
                                 return new VideoManifestVideoSource(
                                     type: sourceType,
                                     quality: s.Quality,
-                                    uri: s.Path,
+                                    manifestUri: s.Path,
                                     size: s.Size);
                             }),
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: response.LastValidManifest.Thumbnail.AspectRatio,
                                 blurhash: response.LastValidManifest.Thumbnail.Blurhash,
-                                sources: response.LastValidManifest.Thumbnail.Sources.Select(s => new VideoManifestImageSource(
-                                    type: s.Type ?? "jpeg",
-                                    uri: s.Path,
-                                    width: s.Width))),
+                                sources: response.LastValidManifest.Thumbnail.Sources.Select(s =>
+                                {
+                                    if (!Enum.TryParse<ImageSourceType>(s.Type, true, out var sourceType))
+                                        sourceType = ImageSourceType.Jpeg;
+
+                                    return new VideoManifestImageSource(
+                                        type: sourceType,
+                                        manifestUri: s.Path,
+                                        width: s.Width);
+                                })),
                             updatedAt: response.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.UpdatedAt.Value)),
                         manifestVersion: null) : null,
                 ownerAddress: response.OwnerAddress,
@@ -256,7 +268,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                             title: response.LastValidManifest.Title ?? "",
                             response.OwnerAddress,
                             personalData: response.LastValidManifest.PersonalData,
-                            sources: response.LastValidManifest.Sources.Select(s =>
+                            videoSources: response.LastValidManifest.Sources.Select(s =>
                             {
                                 if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
                                     sourceType = VideoSourceType.Mp4;
@@ -264,16 +276,22 @@ namespace Etherna.Sdk.Users.Index.Clients
                                 return new VideoManifestVideoSource(
                                     type: sourceType,
                                     quality: s.Quality,
-                                    uri: s.Path,
+                                    manifestUri: s.Path,
                                     size: s.Size);
                             }),
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: response.LastValidManifest.Thumbnail.AspectRatio,
                                 blurhash: response.LastValidManifest.Thumbnail.Blurhash,
-                                sources: response.LastValidManifest.Thumbnail.Sources.Select(s => new VideoManifestImageSource(
-                                    type: s.Type ?? "jpeg",
-                                    uri: s.Path,
-                                    width: s.Width))),
+                                sources: response.LastValidManifest.Thumbnail.Sources.Select(s =>
+                                {
+                                    if (!Enum.TryParse<ImageSourceType>(s.Type, true, out var sourceType))
+                                        sourceType = ImageSourceType.Jpeg;
+
+                                    return new VideoManifestImageSource(
+                                        type: sourceType,
+                                        manifestUri: s.Path,
+                                        width: s.Width);
+                                })),
                             updatedAt: response.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.UpdatedAt.Value)),
                         manifestVersion: null) : null,
                 ownerAddress: response.OwnerAddress,
@@ -323,7 +341,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                                 title: v.LastValidManifest.Title ?? "",
                                 v.OwnerAddress,
                                 personalData: v.LastValidManifest.PersonalData,
-                                sources: v.LastValidManifest.Sources.Select(s =>
+                                videoSources: v.LastValidManifest.Sources.Select(s =>
                                 {
                                     if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
                                         sourceType = VideoSourceType.Mp4;
@@ -331,16 +349,22 @@ namespace Etherna.Sdk.Users.Index.Clients
                                     return new VideoManifestVideoSource(
                                         type: sourceType,
                                         quality: s.Quality,
-                                        uri: s.Path,
+                                        manifestUri: s.Path,
                                         size: s.Size);
                                 }),
                                 thumbnail: new VideoManifestImage(
                                     aspectRatio: v.LastValidManifest.Thumbnail.AspectRatio,
                                     blurhash: v.LastValidManifest.Thumbnail.Blurhash,
-                                    sources: v.LastValidManifest.Thumbnail.Sources.Select(s => new VideoManifestImageSource(
-                                        type: s.Type ?? "jpeg",
-                                        uri: s.Path,
-                                        width: s.Width))),
+                                    sources: v.LastValidManifest.Thumbnail.Sources.Select(s =>
+                                    {
+                                        if (!Enum.TryParse<ImageSourceType>(s.Type, true, out var sourceType))
+                                            sourceType = ImageSourceType.Jpeg;
+
+                                        return new VideoManifestImageSource(
+                                            type: sourceType,
+                                            manifestUri: s.Path,
+                                            width: s.Width);
+                                    })),
                                 updatedAt: v.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(v.LastValidManifest.UpdatedAt.Value)),
                             manifestVersion: null) : null,
                     ownerAddress: v.OwnerAddress,
