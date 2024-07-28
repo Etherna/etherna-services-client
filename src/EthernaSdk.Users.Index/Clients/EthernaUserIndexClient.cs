@@ -209,11 +209,17 @@ namespace Etherna.Sdk.Users.Index.Clients
                             title: response.LastValidManifest.Title ?? "",
                             response.OwnerAddress,
                             personalData: response.LastValidManifest.PersonalData,
-                            sources: response.LastValidManifest.Sources.Select(s => new VideoManifestVideoSource(
-                                type: s.Type,
-                                quality: s.Quality,
-                                uri: s.Path,
-                                size: s.Size)),
+                            sources: response.LastValidManifest.Sources.Select(s =>
+                            {
+                                if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
+                                    sourceType = VideoSourceType.Mp4;
+
+                                return new VideoManifestVideoSource(
+                                    type: sourceType,
+                                    quality: s.Quality,
+                                    uri: s.Path,
+                                    size: s.Size);
+                            }),
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: response.LastValidManifest.Thumbnail.AspectRatio,
                                 blurhash: response.LastValidManifest.Thumbnail.Blurhash,
@@ -250,11 +256,17 @@ namespace Etherna.Sdk.Users.Index.Clients
                             title: response.LastValidManifest.Title ?? "",
                             response.OwnerAddress,
                             personalData: response.LastValidManifest.PersonalData,
-                            sources: response.LastValidManifest.Sources.Select(s => new VideoManifestVideoSource(
-                                type: s.Type,
-                                quality: s.Quality,
-                                uri: s.Path,
-                                size: s.Size)),
+                            sources: response.LastValidManifest.Sources.Select(s =>
+                            {
+                                if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
+                                    sourceType = VideoSourceType.Mp4;
+
+                                return new VideoManifestVideoSource(
+                                    type: sourceType,
+                                    quality: s.Quality,
+                                    uri: s.Path,
+                                    size: s.Size);
+                            }),
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: response.LastValidManifest.Thumbnail.AspectRatio,
                                 blurhash: response.LastValidManifest.Thumbnail.Blurhash,
@@ -311,11 +323,17 @@ namespace Etherna.Sdk.Users.Index.Clients
                                 title: v.LastValidManifest.Title ?? "",
                                 v.OwnerAddress,
                                 personalData: v.LastValidManifest.PersonalData,
-                                sources: v.LastValidManifest.Sources.Select(s => new VideoManifestVideoSource(
-                                    type: s.Type,
-                                    quality: s.Quality,
-                                    uri: s.Path,
-                                    size: s.Size)),
+                                sources: v.LastValidManifest.Sources.Select(s =>
+                                {
+                                    if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
+                                        sourceType = VideoSourceType.Mp4;
+                                    
+                                    return new VideoManifestVideoSource(
+                                        type: sourceType,
+                                        quality: s.Quality,
+                                        uri: s.Path,
+                                        size: s.Size);
+                                }),
                                 thumbnail: new VideoManifestImage(
                                     aspectRatio: v.LastValidManifest.Thumbnail.AspectRatio,
                                     blurhash: v.LastValidManifest.Thumbnail.Blurhash,

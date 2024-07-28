@@ -12,20 +12,12 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet.Models;
-
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifestVideoSource(
-        SwarmUri uri,
-        VideoSourceType type,
-        string? quality,
-        long size)
+    public enum VideoSourceType
     {
-        // Properties.
-        public VideoSourceType Type { get; } = type;
-        public string? Quality { get; } = quality;
-        public long Size { get; } = size;
-        public SwarmUri Uri { get; } = uri;
+        Dash,
+        Hls,
+        Mp4
     }
 }

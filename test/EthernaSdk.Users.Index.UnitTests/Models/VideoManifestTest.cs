@@ -51,7 +51,7 @@ namespace Etherna.Sdk.Users.Index.Models
                             personalData: "my personal data",
                             sources: new []{ new VideoManifestVideoSource(
                                 uri: new SwarmUri("sources/hls/720p.m3u8", UriKind.Relative),
-                                type: "hls",
+                                type: VideoSourceType.Hls,
                                 quality: null,
                                 size: 45678)},
                             thumbnail: new VideoManifestImage(

@@ -54,7 +54,7 @@ namespace Etherna.Sdk.Users.Index.Models
                 batchId: BatchId,
                 personalData: PersonalDataRaw,
                 sources: Sources.Select(s => new Manifest2VideoSourceDto(
-                    type: Enum.Parse<Manifest2VideoSourceType>(s.Type),
+                    type: s.Type,
                     quality: s.Quality,
                     path: s.Uri,
                     size: s.Size)));

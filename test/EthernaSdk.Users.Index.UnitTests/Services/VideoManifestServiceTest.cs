@@ -54,7 +54,7 @@ namespace Etherna.Sdk.Users.Index.Services
                 {
                     new VideoManifestVideoSource(
                         uri: new SwarmUri("sources/hls/720p.m3u8", UriKind.Relative),
-                        type: "hls",
+                        type: VideoSourceType.Hls,
                         quality: null,
                         size: 45678)
                 },

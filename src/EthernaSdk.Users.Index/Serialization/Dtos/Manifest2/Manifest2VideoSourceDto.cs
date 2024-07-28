@@ -13,24 +13,17 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using System;
+using Etherna.Sdk.Users.Index.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public enum Manifest2VideoSourceType
-    {
-        mp4,
-        hls,
-        dash
-    }
-    
+    [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase")]
     public sealed class Manifest2VideoSourceDto
     {
         // Constructors.
         public Manifest2VideoSourceDto(
-            Manifest2VideoSourceType type,
+            VideoSourceType type,
             string? quality,
             SwarmUri path,
             long size)
@@ -38,7 +31,7 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
             Quality = quality;
             Path = path.ToString();
             Size = size;
-            Type = type.ToString();
+            Type = type.ToString().ToLowerInvariant();
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private Manifest2VideoSourceDto() { }
