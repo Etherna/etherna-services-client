@@ -25,9 +25,25 @@ namespace Etherna.Sdk.Users.Index.Models
         long size)
     {
         // Properties.
+        /// <summary>
+        /// Absolute resource hash.
+        /// Used to link internal mantaray path to resource, when Uri is relative
+        /// </summary>
         public SwarmHash? AbsoluteHash { get; set; }
-        public string FileName => ManifestUri.ToString().Split(SwarmAddress.Separator).Last();
+        
+        /// <summary>
+        /// The file name, used to set the download file name in mantaray
+        /// </summary>
+        public string FileName { get; set; } = manifestUri.ToString().Split(SwarmAddress.Separator).Last();
+
+        /// <summary>
+        /// The uri to use with the mantaray and video manifests
+        /// </summary>
         public SwarmUri ManifestUri { get; } = manifestUri;
+
+        /// <summary>
+        /// The video mime content type, used to set content type with the mantaray manifest
+        /// </summary>
         public string MimeContentType => Type switch
         {
             VideoSourceType.Dash => "application/dash+xml",
@@ -35,8 +51,20 @@ namespace Etherna.Sdk.Users.Index.Models
             VideoSourceType.Mp4 => "video/mp4",
             _ => throw new NotSupportedException()
         };
+        
+        /// <summary>
+        /// The video stream quality
+        /// </summary>
         public string? Quality { get; } = quality;
+
+        /// <summary>
+        /// The video stream byte size
+        /// </summary>
         public long Size { get; } = size;
+
+        /// <summary>
+        /// The video type, used to derive mime conten type
+        /// </summary>
         public VideoSourceType Type { get; } = type;
     }
 }

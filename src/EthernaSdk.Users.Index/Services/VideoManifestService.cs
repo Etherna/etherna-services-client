@@ -21,6 +21,7 @@ using Etherna.BeeNet.Services;
 using Etherna.Sdk.Users.Index.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -104,8 +105,9 @@ namespace Etherna.Sdk.Users.Index.Services
                         [ManifestEntry.FilenameKey] = DetailsManifestFileName
                     }));
             
-            //add encoded video streams
-            foreach (var videoSource in manifest.VideoSources)
+            //add encoded video streams, only if uri is relative
+            foreach (var videoSource in manifest.VideoSources.Where(
+                         vs => vs.ManifestUri.UriKind == UriKind.Relative))
             {
                 var absoluteHash = videoSource.AbsoluteHash;
                 if (absoluteHash is null)
@@ -122,8 +124,9 @@ namespace Etherna.Sdk.Users.Index.Services
                             }));
             }
             
-            //add encoded thumbnail files
-            foreach (var thumbnailSource in manifest.Thumbnail.Sources)
+            //add encoded thumbnail files, only if uri is relative
+            foreach (var thumbnailSource in manifest.Thumbnail.Sources.Where(
+                         ts => ts.ManifestUri.UriKind == UriKind.Relative))
             {
                 var absoluteHash = thumbnailSource.AbsoluteHash;
                 if (absoluteHash is null)
