@@ -32,11 +32,11 @@ namespace Etherna.Sdk.Users.Index.Models
         string description,
         TimeSpan duration,
         string title,
-        string ownerAddress,
+        string ownerEthAddress,
         string? personalData,
         IEnumerable<VideoManifestVideoSource> videoSources,
         VideoManifestImage thumbnail,
-        DateTimeOffset? updatedAt)
+        DateTimeOffset? updatedAt = null)
     {
         // Fields.
         private readonly JsonSerializerOptions jsonSerializerOptions = new()
@@ -67,7 +67,7 @@ namespace Etherna.Sdk.Users.Index.Models
                 title: Title,
                 createdAt: CreatedAt.ToUnixTimeSeconds(),
                 updatedAt: UpdatedAt?.ToUnixTimeSeconds(),
-                ownerAddress: OwnerAddress,
+                ownerEthAddress: OwnerEthAddress,
                 duration: (long)Duration.TotalSeconds,
                 thumbnail: new Manifest2ThumbnailDto(
                     aspectRatio: Thumbnail.AspectRatio,
@@ -92,11 +92,11 @@ namespace Etherna.Sdk.Users.Index.Models
         public string Description { get; } = description;
         public TimeSpan Duration { get; } = duration;
         public string Title { get; } = title;
-        public string OwnerAddress { get; } = ownerAddress;
+        public string OwnerEthAddress { get; } = ownerEthAddress;
         public VideoManifestPersonalData? PersonalData { get; } = TryParsePersonalData(personalData);
         public string? PersonalDataRaw { get; } = personalData;
         public VideoManifestImage Thumbnail { get; } = thumbnail;
-        public DateTimeOffset? UpdatedAt { get; } = updatedAt;
+        public DateTimeOffset? UpdatedAt { get; set; } = updatedAt;
         public IEnumerable<VideoManifestVideoSource> VideoSources { get; } = videoSources;
         
         // Methods.

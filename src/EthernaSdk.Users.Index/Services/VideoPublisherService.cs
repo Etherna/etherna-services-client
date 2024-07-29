@@ -39,7 +39,7 @@ namespace Etherna.Sdk.Users.Index.Services
         // Methods.
         public async Task<SwarmHash> CreateVideoManifestChunksAsync(
             VideoManifest manifest,
-            string chunkDirectory,
+            string chunksDirectory,
             bool createDirectory = true,
             IPostageStampIssuer? postageStampIssuer = null)
         {
@@ -56,17 +56,17 @@ namespace Etherna.Sdk.Users.Index.Services
             // Create video manifests chunks.
             var previewManifestHash = await chunkService.WriteDataChunksAsync(
                 previewManifestByteArray,
-                chunkDirectory,
+                chunksDirectory,
                 postageStampIssuer,
                 createDirectory).ConfigureAwait(false);
             var detailsManifestHash = await chunkService.WriteDataChunksAsync(
                 detailsManifestByteArray,
-                chunkDirectory,
+                chunksDirectory,
                 postageStampIssuer,
                 createDirectory).ConfigureAwait(false);
             
             // Create mantaray root manifest.
-            var chunkStore = new LocalDirectoryChunkStore(chunkDirectory, createDirectory);
+            var chunkStore = new LocalDirectoryChunkStore(chunksDirectory, createDirectory);
             IPostageStamper postageStamper = postageStampIssuer is null
                 ? new FakePostageStamper()
                 : new PostageStamper(

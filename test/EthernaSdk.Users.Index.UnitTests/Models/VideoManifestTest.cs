@@ -47,7 +47,7 @@ namespace Etherna.Sdk.Users.Index.Models
                             description: "My description",
                             duration: TimeSpan.FromSeconds(42),
                             title: "I'm a title",
-                            ownerAddress: "0x7cd4878e21d9ce3da6611ae27a1b73827af81374",
+                            ownerEthAddress: "0x7cd4878e21d9ce3da6611ae27a1b73827af81374",
                             personalData: "my personal data",
                             videoSources: new []{ new VideoManifestVideoSource(
                                 manifestUri: new SwarmUri("sources/hls/720p.m3u8", UriKind.Relative),

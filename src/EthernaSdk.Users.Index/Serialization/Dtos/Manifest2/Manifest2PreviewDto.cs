@@ -23,14 +23,14 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         public Manifest2PreviewDto(string title,
             long createdAt,
             long? updatedAt,
-            string ownerAddress,
+            string ownerEthAddress,
             long duration,
             Manifest2ThumbnailDto? thumbnail)
         {
             Title = title;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
-            OwnerAddress = ownerAddress;
+            OwnerAddress = ownerEthAddress;
             Duration = duration;
             Thumbnail = thumbnail;
         }

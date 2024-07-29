@@ -23,7 +23,7 @@ namespace Etherna.Sdk.Users.Index.Services
     {
         Task<SwarmHash> CreateVideoManifestChunksAsync(
             VideoManifest manifest,
-            string chunkDirectory,
+            string chunksDirectory,
             bool createDirectory = true,
             IPostageStampIssuer? postageStampIssuer = null);
     }
