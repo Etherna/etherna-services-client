@@ -16,6 +16,7 @@ namespace Etherna.Sdk.Users.Index.Models
 {
     public enum VideoSourceType
     {
+        Unknown,
         Dash,
         Hls,
         Mp4
