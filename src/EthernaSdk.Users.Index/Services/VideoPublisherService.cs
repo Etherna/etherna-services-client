@@ -14,6 +14,7 @@
 
 using Etherna.BeeNet.Hashing.Pipeline;
 using Etherna.BeeNet.Hashing.Postage;
+using Etherna.BeeNet.Hashing.Signer;
 using Etherna.BeeNet.Hashing.Store;
 using Etherna.BeeNet.Manifest;
 using Etherna.BeeNet.Models;
@@ -27,8 +28,8 @@ using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Users.Index.Services
 {
-    public class VideoManifestService(ICalculatorService calculatorService)
-        : IVideoManifestService
+    public class VideoPublisherService(IChunkService chunkService)
+        : IVideoPublisherService
     {
         // Consts.
         private const string DetailsManifestFileName = "details";
@@ -39,7 +40,8 @@ namespace Etherna.Sdk.Users.Index.Services
         public async Task<SwarmHash> CreateVideoManifestChunksAsync(
             VideoManifest manifest,
             string chunkDirectory,
-            bool createDirectory = true)
+            bool createDirectory = true,
+            IPostageStampIssuer? postageStampIssuer = null)
         {
             ArgumentNullException.ThrowIfNull(manifest, nameof(manifest));
             
@@ -51,19 +53,26 @@ namespace Etherna.Sdk.Users.Index.Services
             var previewManifestByteArray = Encoding.UTF8.GetBytes(previewManifest);
             var detailsManifestByteArray = Encoding.UTF8.GetBytes(detailsManifest);
             
-            // Create manifests chunks.
-            var previewManifestHash = await calculatorService.WriteDataChunksAsync(
+            // Create video manifests chunks.
+            var previewManifestHash = await chunkService.WriteDataChunksAsync(
                 previewManifestByteArray,
                 chunkDirectory,
+                postageStampIssuer,
                 createDirectory).ConfigureAwait(false);
-            var detailsManifestHash = await calculatorService.WriteDataChunksAsync(
+            var detailsManifestHash = await chunkService.WriteDataChunksAsync(
                 detailsManifestByteArray,
                 chunkDirectory,
+                postageStampIssuer,
                 createDirectory).ConfigureAwait(false);
             
             // Create mantaray root manifest.
             var chunkStore = new LocalDirectoryChunkStore(chunkDirectory, createDirectory);
-            var postageStamper = new FakePostageStamper();
+            IPostageStamper postageStamper = postageStampIssuer is null
+                ? new FakePostageStamper()
+                : new PostageStamper(
+                    new FakeSigner(),
+                    postageStampIssuer,
+                    new MemoryStampStore());
             var mantarayManifest = new MantarayManifest(
                 () => HasherPipelineBuilder.BuildNewHasherPipeline(
                     chunkStore,

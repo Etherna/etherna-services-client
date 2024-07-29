@@ -23,17 +23,17 @@ using Xunit;
 
 namespace Etherna.Sdk.Users.Index.Services
 {
-    public class VideoManifestServiceTest
+    public class VideoPublisherServiceTest
     {
         // Fields.
-        private readonly ICalculatorService calculatorService;
-        private readonly IVideoManifestService videoManifestService;
+        private readonly IChunkService chunkService;
+        private readonly IVideoPublisherService videoPublisherService;
 
         // Constructor.
-        public VideoManifestServiceTest()
+        public VideoPublisherServiceTest()
         {
-            calculatorService = new CalculatorService();
-            videoManifestService = new VideoManifestService(calculatorService);
+            chunkService = new ChunkService();
+            videoPublisherService = new VideoPublisherService(chunkService);
         }
 
         // Tests.
@@ -78,7 +78,7 @@ namespace Etherna.Sdk.Users.Index.Services
             var chunkDirectory = Directory.CreateTempSubdirectory();
 
             // Run.
-            var result = await videoManifestService.CreateVideoManifestChunksAsync(
+            var result = await videoPublisherService.CreateVideoManifestChunksAsync(
                 videoManifest,
                 chunkDirectory.FullName);
             
