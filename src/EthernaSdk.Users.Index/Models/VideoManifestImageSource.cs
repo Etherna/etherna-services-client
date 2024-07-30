@@ -24,9 +24,25 @@ namespace Etherna.Sdk.Users.Index.Models
         int width)
     {
         // Properties.
+        /// <summary>
+        /// Absolute resource hash.
+        /// Used to link internal mantaray path to resource, when Uri is relative
+        /// </summary>
         public SwarmHash? AbsoluteHash { get; set; }
-        public string FileName => ManifestUri.ToString().Split(SwarmAddress.Separator).Last();
+        
+        /// <summary>
+        /// The file name, used to set the download file name in mantaray
+        /// </summary>
+        public string FileName { get; set; } = manifestUri.ToString().Split(SwarmAddress.Separator).Last();
+        
+        /// <summary>
+        /// The uri to use with the mantaray and video manifests
+        /// </summary>
         public SwarmUri ManifestUri { get; } = manifestUri;
+        
+        /// <summary>
+        /// The video mime content type, used to set content type with the mantaray manifest
+        /// </summary>
         public string MimeContentType => Type switch
         {
             ImageSourceType.Avif => "image/avif",
@@ -35,7 +51,12 @@ namespace Etherna.Sdk.Users.Index.Models
             ImageSourceType.Webp => "image/webp",
             _ => throw new NotSupportedException()
         };
+        
+        /// <summary>
+        /// The video type, used to derive mime conten type
+        /// </summary>
         public ImageSourceType Type { get; } = type;
+        
         public int Width { get; } = width;
     }
 }
