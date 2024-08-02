@@ -53,13 +53,11 @@ namespace Etherna.Sdk.Users.Index.Services
                 videoSources: new[]
                 {
                     new VideoManifestVideoSource(
-                        manifestUri: new SwarmUri("sources/hls/720p.m3u8", UriKind.Relative),
-                        type: VideoType.Hls,
+                        fileName: "720p.m3u8",
+                        swarmHash: SwarmHash.Zero,
+                        videoType: VideoType.Hls,
                         quality: null,
-                        size: 45678)
-                    {
-                        AbsoluteHash = SwarmHash.Zero
-                    }
+                        totalSourceSize: 45678)
                 },
                 thumbnail: new VideoManifestImage(
                     aspectRatio: 0.123f,

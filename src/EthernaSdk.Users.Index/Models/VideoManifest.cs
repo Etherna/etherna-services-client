@@ -14,8 +14,10 @@
 
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2;
+using Nethereum.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -25,6 +27,7 @@ namespace Etherna.Sdk.Users.Index.Models
     /// <summary>
     /// Video Manifest utility class, able to serialize/deserialize to/from json
     /// </summary>
+    [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase")]
     public class VideoManifest(
         float aspectRatio,
         PostageBatchId? batchId,
@@ -54,10 +57,10 @@ namespace Etherna.Sdk.Users.Index.Models
                 batchId: BatchId,
                 personalData: PersonalDataRaw,
                 sources: VideoSources.Select(s => new Manifest2VideoSourceDto(
-                    type: s.Type,
-                    quality: s.Quality,
-                    path: s.ManifestUri,
-                    size: s.Size)));
+                    type: s.Metadata.VideoType,
+                    quality: s.Metadata.Quality,
+                    path: s.Uri,
+                    size: s.Metadata.TotalSourceSize)));
             return JsonSerializer.Serialize(manifestDetails, jsonSerializerOptions);
         }
 
@@ -97,7 +100,10 @@ namespace Etherna.Sdk.Users.Index.Models
         public string? PersonalDataRaw { get; } = personalData;
         public VideoManifestImage Thumbnail { get; } = thumbnail;
         public DateTimeOffset? UpdatedAt { get; set; } = updatedAt;
-        public IEnumerable<VideoManifestVideoSource> VideoSources { get; } = videoSources;
+        public IEnumerable<(SwarmUri Uri, VideoManifestVideoSource Metadata)> VideoSources { get; }
+            = videoSources.Select(s => (new SwarmUri(
+                $"sources/{s.VideoType.ToStringInvariant().ToLowerInvariant()}/{s.FileName}",
+                UriKind.Relative), s));
         
         // Methods.
         private static VideoManifestPersonalData? TryParsePersonalData(string? personalDataRaw)

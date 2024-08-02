@@ -50,10 +50,11 @@ namespace Etherna.Sdk.Users.Index.Models
                             ownerEthAddress: "0x7cd4878e21d9ce3da6611ae27a1b73827af81374",
                             personalData: "my personal data",
                             videoSources: new []{ new VideoManifestVideoSource(
-                                manifestUri: new SwarmUri("sources/hls/720p.m3u8", UriKind.Relative),
-                                type: VideoType.Hls,
+                                fileName: "720p.m3u8",
+                                swarmHash: SwarmHash.Zero,
+                                videoType: VideoType.Hls,
                                 quality: null,
-                                size: 45678)},
+                                totalSourceSize: 45678)},
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: 0.123f,
                                 "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",

@@ -14,37 +14,26 @@
 
 using Etherna.BeeNet.Models;
 using System;
-using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestVideoSource(
-        SwarmUri manifestUri,
-        VideoType type,
+        string fileName,
+        SwarmHash swarmHash,
+        VideoType videoType,
         string? quality,
-        long size)
+        long totalSourceSize)
     {
         // Properties.
         /// <summary>
-        /// Absolute resource hash.
-        /// Used to link internal mantaray path to resource, when Uri is relative
-        /// </summary>
-        public SwarmHash? AbsoluteHash { get; set; }
-        
-        /// <summary>
         /// The file name, used to set the download file name in mantaray
         /// </summary>
-        public string FileName { get; set; } = manifestUri.ToString().Split(SwarmAddress.Separator).Last();
-
-        /// <summary>
-        /// The uri to use with the mantaray and video manifests
-        /// </summary>
-        public SwarmUri ManifestUri { get; } = manifestUri;
+        public string FileName { get; } = fileName;
 
         /// <summary>
         /// The video mime content type, used to set content type with the mantaray manifest
         /// </summary>
-        public string MimeContentType => Type switch
+        public string MimeContentType => VideoType switch
         {
             VideoType.Dash => "application/dash+xml",
             VideoType.Hls => "application/x-mpegURL",
@@ -58,13 +47,18 @@ namespace Etherna.Sdk.Users.Index.Models
         public string? Quality { get; } = quality;
 
         /// <summary>
+        /// Absolute swarm hash. Used to link internal mantaray path to resource.
+        /// </summary>
+        public SwarmHash SwarmHash { get; } = swarmHash;
+
+        /// <summary>
         /// The video stream byte size
         /// </summary>
-        public long Size { get; } = size;
+        public long TotalSourceSize { get; } = totalSourceSize;
 
         /// <summary>
         /// The video type, used to derive mime conten type
         /// </summary>
-        public VideoType Type { get; } = type;
+        public VideoType VideoType { get; } = videoType;
     }
 }

@@ -143,10 +143,9 @@ namespace Etherna.Sdk.Users.Index.Clients
             foreach (var v in result.Elements)
             {
                 List<VideoManifestImageSource> thumbnailSources = [];
-                foreach (var s in v.Thumbnail.Sources)
+                foreach (var thumbSource in v.Thumbnail.Sources)
                     thumbnailSources.Add(
-                        await BuildVideoManifestImageSourceAsync(
-                            s.Type, v.Hash, s.Path, s.Width).ConfigureAwait(false));
+                        await BuildVideoManifestImageSourceAsync(thumbSource, v.Hash).ConfigureAwait(false));
                 
                 videoPreviews.Add(new VideoPreview(
                     hash: v.Hash is not null ?
@@ -318,15 +317,22 @@ namespace Etherna.Sdk.Users.Index.Clients
         private async Task<IndexedVideo> BuildIndexedVideoAsync(Video2Dto videoDto)
         {
             List<VideoManifestImageSource> thumbnailSources = [];
+            List<VideoManifestVideoSource> videoSources = [];
             if (videoDto.LastValidManifest is not null) //can be null, see: https://etherna.atlassian.net/browse/EID-229
             {
-                foreach (var s in videoDto.LastValidManifest.Thumbnail.Sources)
+                //thumb sources
+                foreach (var thumbnailSource in videoDto.LastValidManifest.Thumbnail.Sources)
                     thumbnailSources.Add(
                         await BuildVideoManifestImageSourceAsync(
-                            s.Type,
-                            videoDto.LastValidManifest.Hash,
-                            s.Path,
-                            s.Width).ConfigureAwait(false));
+                            thumbnailSource,
+                            videoDto.LastValidManifest.Hash).ConfigureAwait(false));
+                
+                //video sources
+                foreach (var videoSource in videoDto.LastValidManifest.Sources)
+                    videoSources.Add(
+                        await BuildVideoManifestVideoSourceAsync(
+                            videoSource,
+                            videoDto.LastValidManifest.Hash).ConfigureAwait(false));
             }
             
             return new IndexedVideo(
@@ -346,17 +352,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                             title: videoDto.LastValidManifest.Title ?? "",
                             videoDto.OwnerAddress,
                             personalData: videoDto.LastValidManifest.PersonalData,
-                            videoSources: videoDto.LastValidManifest.Sources.Select(s =>
-                            {
-                                if (!Enum.TryParse<VideoType>(s.Type, true, out var sourceType))
-                                    sourceType = VideoType.Mp4;
-
-                                return new VideoManifestVideoSource(
-                                    type: sourceType,
-                                    quality: s.Quality,
-                                    manifestUri: s.Path,
-                                    size: s.Size);
-                            }),
+                            videoSources: videoSources,
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: videoDto.LastValidManifest.Thumbnail.AspectRatio,
                                 blurhash: videoDto.LastValidManifest.Thumbnail.Blurhash,
@@ -369,17 +365,44 @@ namespace Etherna.Sdk.Users.Index.Clients
                 totDownvotes: videoDto.TotDownvotes,
                 totUpvotes: videoDto.TotUpvotes);
         }
-        
-        private async Task<VideoManifestImageSource> BuildVideoManifestImageSourceAsync(
-            string? imageTypeStr,
-            string? videoManifestHashStr,
-            SwarmUri swarmUri,
-            int width)
+
+        private async Task<VideoManifestVideoSource> BuildVideoManifestVideoSourceAsync(
+            VideoSourceDto videoSourceDto,
+            string videoManifestHashStr)
         {
-            if (!Enum.TryParse<ImageType>(imageTypeStr, true, out var imageType))
+            if (!Enum.TryParse<VideoType>(videoSourceDto.Type, true, out var videoType))
+                videoType = VideoType.Mp4;
+
+            var fileName = videoSourceDto.Path.Split(SwarmAddress.Separator).Last();
+            if (!Path.HasExtension(fileName))
+                fileName += videoType switch
+                {
+                    VideoType.Mp4 => ".mp4",
+                    VideoType.Dash => ".mpd",
+                    VideoType.Hls => ".m3u8",
+                    _ => throw new InvalidOperationException()
+                };
+            
+            var swarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
+            var hash = (await beeClient.ResolveAddressToChunkReferenceAsync(
+                swarmUri.ToSwarmAddress(videoManifestHashStr)).ConfigureAwait(false)).Hash;
+
+            return new(
+                fileName,
+                hash,
+                videoType,
+                videoSourceDto.Quality,
+                videoSourceDto.Size);
+        }
+
+        private async Task<VideoManifestImageSource> BuildVideoManifestImageSourceAsync(
+            ImageSourceDto imageSourceDto,
+            string? videoManifestHashStr)
+        {
+            if (!Enum.TryParse<ImageType>(imageSourceDto.Type, true, out var imageType))
                 imageType = ImageType.Jpeg; //only used jpeg at first
 
-            var fileName = swarmUri.ToString().Split(SwarmAddress.Separator).Last();
+            var fileName = imageSourceDto.Path.Split(SwarmAddress.Separator).Last();
             if (!Path.HasExtension(fileName))
                 fileName += imageType switch
                 {
@@ -391,6 +414,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                 };
 
             var hash = SwarmHash.Zero;
+            var swarmUri = new SwarmUri(imageSourceDto.Path, UriKind.RelativeOrAbsolute);
             if (swarmUri.UriKind == UriKind.Absolute)
                 hash = (await beeClient.ResolveAddressToChunkReferenceAsync(
                     swarmUri.ToSwarmAddress()).ConfigureAwait(false)).Hash;
@@ -404,7 +428,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                 fileName,
                 imageType,
                 hash,
-                width
+                imageSourceDto.Width
             );
         }
     }

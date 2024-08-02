@@ -116,20 +116,16 @@ namespace Etherna.Sdk.Users.Index.Services
             
             //add encoded video streams, only if uri is relative
             foreach (var videoSource in manifest.VideoSources.Where(
-                         vs => vs.ManifestUri.UriKind == UriKind.Relative))
+                         vs => vs.Uri.UriKind == UriKind.Relative))
             {
-                var absoluteHash = videoSource.AbsoluteHash;
-                if (absoluteHash is null)
-                    throw new InvalidOperationException("Video source absolute hash must be set here");
-                
                 mantarayManifest.Add(
-                    videoSource.ManifestUri.ToString(),
+                    videoSource.Uri.ToString(),
                     ManifestEntry.NewFile(
-                        absoluteHash.Value,
+                        videoSource.Metadata.SwarmHash,
                         new Dictionary<string, string>
                             {
-                                [ManifestEntry.ContentTypeKey] = videoSource.MimeContentType,
-                                [ManifestEntry.FilenameKey] = videoSource.FileName
+                                [ManifestEntry.ContentTypeKey] = videoSource.Metadata.MimeContentType,
+                                [ManifestEntry.FilenameKey] = videoSource.Metadata.FileName
                             }));
             }
             
