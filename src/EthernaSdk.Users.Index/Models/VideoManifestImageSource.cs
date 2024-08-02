@@ -14,49 +14,43 @@
 
 using Etherna.BeeNet.Models;
 using System;
-using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestImageSource(
-        SwarmUri manifestUri,
-        ImageSourceType type,
+        string fileName,
+        ImageType imageType,
+        SwarmHash swarmHash,
         int width)
     {
         // Properties.
         /// <summary>
-        /// Absolute resource hash.
-        /// Used to link internal mantaray path to resource, when Uri is relative
-        /// </summary>
-        public SwarmHash? AbsoluteHash { get; set; }
-        
-        /// <summary>
         /// The file name, used to set the download file name in mantaray
         /// </summary>
-        public string FileName { get; set; } = manifestUri.ToString().Split(SwarmAddress.Separator).Last();
-        
+        public string FileName { get; } = fileName;
+
         /// <summary>
-        /// The uri to use with the mantaray and video manifests
+        /// The video type, used to derive mime content type
         /// </summary>
-        public SwarmUri ManifestUri { get; } = manifestUri;
-        
+        public ImageType ImageType { get; } = imageType;
+
         /// <summary>
         /// The video mime content type, used to set content type with the mantaray manifest
         /// </summary>
-        public string MimeContentType => Type switch
+        public string MimeContentType => ImageType switch
         {
-            ImageSourceType.Avif => "image/avif",
-            ImageSourceType.Jpeg => "image/jpeg",
-            ImageSourceType.Png => "image/png",
-            ImageSourceType.Webp => "image/webp",
+            ImageType.Avif => "image/avif",
+            ImageType.Jpeg => "image/jpeg",
+            ImageType.Png => "image/png",
+            ImageType.Webp => "image/webp",
             _ => throw new NotSupportedException()
         };
-        
+
         /// <summary>
-        /// The video type, used to derive mime conten type
+        /// Absolute swarm hash. Used to link internal mantaray path to resource.
         /// </summary>
-        public ImageSourceType Type { get; } = type;
-        
+        public SwarmHash SwarmHash { get; } = swarmHash;
+
         public int Width { get; } = width;
     }
 }

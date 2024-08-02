@@ -14,11 +14,11 @@
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public enum VideoSourceType
+    public enum ImageType
     {
-        Unknown,
-        Dash,
-        Hls,
-        Mp4
+        Avif,
+        Jpeg,
+        Png,
+        Webp
     }
 }

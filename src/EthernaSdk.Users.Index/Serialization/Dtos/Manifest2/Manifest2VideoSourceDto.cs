@@ -23,7 +23,7 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
     {
         // Constructors.
         public Manifest2VideoSourceDto(
-            VideoSourceType type,
+            VideoType type,
             string? quality,
             SwarmUri path,
             long size)

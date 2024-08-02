@@ -73,9 +73,9 @@ namespace Etherna.Sdk.Users.Index.Models
                     aspectRatio: Thumbnail.AspectRatio,
                     blurhash: Thumbnail.Blurhash,
                     sources: Thumbnail.Sources.Select(s => new Manifest2ThumbnailSourceDto(
-                        width: s.Width,
-                        type: s.Type,
-                        path: s.ManifestUri))));
+                        width: s.Metadata.Width,
+                        type: s.Metadata.ImageType,
+                        path: s.Uri))));
             return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         

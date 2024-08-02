@@ -12,7 +12,10 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
@@ -24,6 +27,7 @@ namespace Etherna.Sdk.Users.Index.Models
         // Properties.
         public float AspectRatio { get; } = aspectRatio;
         public string Blurhash { get; } = blurhash;
-        public IEnumerable<VideoManifestImageSource> Sources { get; } = sources;
+        public IEnumerable<(SwarmUri Uri, VideoManifestImageSource Metadata)> Sources { get; } = sources.Select(
+            s => (new SwarmUri($"thumb/{s.FileName}", UriKind.Relative), s));
     }
 }

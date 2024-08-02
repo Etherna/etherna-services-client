@@ -12,11 +12,13 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet;
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Index.GenClients;
 using Etherna.Sdk.Users.Index.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -27,6 +29,7 @@ namespace Etherna.Sdk.Users.Index.Clients
     public class EthernaUserIndexClient : IEthernaUserIndexClient
     {
         // Fields.
+        private readonly IBeeClient beeClient;
         private readonly CommentsClient generatedCommentsClient;
         private readonly ModerationClient generatedModerationClient;
         private readonly SearchClient generatedSearchClient;
@@ -37,8 +40,10 @@ namespace Etherna.Sdk.Users.Index.Clients
         // Constructor.
         public EthernaUserIndexClient(
             Uri baseUrl,
+            IBeeClient beeClient,
             HttpClient httpClient)
         {
+            this.beeClient = beeClient;
             ArgumentNullException.ThrowIfNull(baseUrl, nameof(baseUrl));
 
             generatedCommentsClient = new CommentsClient(baseUrl.AbsoluteUri, httpClient);
@@ -130,9 +135,20 @@ namespace Etherna.Sdk.Users.Index.Clients
 
         public async Task<PaginatedResult<VideoPreview>> GetLastPublishedVideosAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default)
         {
+            // Get API result.
             var result = await generatedVideosClient.Latest3Async(page, take, cancellationToken).ConfigureAwait(false);
-            return new PaginatedResult<VideoPreview>(
-                result.Elements.Select(v => new VideoPreview(
+
+            // Build response.
+            List<VideoPreview> videoPreviews = [];
+            foreach (var v in result.Elements)
+            {
+                List<VideoManifestImageSource> thumbnailSources = [];
+                foreach (var s in v.Thumbnail.Sources)
+                    thumbnailSources.Add(
+                        await BuildVideoManifestImageSourceAsync(
+                            s.Type, v.Hash, s.Path, s.Width).ConfigureAwait(false));
+                
+                videoPreviews.Add(new VideoPreview(
                     hash: v.Hash is not null ?
                         v.Hash : (SwarmHash?)null,
                     id: v.Id,
@@ -142,18 +158,13 @@ namespace Etherna.Sdk.Users.Index.Clients
                     thumbnail: new VideoManifestImage(
                         aspectRatio: v.Thumbnail.AspectRatio,
                         blurhash: v.Thumbnail.Blurhash,
-                        sources: v.Thumbnail.Sources.Select(s =>
-                        {
-                            if (!Enum.TryParse<ImageSourceType>(s.Type, true, out var sourceType))
-                                sourceType = ImageSourceType.Jpeg;
-
-                            return new VideoManifestImageSource(
-                                type: sourceType,
-                                manifestUri: s.Path,
-                                width: s.Width);
-                        })),
+                        sources: thumbnailSources),
                     title: v.Title,
-                    updatedAt: v.UpdatedAt)),
+                    updatedAt: v.UpdatedAt));
+            }
+            
+            return new PaginatedResult<VideoPreview>(
+                videoPreviews,
                 result.TotalElements,
                 result.PageSize,
                 result.CurrentPage,
@@ -194,56 +205,12 @@ namespace Etherna.Sdk.Users.Index.Clients
                 creationDateTime: response.CreationDateTime);
         }
 
-        public async Task<IndexedVideo> GetVideoByIdAsync(string videoId,
+        public async Task<IndexedVideo> GetVideoByIdAsync(
+            string videoId,
             CancellationToken cancellationToken = default)
         {
             var response = await generatedVideosClient.Find2Async(videoId, cancellationToken).ConfigureAwait(false);
-            return new IndexedVideo(
-                id: response.Id,
-                creationDateTime: response.CreationDateTime,
-                currentVoteValue: response.CurrentVoteValue.HasValue ?
-                    Enum.Parse<VoteValue>(response.CurrentVoteValue.Value.ToString()) : null,
-                lastValidManifest: response.LastValidManifest is not null ?  //can be null, see: https://etherna.atlassian.net/browse/EID-229
-                    new PublishedVideoManifest(
-                        hash: response.LastValidManifest.Hash,
-                        manifest: new(
-                            aspectRatio: response.LastValidManifest.AspectRatio,
-                            batchId: response.LastValidManifest.BatchId ?? PostageBatchId.Zero,
-                            createdAt: DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.CreatedAt),
-                            description: response.LastValidManifest.Description ?? "",
-                            duration: TimeSpan.FromSeconds(response.LastValidManifest.Duration ?? 0),
-                            title: response.LastValidManifest.Title ?? "",
-                            response.OwnerAddress,
-                            personalData: response.LastValidManifest.PersonalData,
-                            videoSources: response.LastValidManifest.Sources.Select(s =>
-                            {
-                                if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
-                                    sourceType = VideoSourceType.Mp4;
-
-                                return new VideoManifestVideoSource(
-                                    type: sourceType,
-                                    quality: s.Quality,
-                                    manifestUri: s.Path,
-                                    size: s.Size);
-                            }),
-                            thumbnail: new VideoManifestImage(
-                                aspectRatio: response.LastValidManifest.Thumbnail.AspectRatio,
-                                blurhash: response.LastValidManifest.Thumbnail.Blurhash,
-                                sources: response.LastValidManifest.Thumbnail.Sources.Select(s =>
-                                {
-                                    if (!Enum.TryParse<ImageSourceType>(s.Type, true, out var sourceType))
-                                        sourceType = ImageSourceType.Jpeg;
-
-                                    return new VideoManifestImageSource(
-                                        type: sourceType,
-                                        manifestUri: s.Path,
-                                        width: s.Width);
-                                })),
-                            updatedAt: response.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.UpdatedAt.Value)),
-                        manifestVersion: null) : null,
-                ownerAddress: response.OwnerAddress,
-                totDownvotes: response.TotDownvotes,
-                totUpvotes: response.TotUpvotes);
+            return await BuildIndexedVideoAsync(response).ConfigureAwait(false);
         }
 
         public async Task<IndexedVideo> GetVideoByManifestAsync(
@@ -251,52 +218,7 @@ namespace Etherna.Sdk.Users.Index.Clients
             CancellationToken cancellationToken = default)
         {
             var response = await generatedVideosClient.Manifest2Async(manifestHash.ToString(), cancellationToken).ConfigureAwait(false);
-            return new IndexedVideo(
-                id: response.Id,
-                creationDateTime: response.CreationDateTime,
-                currentVoteValue: response.CurrentVoteValue.HasValue ?
-                    Enum.Parse<VoteValue>(response.CurrentVoteValue.Value.ToString()) : null,
-                lastValidManifest: response.LastValidManifest is not null ?  //can be null, see: https://etherna.atlassian.net/browse/EID-229
-                    new PublishedVideoManifest(
-                        hash: response.LastValidManifest.Hash,
-                        manifest: new(
-                            aspectRatio: response.LastValidManifest.AspectRatio,
-                            batchId: response.LastValidManifest.BatchId ?? PostageBatchId.Zero,
-                            createdAt: DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.CreatedAt),
-                            description: response.LastValidManifest.Description ?? "",
-                            duration: TimeSpan.FromSeconds(response.LastValidManifest.Duration ?? 0),
-                            title: response.LastValidManifest.Title ?? "",
-                            response.OwnerAddress,
-                            personalData: response.LastValidManifest.PersonalData,
-                            videoSources: response.LastValidManifest.Sources.Select(s =>
-                            {
-                                if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
-                                    sourceType = VideoSourceType.Mp4;
-
-                                return new VideoManifestVideoSource(
-                                    type: sourceType,
-                                    quality: s.Quality,
-                                    manifestUri: s.Path,
-                                    size: s.Size);
-                            }),
-                            thumbnail: new VideoManifestImage(
-                                aspectRatio: response.LastValidManifest.Thumbnail.AspectRatio,
-                                blurhash: response.LastValidManifest.Thumbnail.Blurhash,
-                                sources: response.LastValidManifest.Thumbnail.Sources.Select(s =>
-                                {
-                                    if (!Enum.TryParse<ImageSourceType>(s.Type, true, out var sourceType))
-                                        sourceType = ImageSourceType.Jpeg;
-
-                                    return new VideoManifestImageSource(
-                                        type: sourceType,
-                                        manifestUri: s.Path,
-                                        width: s.Width);
-                                })),
-                            updatedAt: response.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(response.LastValidManifest.UpdatedAt.Value)),
-                        manifestVersion: null) : null,
-                ownerAddress: response.OwnerAddress,
-                totDownvotes: response.TotDownvotes,
-                totUpvotes: response.TotUpvotes);
+            return await BuildIndexedVideoAsync(response).ConfigureAwait(false);
         }
 
         public async Task<PaginatedResult<Comment>> GetVideoCommentsAsync(string videoId, int? page = null, int? take = null,
@@ -323,53 +245,13 @@ namespace Etherna.Sdk.Users.Index.Clients
             CancellationToken cancellationToken = default)
         {
             var result = await generatedUsersClient.Videos3Async(userAddress, page, take, cancellationToken).ConfigureAwait(false);
-            return new PaginatedResult<IndexedVideo>(
-                result.Elements.Select(v => new IndexedVideo(
-                    id: v.Id,
-                    creationDateTime: v.CreationDateTime,
-                    currentVoteValue: v.CurrentVoteValue.HasValue ?
-                        Enum.Parse<VoteValue>(v.CurrentVoteValue.Value.ToString()) : null,
-                    lastValidManifest: v.LastValidManifest is not null ?  //can be null, see: https://etherna.atlassian.net/browse/EID-229
-                        new PublishedVideoManifest(
-                            hash: v.LastValidManifest.Hash,
-                            manifest: new(
-                                aspectRatio: v.LastValidManifest.AspectRatio,
-                                batchId: v.LastValidManifest.BatchId ?? PostageBatchId.Zero,
-                                createdAt: DateTimeOffset.FromUnixTimeSeconds(v.LastValidManifest.CreatedAt),
-                                description: v.LastValidManifest.Description ?? "",
-                                duration: TimeSpan.FromSeconds(v.LastValidManifest.Duration ?? 0),
-                                title: v.LastValidManifest.Title ?? "",
-                                v.OwnerAddress,
-                                personalData: v.LastValidManifest.PersonalData,
-                                videoSources: v.LastValidManifest.Sources.Select(s =>
-                                {
-                                    if (!Enum.TryParse<VideoSourceType>(s.Type, true, out var sourceType))
-                                        sourceType = VideoSourceType.Mp4;
-                                    
-                                    return new VideoManifestVideoSource(
-                                        type: sourceType,
-                                        quality: s.Quality,
-                                        manifestUri: s.Path,
-                                        size: s.Size);
-                                }),
-                                thumbnail: new VideoManifestImage(
-                                    aspectRatio: v.LastValidManifest.Thumbnail.AspectRatio,
-                                    blurhash: v.LastValidManifest.Thumbnail.Blurhash,
-                                    sources: v.LastValidManifest.Thumbnail.Sources.Select(s =>
-                                    {
-                                        if (!Enum.TryParse<ImageSourceType>(s.Type, true, out var sourceType))
-                                            sourceType = ImageSourceType.Jpeg;
 
-                                        return new VideoManifestImageSource(
-                                            type: sourceType,
-                                            manifestUri: s.Path,
-                                            width: s.Width);
-                                    })),
-                                updatedAt: v.LastValidManifest.UpdatedAt is null ? null : DateTimeOffset.FromUnixTimeSeconds(v.LastValidManifest.UpdatedAt.Value)),
-                            manifestVersion: null) : null,
-                    ownerAddress: v.OwnerAddress,
-                    totDownvotes: v.TotDownvotes,
-                    totUpvotes: v.TotUpvotes)),
+            List<IndexedVideo> indexedVideos = [];
+            foreach (var v in result.Elements)
+                indexedVideos.Add(await BuildIndexedVideoAsync(v).ConfigureAwait(false));
+            
+            return new PaginatedResult<IndexedVideo>(
+                indexedVideos,
                 result.TotalElements,
                 result.PageSize,
                 result.CurrentPage,
@@ -431,5 +313,99 @@ namespace Etherna.Sdk.Users.Index.Clients
 
         public Task VotesVideoAsync(string id, VoteValue value, CancellationToken cancellationToken = default) =>
             generatedVideosClient.VotesAsync(id, Enum.Parse<Value>(value.ToString()), cancellationToken);
+        
+        // Helpers.
+        private async Task<IndexedVideo> BuildIndexedVideoAsync(Video2Dto videoDto)
+        {
+            List<VideoManifestImageSource> thumbnailSources = [];
+            if (videoDto.LastValidManifest is not null) //can be null, see: https://etherna.atlassian.net/browse/EID-229
+            {
+                foreach (var s in videoDto.LastValidManifest.Thumbnail.Sources)
+                    thumbnailSources.Add(
+                        await BuildVideoManifestImageSourceAsync(
+                            s.Type,
+                            videoDto.LastValidManifest.Hash,
+                            s.Path,
+                            s.Width).ConfigureAwait(false));
+            }
+            
+            return new IndexedVideo(
+                id: videoDto.Id,
+                creationDateTime: videoDto.CreationDateTime,
+                currentVoteValue: videoDto.CurrentVoteValue.HasValue ?
+                    Enum.Parse<VoteValue>(videoDto.CurrentVoteValue.Value.ToString()) : null,
+                lastValidManifest: videoDto.LastValidManifest is not null ?
+                    new PublishedVideoManifest(
+                        hash: videoDto.LastValidManifest.Hash,
+                        manifest: new(
+                            aspectRatio: videoDto.LastValidManifest.AspectRatio,
+                            batchId: videoDto.LastValidManifest.BatchId ?? PostageBatchId.Zero,
+                            createdAt: DateTimeOffset.FromUnixTimeSeconds(videoDto.LastValidManifest.CreatedAt),
+                            description: videoDto.LastValidManifest.Description ?? "",
+                            duration: TimeSpan.FromSeconds(videoDto.LastValidManifest.Duration ?? 0),
+                            title: videoDto.LastValidManifest.Title ?? "",
+                            videoDto.OwnerAddress,
+                            personalData: videoDto.LastValidManifest.PersonalData,
+                            videoSources: videoDto.LastValidManifest.Sources.Select(s =>
+                            {
+                                if (!Enum.TryParse<VideoType>(s.Type, true, out var sourceType))
+                                    sourceType = VideoType.Mp4;
+
+                                return new VideoManifestVideoSource(
+                                    type: sourceType,
+                                    quality: s.Quality,
+                                    manifestUri: s.Path,
+                                    size: s.Size);
+                            }),
+                            thumbnail: new VideoManifestImage(
+                                aspectRatio: videoDto.LastValidManifest.Thumbnail.AspectRatio,
+                                blurhash: videoDto.LastValidManifest.Thumbnail.Blurhash,
+                                sources: thumbnailSources),
+                            updatedAt: videoDto.LastValidManifest.UpdatedAt is null ?
+                                null :
+                                DateTimeOffset.FromUnixTimeSeconds(videoDto.LastValidManifest.UpdatedAt.Value)),
+                        manifestVersion: null) : null,
+                ownerAddress: videoDto.OwnerAddress,
+                totDownvotes: videoDto.TotDownvotes,
+                totUpvotes: videoDto.TotUpvotes);
+        }
+        
+        private async Task<VideoManifestImageSource> BuildVideoManifestImageSourceAsync(
+            string? imageTypeStr,
+            string? videoManifestHashStr,
+            SwarmUri swarmUri,
+            int width)
+        {
+            if (!Enum.TryParse<ImageType>(imageTypeStr, true, out var imageType))
+                imageType = ImageType.Jpeg; //only used jpeg at first
+
+            var fileName = swarmUri.ToString().Split(SwarmAddress.Separator).Last();
+            if (!Path.HasExtension(fileName))
+                fileName += imageType switch
+                {
+                    ImageType.Avif => ".avif",
+                    ImageType.Jpeg => ".jpeg",
+                    ImageType.Png => ".png",
+                    ImageType.Webp => ".webp",
+                    _ => throw new InvalidOperationException()
+                };
+
+            var hash = SwarmHash.Zero;
+            if (swarmUri.UriKind == UriKind.Absolute)
+                hash = (await beeClient.ResolveAddressToChunkReferenceAsync(
+                    swarmUri.ToSwarmAddress()).ConfigureAwait(false)).Hash;
+            else if (videoManifestHashStr != null)
+            {
+                hash = (await beeClient.ResolveAddressToChunkReferenceAsync(
+                    swarmUri.ToSwarmAddress(videoManifestHashStr)).ConfigureAwait(false)).Hash;
+            }
+            
+            return new(
+                fileName,
+                imageType,
+                hash,
+                width
+            );
+        }
     }
 }

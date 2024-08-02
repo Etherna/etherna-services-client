@@ -134,21 +134,16 @@ namespace Etherna.Sdk.Users.Index.Services
             }
             
             //add encoded thumbnail files, only if uri is relative
-            foreach (var thumbnailSource in manifest.Thumbnail.Sources.Where(
-                         ts => ts.ManifestUri.UriKind == UriKind.Relative))
+            foreach (var thumbnailSource in manifest.Thumbnail.Sources.Where(ts => ts.Uri.UriKind == UriKind.Relative))
             {
-                var absoluteHash = thumbnailSource.AbsoluteHash;
-                if (absoluteHash is null)
-                    throw new InvalidOperationException("Image source absolute hash must be set here");
-                
                 mantarayManifest.Add(
-                    thumbnailSource.ManifestUri.ToString(),
+                    thumbnailSource.Uri.ToString(),
                     ManifestEntry.NewFile(
-                        absoluteHash.Value,
+                        thumbnailSource.Metadata.SwarmHash,
                         new Dictionary<string, string>
                         {
-                            [ManifestEntry.ContentTypeKey] = thumbnailSource.MimeContentType,
-                            [ManifestEntry.FilenameKey] = thumbnailSource.FileName
+                            [ManifestEntry.ContentTypeKey] = thumbnailSource.Metadata.MimeContentType,
+                            [ManifestEntry.FilenameKey] = thumbnailSource.Metadata.FileName
                         }));
             }
 

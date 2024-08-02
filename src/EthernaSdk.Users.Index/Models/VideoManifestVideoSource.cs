@@ -20,7 +20,7 @@ namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestVideoSource(
         SwarmUri manifestUri,
-        VideoSourceType type,
+        VideoType type,
         string? quality,
         long size)
     {
@@ -46,9 +46,9 @@ namespace Etherna.Sdk.Users.Index.Models
         /// </summary>
         public string MimeContentType => Type switch
         {
-            VideoSourceType.Dash => "application/dash+xml",
-            VideoSourceType.Hls => "application/x-mpegURL",
-            VideoSourceType.Mp4 => "video/mp4",
+            VideoType.Dash => "application/dash+xml",
+            VideoType.Hls => "application/x-mpegURL",
+            VideoType.Mp4 => "video/mp4",
             _ => throw new NotSupportedException()
         };
         
@@ -65,6 +65,6 @@ namespace Etherna.Sdk.Users.Index.Models
         /// <summary>
         /// The video type, used to derive mime conten type
         /// </summary>
-        public VideoSourceType Type { get; } = type;
+        public VideoType Type { get; } = type;
     }
 }

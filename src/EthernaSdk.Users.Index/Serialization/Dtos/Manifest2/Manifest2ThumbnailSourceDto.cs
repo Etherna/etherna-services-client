@@ -24,7 +24,7 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         // Constructors.
         public Manifest2ThumbnailSourceDto(
             int width,
-            ImageSourceType type,
+            ImageType type,
             SwarmUri path)
         {
             Width = width;
