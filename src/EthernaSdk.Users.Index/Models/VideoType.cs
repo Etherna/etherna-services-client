@@ -18,6 +18,7 @@ namespace Etherna.Sdk.Users.Index.Models
     {
         Dash,
         Hls,
-        Mp4
+        Mp4,
+        Unknown
     }
 }

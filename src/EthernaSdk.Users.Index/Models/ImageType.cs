@@ -19,6 +19,7 @@ namespace Etherna.Sdk.Users.Index.Models
         Avif,
         Jpeg,
         Png,
-        Webp
+        Webp,
+        Unknown
     }
 }
