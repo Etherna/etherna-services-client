@@ -90,7 +90,7 @@ namespace Etherna.Sdk.Users.Index.Clients
         public Task DeleteOwnedCommentAsync(string commentId, CancellationToken cancellationToken = default) =>
             generatedCommentsClient.CommentsAsync(commentId, cancellationToken);
         
-        public async Task<IEnumerable<IndexedVideo>> GetAllVideosByOwnerAsync(string userAddress)
+        public async Task<IndexedVideo[]> GetAllVideosByOwnerAsync(string userAddress)
         {
             var videos = new List<IndexedVideo>();
             const int maxForPage = 100;
@@ -105,7 +105,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                 videos.AddRange(page.Elements);
             } while (page.Elements.Any());
 
-            return videos;
+            return videos.ToArray();
         }
 
         public async Task<IEnumerable<VideoValidationStatus>> GetBulkVideoValidationStatusByIdsAsync(

@@ -63,7 +63,7 @@ namespace Etherna.Sdk.Users.Index.Clients
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
         Task DeleteOwnedCommentAsync(string commentId, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<IndexedVideo>> GetAllVideosByOwnerAsync(string userAddress);
+        Task<IndexedVideo[]> GetAllVideosByOwnerAsync(string userAddress);
         
         /// <summary>
         /// Get bulk validation info by multiple video ids.
