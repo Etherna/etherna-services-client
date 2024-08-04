@@ -14,16 +14,11 @@
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class IndexParameters(
-        int commentMaxLength,
-        int videoDescriptionMaxLength,
-        int videoPersonalDataMaxLength,
-        int videoTitleMaxLength)
+    public enum VideoType
     {
-        // Properties.
-        public int CommentMaxLength { get; } = commentMaxLength;
-        public int VideoDescriptionMaxLength { get; } = videoDescriptionMaxLength;
-        public int VideoPersonalDataMaxLength { get; } = videoPersonalDataMaxLength;
-        public int VideoTitleMaxLength { get; } = videoTitleMaxLength;
+        Dash,
+        Hls,
+        Mp4,
+        Unknown
     }
 }

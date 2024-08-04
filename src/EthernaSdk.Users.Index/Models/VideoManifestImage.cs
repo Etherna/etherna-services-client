@@ -13,25 +13,21 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Index.GenClients;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoSource
+    public class VideoManifestImage(
+        float aspectRatio,
+        string blurhash,
+        IEnumerable<VideoManifestImageSource> sources)
     {
-        // Constructors.
-        internal VideoSource(VideoSourceDto videoSource)
-        {
-            Type = videoSource.Type;
-            Quality = videoSource.Quality;
-            Address = videoSource.Path;
-            Size = videoSource.Size;
-        }
-
         // Properties.
-        public SwarmAddress Address { get; }
-        public string Type { get; }
-        public string? Quality { get; }
-        public long Size { get; }
+        public float AspectRatio { get; } = aspectRatio;
+        public string Blurhash { get; } = blurhash;
+        public IEnumerable<(SwarmUri Uri, VideoManifestImageSource Metadata)> Sources { get; } = sources.Select(
+            s => (new SwarmUri($"thumb/{s.FileName}", UriKind.Relative), s));
     }
 }

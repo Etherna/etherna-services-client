@@ -12,25 +12,14 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.Sdk.Index.GenClients;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class Image
+    public enum ImageType
     {
-        // Constructors.
-        internal Image(Image2Dto image)
-        {
-            AspectRatio = image.AspectRatio;
-            Blurhash = image.Blurhash;
-            Sources = image.Sources.Select(s => new ImageSource(s));
-        }
-        
-        // Properties.
-        public float AspectRatio { get; }
-        public string Blurhash { get; }
-        public IEnumerable<ImageSource> Sources { get; }
+        Avif,
+        Jpeg,
+        Png,
+        Webp,
+        Unknown
     }
 }

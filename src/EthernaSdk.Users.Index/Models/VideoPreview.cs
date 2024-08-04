@@ -13,34 +13,27 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Index.GenClients;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoPreview
+    public class VideoPreview(
+        string id,
+        long? createdAt,
+        long? duration,
+        SwarmHash? hash,
+        string ownerAddress,
+        VideoManifestImage thumbnail,
+        string? title,
+        long? updatedAt)
     {
-        // Constructors.
-        internal VideoPreview(VideoPreviewDto videoPreview)
-        {
-            if (videoPreview.Hash is not null)
-                Hash = videoPreview.Hash;
-            Id = videoPreview.Id;
-            CreatedAt = videoPreview.CreatedAt;
-            Duration = videoPreview.Duration;
-            OwnerAddress = videoPreview.OwnerAddress;
-            Thumbnail = new Image(videoPreview.Thumbnail);
-            Title = videoPreview.Title;
-            UpdatedAt = videoPreview.UpdatedAt;
-        }
-        
         // Properties.
-        public string Id { get; }
-        public long? CreatedAt { get; }
-        public long? Duration { get; }
-        public SwarmHash? Hash { get; }
-        public string OwnerAddress { get; }
-        public Image Thumbnail { get; }
-        public string? Title { get; }
-        public long? UpdatedAt { get; }
+        public string Id { get; } = id;
+        public long? CreatedAt { get; } = createdAt;
+        public long? Duration { get; } = duration;
+        public SwarmHash? Hash { get; } = hash;
+        public string OwnerAddress { get; } = ownerAddress;
+        public VideoManifestImage Thumbnail { get; } = thumbnail;
+        public string? Title { get; } = title;
+        public long? UpdatedAt { get; } = updatedAt;
     }
 }

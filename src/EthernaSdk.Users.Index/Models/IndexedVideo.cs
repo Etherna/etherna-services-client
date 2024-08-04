@@ -12,18 +12,26 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class IndexParameters(
-        int commentMaxLength,
-        int videoDescriptionMaxLength,
-        int videoPersonalDataMaxLength,
-        int videoTitleMaxLength)
+    public class IndexedVideo(
+        string id,
+        DateTimeOffset creationDateTime,
+        VoteValue? currentVoteValue,
+        PublishedVideoManifest? lastValidManifest,
+        string ownerAddress,
+        long totDownvotes,
+        long totUpvotes)
     {
         // Properties.
-        public int CommentMaxLength { get; } = commentMaxLength;
-        public int VideoDescriptionMaxLength { get; } = videoDescriptionMaxLength;
-        public int VideoPersonalDataMaxLength { get; } = videoPersonalDataMaxLength;
-        public int VideoTitleMaxLength { get; } = videoTitleMaxLength;
+        public string Id { get; } = id;
+        public DateTimeOffset CreationDateTime { get; } = creationDateTime;
+        public VoteValue? CurrentVoteValue { get; } = currentVoteValue;
+        public PublishedVideoManifest? LastValidManifest { get; } = lastValidManifest;
+        public string OwnerAddress { get; } = ownerAddress;
+        public long TotDownvotes { get; } = totDownvotes;
+        public long TotUpvotes { get; } = totUpvotes;
     }
 }

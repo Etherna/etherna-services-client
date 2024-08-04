@@ -64,6 +64,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Users.Sso", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.UsersCommon", "src\EthernaSdk.UsersCommon\EthernaSdk.UsersCommon.csproj", "{D8CE487F-0827-4980-B015-A388298EFC28}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{94FF9CC3-F00A-421C-867A-680E121BC6ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EthernaSdk.Users.Index.UnitTests", "test\EthernaSdk.Users.Index.UnitTests\EthernaSdk.Users.Index.UnitTests.csproj", "{CE4B37A8-C2E0-4509-8C46-B159379B03C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +130,10 @@ Global
 		{D8CE487F-0827-4980-B015-A388298EFC28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8CE487F-0827-4980-B015-A388298EFC28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8CE487F-0827-4980-B015-A388298EFC28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE4B37A8-C2E0-4509-8C46-B159379B03C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE4B37A8-C2E0-4509-8C46-B159379B03C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE4B37A8-C2E0-4509-8C46-B159379B03C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE4B37A8-C2E0-4509-8C46-B159379B03C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +158,7 @@ Global
 		{12E471BE-447C-4943-85B0-820ECCCA23FC} = {E3760BC1-A37A-469F-B402-762C2C1853E3}
 		{B6B2F88B-40F9-4A17-9D19-0FF77D91A566} = {E3760BC1-A37A-469F-B402-762C2C1853E3}
 		{D8CE487F-0827-4980-B015-A388298EFC28} = {E3760BC1-A37A-469F-B402-762C2C1853E3}
+		{CE4B37A8-C2E0-4509-8C46-B159379B03C5} = {94FF9CC3-F00A-421C-867A-680E121BC6ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7539252-E55D-43C2-B2C5-C9A77D191087}

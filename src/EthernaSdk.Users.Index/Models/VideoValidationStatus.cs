@@ -13,30 +13,23 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Index.GenClients;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoValidationStatus
+    public class VideoValidationStatus(
+        IEnumerable<VideoValidationErrorDetail> errorDetails,
+        SwarmHash hash,
+        bool? isValid,
+        DateTimeOffset? validationTime,
+        string videoId)
     {
-        // Constructors.
-        internal VideoValidationStatus(VideoManifestStatusDto videoValidationStatus)
-        {
-            ErrorDetails = videoValidationStatus.ErrorDetails.Select(e => new VideoValidationErrorDetail(e));
-            Hash = videoValidationStatus.Hash;
-            IsValid = videoValidationStatus.IsValid;
-            ValidationTime = videoValidationStatus.ValidationTime;
-            VideoId = videoValidationStatus.VideoId;
-        }
-        
         // Properties.
-        public IEnumerable<VideoValidationErrorDetail> ErrorDetails { get; }
-        public SwarmHash Hash { get; }
-        public bool? IsValid { get; }
-        public DateTimeOffset? ValidationTime { get; }
-        public string VideoId { get; }
+        public IEnumerable<VideoValidationErrorDetail> ErrorDetails { get; } = errorDetails;
+        public SwarmHash Hash { get; } = hash;
+        public bool? IsValid { get; } = isValid;
+        public DateTimeOffset? ValidationTime { get; } = validationTime;
+        public string VideoId { get; } = videoId;
     }
 }

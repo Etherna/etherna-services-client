@@ -13,42 +13,104 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Index.GenClients;
+using Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2;
+using Nethereum.Util;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifest
+    /// <summary>
+    /// Video Manifest utility class, able to serialize/deserialize to/from json
+    /// </summary>
+    [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase")]
+    public class VideoManifest(
+        float aspectRatio,
+        PostageBatchId? batchId,
+        DateTimeOffset createdAt,
+        string description,
+        TimeSpan duration,
+        string title,
+        string ownerEthAddress,
+        string? personalData,
+        IEnumerable<VideoManifestVideoSource> videoSources,
+        VideoManifestImage thumbnail,
+        DateTimeOffset? updatedAt = null)
     {
-        // Constructors.
-        internal VideoManifest(VideoManifest2Dto videoManifest)
+        // Fields.
+        private readonly JsonSerializerOptions jsonSerializerOptions = new()
         {
-            AspectRatio = videoManifest.AspectRatio;
-            if (videoManifest.BatchId is not null)
-                BatchId = videoManifest.BatchId;
-            CreatedAt = videoManifest.CreatedAt;
-            Description = videoManifest.Description;
-            Duration = videoManifest.Duration;
-            Hash = videoManifest.Hash;
-            PersonalData = videoManifest.PersonalData;
-            Sources = videoManifest.Sources.Select(s => new VideoSource(s));
-            Thumbnail = new Image(videoManifest.Thumbnail);
-            Title = videoManifest.Title;
-            UpdatedAt = videoManifest.UpdatedAt;
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        
+        // Methods.
+        public string SerializeDetailsManifest()
+        {
+            var manifestDetails = new Manifest2DetailDto(
+                description: Description,
+                aspectRatio: AspectRatio,
+                batchId: BatchId,
+                personalData: PersonalDataRaw,
+                sources: VideoSources.Select(s => new Manifest2VideoSourceDto(
+                    type: s.Metadata.VideoType,
+                    quality: s.Metadata.Quality,
+                    path: s.Uri,
+                    size: s.Metadata.TotalSourceSize)));
+            return JsonSerializer.Serialize(manifestDetails, jsonSerializerOptions);
+        }
+
+        public string SerializePreviewManifest()
+        {
+            var manifestPreview = new Manifest2PreviewDto(
+                title: Title,
+                createdAt: CreatedAt.ToUnixTimeSeconds(),
+                updatedAt: UpdatedAt?.ToUnixTimeSeconds(),
+                ownerEthAddress: OwnerEthAddress,
+                duration: (long)Duration.TotalSeconds,
+                thumbnail: new Manifest2ThumbnailDto(
+                    aspectRatio: Thumbnail.AspectRatio,
+                    blurhash: Thumbnail.Blurhash,
+                    sources: Thumbnail.Sources.Select(s => new Manifest2ThumbnailSourceDto(
+                        width: s.Metadata.Width,
+                        type: s.Metadata.ImageType,
+                        path: s.Uri))));
+            return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         
+        // Static methods.
+        public VideoManifest DeserializeManifest(string jsonManifestPreview, string jsonManifestDetail)
+        {
+            throw new NotImplementedException();
+        }
+
         // Properties.
-        public float AspectRatio { get; }
-        public PostageBatchId? BatchId { get; }
-        public long CreatedAt { get; }
-        public string? Description { get; }
-        public long? Duration { get; }
-        public SwarmHash Hash { get; }
-        public string? PersonalData { get; }
-        public IEnumerable<VideoSource> Sources { get; }
-        public Image Thumbnail { get; }
-        public string? Title { get; }
-        public long? UpdatedAt { get; }
+        public float AspectRatio { get; } = aspectRatio;
+        public PostageBatchId BatchId { get; set; } = batchId ?? PostageBatchId.Zero; //can be updated later
+        public DateTimeOffset CreatedAt { get; } = createdAt;
+        public string Description { get; } = description;
+        public TimeSpan Duration { get; } = duration;
+        public string Title { get; } = title;
+        public string OwnerEthAddress { get; } = ownerEthAddress;
+        public VideoManifestPersonalData? PersonalData { get; } = TryParsePersonalData(personalData);
+        public string? PersonalDataRaw { get; } = personalData;
+        public VideoManifestImage Thumbnail { get; } = thumbnail;
+        public DateTimeOffset? UpdatedAt { get; set; } = updatedAt;
+        public IEnumerable<(SwarmUri Uri, VideoManifestVideoSource Metadata)> VideoSources { get; }
+            = videoSources.Select(s => (new SwarmUri(
+                $"sources/{s.VideoType.ToStringInvariant().ToLowerInvariant()}/{s.FileName}",
+                UriKind.Relative), s));
+        
+        // Methods.
+        private static VideoManifestPersonalData? TryParsePersonalData(string? personalDataRaw)
+        {
+            if (personalDataRaw is null) return null;
+            return VideoManifestPersonalData.TryDeserialize(personalDataRaw, out var personalData)
+                ? personalData : null;
+        }
     }
 }

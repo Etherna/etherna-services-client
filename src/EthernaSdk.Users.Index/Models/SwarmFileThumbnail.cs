@@ -1,4 +1,4 @@
-// Copyright 2020-present Etherna SA
+﻿// Copyright 2020-present Etherna SA
 // This file is part of Etherna SDK .Net.
 // 
 // Etherna SDK .Net is free software: you can redistribute it and/or modify it under the terms of the
@@ -13,23 +13,19 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Index.GenClients;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class ImageSource
+    public sealed class SwarmFileThumbnail(
+        SwarmAddress address,
+        float aspectRatio,
+        string blurhash,
+        int width)
+        : SwarmFileBase(address)
     {
-        // Constructors.
-        internal ImageSource(ImageSourceDto imageSource)
-        {
-            Type = imageSource.Type;
-            Address = imageSource.Path;
-            Width = imageSource.Width;
-        }
-        
-        // Properties.
-        public SwarmAddress Address { get; }
-        public string? Type { get; }
-        public int Width { get; }
+        public float AspectRatio { get; } = aspectRatio;
+        public string Blurhash { get; } = blurhash;
+        public int Height => (int)(Width / AspectRatio);
+        public int Width { get; } = width;
     }
 }

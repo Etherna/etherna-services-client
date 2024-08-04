@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet;
 using Etherna.Sdk.Users.Index.Clients;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -33,9 +34,11 @@ namespace Etherna.Sdk.Users
             // Register client.
             builder.Services.AddSingleton<IEthernaUserIndexClient>(serviceProvider =>
             {
-                var clientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
+                var beeClient = serviceProvider.GetRequiredService<IBeeClient>();
+                var clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                 return new EthernaUserIndexClient(
                     new Uri(indexBaseUrl, UriKind.Absolute),
+                    beeClient,
                     clientFactory.CreateClient(builder.HttpClientName));
             });
 

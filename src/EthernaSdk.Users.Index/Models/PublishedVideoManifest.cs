@@ -12,18 +12,18 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet.Models;
+
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class IndexParameters(
-        int commentMaxLength,
-        int videoDescriptionMaxLength,
-        int videoPersonalDataMaxLength,
-        int videoTitleMaxLength)
+    public class PublishedVideoManifest(
+        SwarmHash hash,
+        VideoManifest manifest,
+        string? manifestVersion)
     {
         // Properties.
-        public int CommentMaxLength { get; } = commentMaxLength;
-        public int VideoDescriptionMaxLength { get; } = videoDescriptionMaxLength;
-        public int VideoPersonalDataMaxLength { get; } = videoPersonalDataMaxLength;
-        public int VideoTitleMaxLength { get; } = videoTitleMaxLength;
+        public SwarmHash Hash { get; } = hash;
+        public VideoManifest Manifest { get; } = manifest;
+        public string? ManifestVersion { get; } = manifestVersion;
     }
 }
