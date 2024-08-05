@@ -33,14 +33,20 @@ namespace Etherna.Sdk.Users
             
             // Register client.
             var gatewayBaseUri = new Uri(gatewayBaseUrl, UriKind.Absolute);
-            builder.Services.AddSingleton<IEthernaUserGatewayClient>(serviceProvider =>
+            builder.Services.AddSingleton<IBeeClient>(serviceProvider =>
             {
                 var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
                 var httpClient = httpClientFactory.CreateClient(builder.HttpClientName);
                 
-                var beeClient = new BeeClient(
+                return new BeeClient(
                     gatewayBaseUri,
                     httpClient);
+            });
+            builder.Services.AddSingleton<IEthernaUserGatewayClient>(serviceProvider =>
+            {
+                var beeClient = serviceProvider.GetRequiredService<IBeeClient>();
+                var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>()!;
+                var httpClient = httpClientFactory.CreateClient(builder.HttpClientName);
                 
                 return new EthernaUserGatewayClient(
                     gatewayBaseUri,
