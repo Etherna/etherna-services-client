@@ -12,53 +12,42 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet.Hashing;
-using Etherna.Sdk.Users.Index.Serialization.Dtos.PersonalData1;
-using Nethereum.Hex.HexConvertors.Extensions;
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifestPersonalData
+    public class VideoManifestPersonalData(
+        string clientName,
+        string clientVersion,
+        string sourceProviderName,
+        string sourceVideoId)
     {
         // Fields.
-        private readonly JsonSerializerOptions jsonSerializerOptions = new()
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
         
         // Constructor.
-        public VideoManifestPersonalData(
-            string clientName,
-            string clientVersion,
-            string sourceProviderName,
-            string sourceVideoId)
-        {
-            var hasher = new Hasher();
-            
-            ClientName = clientName;
-            ClientVersion = clientVersion;
-            SourceProviderName = sourceProviderName;
-            SourceVideoIdHash = hasher.ComputeHash(sourceVideoId).ToHex();
-        }
 
         // Properties.
-        public string ClientName { get; }
-        public string ClientVersion { get; }
-        public string SourceProviderName { get; }
-        public string SourceVideoIdHash { get; }
-        
+        public string ClientName { get; } = clientName;
+        public string ClientVersion { get; } = clientVersion;
+        public string SourceProviderName { get; } = sourceProviderName;
+        public string SourceVideoId { get; } = sourceVideoId;
+
         // Methods.
         public string Serialize()
         {
-            var dto = new ManifestPersonalDataDto(
+            var dto = new Serialization.Dtos.PersonalData1.ManifestPersonalDataDto(
                 ClientName,
                 ClientVersion,
                 SourceProviderName,
-                SourceVideoIdHash);
-            return JsonSerializer.Serialize(dto, jsonSerializerOptions);
+                SourceVideoId);
+            return JsonSerializer.Serialize(dto, JsonSerializerOptions);
         }
         
         // Static methods.
@@ -68,7 +57,7 @@ namespace Etherna.Sdk.Users.Index.Models
             
             try
             {
-                var dto = JsonSerializer.Deserialize<ManifestPersonalDataDto>(rawPersonalData);
+                var dto = JsonSerializer.Deserialize<Serialization.Dtos.PersonalData1.ManifestPersonalDataDto>(rawPersonalData, JsonSerializerOptions);
                 if (dto is null)
                     return false;
                 
@@ -76,10 +65,11 @@ namespace Etherna.Sdk.Users.Index.Models
                     dto.CliName,
                     dto.CliV,
                     dto.SrcName,
-                    dto.SrcVIdHash);
+                    dto.SrcVId);
                 return true;
             }
-            catch (JsonException)
+            catch (Exception e) when (e is InvalidOperationException
+                                        or JsonException)
             {
                 return false;
             }

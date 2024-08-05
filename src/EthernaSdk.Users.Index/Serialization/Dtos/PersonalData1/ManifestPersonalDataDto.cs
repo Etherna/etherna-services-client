@@ -13,6 +13,7 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Users.Index.Serialization.Dtos.PersonalData1
 {
@@ -24,22 +25,30 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.PersonalData1
             string clientName,
             string clientVersion,
             string sourceProviderName,
-            string sourceVideoIdHash)
+            string sourceVideoId)
         {
             CliName = clientName;
             CliV = clientVersion;
             SrcName = sourceProviderName;
-            SrcVIdHash = sourceVideoIdHash;
+            SrcVId = sourceVideoId;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        private ManifestPersonalDataDto() { }
+        public ManifestPersonalDataDto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         
         // Properties.
-        public string CliName { get; private set; }
-        public string CliV { get; private set; }
-        public string SrcName { get; private set; }
-        public string SrcVIdHash { get; private set; }
         public string V => "1";
+        
+        [JsonInclude]
+        public string CliName { get; private set; }
+        
+        [JsonInclude]
+        public string CliV { get; private set; }
+        
+        [JsonInclude]
+        public string SrcName { get; private set; }
+        
+        [JsonInclude]
+        public string SrcVId { get; private set; }
     }
 }
