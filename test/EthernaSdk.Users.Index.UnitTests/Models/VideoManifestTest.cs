@@ -54,7 +54,12 @@ namespace Etherna.Sdk.Users.Index.Models
                                 swarmHash: SwarmHash.Zero,
                                 videoType: VideoType.Hls,
                                 quality: null,
-                                totalSourceSize: 45678)},
+                                totalSourceSize: 45678,
+                                additionalFiles:
+                                [
+                                    new("1.ts", SwarmHash.Zero, new SwarmUri("720p/1.ts", UriKind.Relative)),
+                                    new("2.ts", SwarmHash.Zero, new SwarmUri("720p/2.ts", UriKind.Relative))
+                                ])},
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: 0.123f,
                                 "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
