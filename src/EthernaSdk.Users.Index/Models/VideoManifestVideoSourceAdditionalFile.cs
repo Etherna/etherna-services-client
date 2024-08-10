@@ -14,17 +14,14 @@
 
 using Etherna.BeeNet.Models;
 using System;
-using System.Collections.Generic;
+using System.IO;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifestVideoSource(
+    public class VideoManifestVideoSourceAdditionalFile(
         string fileName,
         SwarmHash swarmHash,
-        VideoType videoType,
-        string? quality,
-        long totalSourceSize,
-        VideoManifestVideoSourceAdditionalFile[] additionalFiles)
+        SwarmUri swarmUri)
     {
         // Properties.
         /// <summary>
@@ -35,35 +32,17 @@ namespace Etherna.Sdk.Users.Index.Models
         /// <summary>
         /// The video mime content type, used to set content type with the mantaray manifest
         /// </summary>
-        public string MimeContentType => VideoType switch
+        public string MimeContentType => Path.GetExtension(FileName) switch
         {
-            VideoType.Dash => "application/dash+xml",
-            VideoType.Hls => "application/x-mpegURL",
-            VideoType.Mp4 => "video/mp4",
+            ".ts" => "video/MP2T",
             _ => throw new NotSupportedException()
         };
         
-        /// <summary>
-        /// The video stream quality
-        /// </summary>
-        public string? Quality { get; } = quality;
-
         /// <summary>
         /// Absolute swarm hash. Used to link internal mantaray path to resource.
         /// </summary>
         public SwarmHash SwarmHash { get; } = swarmHash;
 
-        /// <summary>
-        /// The video stream byte size
-        /// </summary>
-        public long TotalSourceSize { get; } = totalSourceSize;
-
-        /// <summary>
-        /// The video type, used to derive mime conten type
-        /// </summary>
-        public VideoType VideoType { get; } = videoType;
-
-        public IReadOnlyCollection<VideoManifestVideoSourceAdditionalFile> AdditionalFiles { get; } =
-            additionalFiles;
+        public SwarmUri SwarmUri { get; } = swarmUri;
     }
 }

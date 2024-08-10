@@ -22,6 +22,7 @@ using Etherna.BeeNet.Services;
 using Etherna.Sdk.Users.Index.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -123,14 +124,30 @@ namespace Etherna.Sdk.Users.Index.Services
                     ManifestEntry.NewFile(
                         videoSource.Metadata.SwarmHash,
                         new Dictionary<string, string>
+                        {
+                            [ManifestEntry.ContentTypeKey] = videoSource.Metadata.MimeContentType,
+                            [ManifestEntry.FilenameKey] = videoSource.Metadata.FileName
+                        }));
+
+                //add optional additional files, if present (ex. Hls segments)
+                foreach (var additionalFile in videoSource.Metadata.AdditionalFiles)
+                {
+                    mantarayManifest.Add(
+                        Path.GetDirectoryName(videoSource.Uri.Path)!.TrimEnd(SwarmAddress.Separator) +
+                            SwarmAddress.Separator + additionalFile.SwarmUri.Path,
+                        ManifestEntry.NewFile(
+                            additionalFile.SwarmHash,
+                            new Dictionary<string, string>
                             {
-                                [ManifestEntry.ContentTypeKey] = videoSource.Metadata.MimeContentType,
-                                [ManifestEntry.FilenameKey] = videoSource.Metadata.FileName
+                                [ManifestEntry.ContentTypeKey] = additionalFile.MimeContentType,
+                                [ManifestEntry.FilenameKey] = additionalFile.FileName
                             }));
+                }
             }
             
             //add encoded thumbnail files, only if uri is relative
-            foreach (var thumbnailSource in manifest.Thumbnail.Sources.Where(ts => ts.Uri.UriKind == UriKind.Relative))
+            foreach (var thumbnailSource in manifest.Thumbnail.Sources.Where(
+                         ts => ts.Uri.UriKind == UriKind.Relative))
             {
                 mantarayManifest.Add(
                     thumbnailSource.Uri.ToString(),

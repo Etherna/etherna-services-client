@@ -57,7 +57,12 @@ namespace Etherna.Sdk.Users.Index.Services
                         swarmHash: SwarmHash.Zero,
                         videoType: VideoType.Hls,
                         quality: null,
-                        totalSourceSize: 45678)
+                        totalSourceSize: 45678,
+                        additionalFiles:
+                        [
+                            new("1.ts", SwarmHash.Zero, new SwarmUri("720p/1.ts", UriKind.Relative)),
+                            new("2.ts", SwarmHash.Zero, new SwarmUri("720p/2.ts", UriKind.Relative))
+                        ])
                 },
                 thumbnail: new VideoManifestImage(
                     aspectRatio: 0.123f,
@@ -79,13 +84,15 @@ namespace Etherna.Sdk.Users.Index.Services
                 chunkDirectory.FullName);
             
             // Assert.
-            Assert.Equal("211e2ca9239524add3b6e35f488125795dc53f9c03dba928ef4b1f8fe62f1d56", result);
+            Assert.Equal("389542c84e9bf611a119a6a71d64a49c931ec3f2ada23bcfc50592a4c5fdeb66", result);
             Assert.Equal(
                 new[]
                 {
+                    "06342e7e027dfdb35b426d58a67e3bef58269dd61f641e10755ab93a789d3bc5.chunk",
                     "0cc878d32c96126d47f63fbe391114ee1438cd521146fc975dea1546d302b6c0.chunk",
-                    "211e2ca9239524add3b6e35f488125795dc53f9c03dba928ef4b1f8fe62f1d56.chunk",
                     "247b8d39d2e7e3ce0a7d7b6bb24d47e7bd5d656ef34ac50d29466bbed0f1b452.chunk",
+                    "389542c84e9bf611a119a6a71d64a49c931ec3f2ada23bcfc50592a4c5fdeb66.chunk",
+                    "4db76c367ba03914e71db8e182095247cb2b96d03ce70f414c99db482be13b95.chunk",
                     "7203b2e34f565dbb86003fb1cb4d98edb3309e12807feb525b79e65834029f88.chunk",
                     "7242541ed2fc108f8f90a9c73604ca82171a66495f8c5e77053a43f484798e05.chunk",
                     "8504f2a107ca940beafc4ce2f6c9a9f0968c62a5b5893ff0e4e1e2983048d276.chunk",

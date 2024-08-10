@@ -16,11 +16,13 @@ using Etherna.BeeNet;
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Index.GenClients;
 using Etherna.Sdk.Users.Index.Models;
+using M3U8Parser;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,8 +45,9 @@ namespace Etherna.Sdk.Users.Index.Clients
             IBeeClient beeClient,
             HttpClient httpClient)
         {
-            this.beeClient = beeClient;
             ArgumentNullException.ThrowIfNull(baseUrl, nameof(baseUrl));
+            
+            this.beeClient = beeClient;
 
             generatedCommentsClient = new CommentsClient(baseUrl.AbsoluteUri, httpClient);
             generatedModerationClient = new ModerationClient(baseUrl.AbsoluteUri, httpClient);
@@ -383,16 +386,58 @@ namespace Etherna.Sdk.Users.Index.Clients
                     _ => throw new InvalidOperationException()
                 };
             
-            var swarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
-            var hash = (await beeClient.ResolveAddressToChunkReferenceAsync(
-                swarmUri.ToSwarmAddress(videoManifestHashStr)).ConfigureAwait(false)).Hash;
+            var videoSourceSwarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
+            var videoSourceSwarmAddress = videoSourceSwarmUri.ToSwarmAddress(videoManifestHashStr);
+            var hash = (await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceSwarmAddress).ConfigureAwait(false)).Hash;
+            
+            // Check for additional files.
+            List<VideoManifestVideoSourceAdditionalFile> additionalFiles = [];
+            switch (videoType)
+            {
+                case VideoType.Hls:
+                {
+                    //if is master playlist, skip it
+                    if (videoSourceDto.Size == 0)
+                        break;
+                    
+                    //if is a stream playlist, read it from swarm
+                    var response = await beeClient.GetFileAsync(videoSourceSwarmAddress).ConfigureAwait(false);
+                    using var memoryStream = new MemoryStream();
+                    await response.Stream.CopyToAsync(memoryStream).ConfigureAwait(false);
+                    memoryStream.Position = 0;
+            
+                    var byteArrayContent = memoryStream.ToArray();
+                    await response.Stream.DisposeAsync().ConfigureAwait(false);
+
+                    var playlistString = Encoding.UTF8.GetString(byteArrayContent);
+                    var playlist = MediaPlaylist.LoadFromText(playlistString);
+                    
+                    //retrieve segments as additional files
+                    foreach (var segment in playlist.MediaSegments.First().Segments)
+                    {
+                        // Read segments info.
+                        var segmentSwarmAddress = new SwarmAddress(
+                            videoSourceSwarmAddress.Hash,
+                            videoSourceSwarmAddress.Path.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator +
+                            segment.Uri);
+                        
+                        additionalFiles.Add(new VideoManifestVideoSourceAdditionalFile(
+                            Path.GetFileName(segment.Uri),
+                            (await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress).ConfigureAwait(false)).Hash,
+                            new SwarmUri(segment.Uri, UriKind.Relative)));
+                    }
+                    
+                    break;
+                }
+            }
 
             return new(
                 fileName,
                 hash,
                 videoType,
                 videoSourceDto.Quality,
-                videoSourceDto.Size);
+                videoSourceDto.Size,
+                additionalFiles.ToArray());
         }
 
         private async Task<VideoManifestImageSource> BuildVideoManifestImageSourceAsync(
