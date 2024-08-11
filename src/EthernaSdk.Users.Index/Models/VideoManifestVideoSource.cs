@@ -13,9 +13,11 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
+using Nethereum.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
@@ -69,7 +71,13 @@ namespace Etherna.Sdk.Users.Index.Models
         /// </summary>
         public VideoType VideoType { get; } = videoType;
 
-        public IReadOnlyCollection<VideoManifestVideoSourceAdditionalFile> AdditionalFiles { get; } =
-            additionalFiles;
+        public IEnumerable<(SwarmUri Uri, VideoManifestVideoSourceAdditionalFile File)> AdditionalFiles =>
+            additionalFiles.Select(f => (new SwarmUri(
+                GetManifestVideoSourceBaseDirectory() + f.SourceRelativePath,
+                UriKind.Relative), f));
+        
+        // Methods.
+        public string GetManifestVideoSourceBaseDirectory() =>
+            $"sources/{VideoType.ToStringInvariant().ToLowerInvariant()}/";
     }
 }

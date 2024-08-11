@@ -20,8 +20,7 @@ namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestVideoSourceAdditionalFile(
         string sourceRelativePath,
-        SwarmHash swarmHash,
-        SwarmUri swarmUri)
+        SwarmHash swarmHash)
     {
         // Properties.
         /// <summary>
@@ -44,7 +43,5 @@ namespace Etherna.Sdk.Users.Index.Models
         /// Absolute swarm hash. Used to link internal mantaray path to resource.
         /// </summary>
         public SwarmHash SwarmHash { get; } = swarmHash;
-
-        public SwarmUri SwarmUri { get; } = swarmUri;
     }
 }

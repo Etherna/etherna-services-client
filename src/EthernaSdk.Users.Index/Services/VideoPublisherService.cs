@@ -133,14 +133,13 @@ namespace Etherna.Sdk.Users.Index.Services
                 foreach (var additionalFile in videoSource.Metadata.AdditionalFiles)
                 {
                     mantarayManifest.Add(
-                        Path.GetDirectoryName(videoSource.Uri.Path)!.TrimEnd(SwarmAddress.Separator) +
-                            SwarmAddress.Separator + additionalFile.SwarmUri.Path,
+                        additionalFile.Uri.ToString(),
                         ManifestEntry.NewFile(
-                            additionalFile.SwarmHash,
+                            additionalFile.File.SwarmHash,
                             new Dictionary<string, string>
                             {
-                                [ManifestEntry.ContentTypeKey] = additionalFile.MimeContentType,
-                                [ManifestEntry.FilenameKey] = additionalFile.FileName
+                                [ManifestEntry.ContentTypeKey] = additionalFile.File.MimeContentType,
+                                [ManifestEntry.FilenameKey] = additionalFile.File.FileName
                             }));
                 }
             }

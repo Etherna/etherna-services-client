@@ -413,8 +413,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                         
                         additionalFiles.Add(new VideoManifestVideoSourceAdditionalFile(
                             Path.GetFileName(segment.Uri),
-                            (await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress).ConfigureAwait(false)).Hash,
-                            new SwarmUri(segment.Uri, UriKind.Relative)));
+                            (await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress).ConfigureAwait(false)).Hash));
                     }
                     
                     break;

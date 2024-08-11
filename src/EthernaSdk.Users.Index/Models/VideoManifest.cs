@@ -14,7 +14,6 @@
 
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2;
-using Nethereum.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -102,7 +101,7 @@ namespace Etherna.Sdk.Users.Index.Models
         public DateTimeOffset? UpdatedAt { get; set; } = updatedAt;
         public IEnumerable<(SwarmUri Uri, VideoManifestVideoSource Metadata)> VideoSources { get; }
             = videoSources.Select(s => (new SwarmUri(
-                $"sources/{s.VideoType.ToStringInvariant().ToLowerInvariant()}/{s.SourceRelativePath}",
+                s.GetManifestVideoSourceBaseDirectory() + s.SourceRelativePath,
                 UriKind.Relative), s));
         
         // Methods.

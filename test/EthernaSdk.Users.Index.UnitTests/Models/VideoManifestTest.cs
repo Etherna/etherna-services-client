@@ -66,8 +66,8 @@ namespace Etherna.Sdk.Users.Index.Models
                                     totalSourceSize: 45678,
                                     additionalFiles:
                                     [
-                                        new("1.ts", SwarmHash.Zero, new SwarmUri("720p/1.ts", UriKind.Relative)),
-                                        new("2.ts", SwarmHash.Zero, new SwarmUri("720p/2.ts", UriKind.Relative))
+                                        new("1.ts", SwarmHash.Zero),
+                                        new("2.ts", SwarmHash.Zero)
                                     ])
                             },
                             thumbnail: new VideoManifestImage(
