@@ -19,7 +19,7 @@ using System.IO;
 namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestVideoSourceAdditionalFile(
-        string fileName,
+        string sourceRelativePath,
         SwarmHash swarmHash,
         SwarmUri swarmUri)
     {
@@ -27,7 +27,7 @@ namespace Etherna.Sdk.Users.Index.Models
         /// <summary>
         /// The file name, used to set the download file name in mantaray
         /// </summary>
-        public string FileName { get; } = fileName;
+        public string FileName => Path.GetFileName(SourceRelativePath);
 
         /// <summary>
         /// The video mime content type, used to set content type with the mantaray manifest
@@ -37,7 +37,9 @@ namespace Etherna.Sdk.Users.Index.Models
             ".ts" => "video/MP2T",
             _ => throw new NotSupportedException()
         };
-        
+
+        public string SourceRelativePath { get; } = sourceRelativePath;
+
         /// <summary>
         /// Absolute swarm hash. Used to link internal mantaray path to resource.
         /// </summary>
