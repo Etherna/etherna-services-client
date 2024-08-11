@@ -102,7 +102,7 @@ namespace Etherna.Sdk.Users.Index.Models
         public DateTimeOffset? UpdatedAt { get; set; } = updatedAt;
         public IEnumerable<(SwarmUri Uri, VideoManifestVideoSource Metadata)> VideoSources { get; }
             = videoSources.Select(s => (new SwarmUri(
-                $"sources/{s.VideoType.ToStringInvariant().ToLowerInvariant()}/{s.FileName}",
+                $"sources/{s.VideoType.ToStringInvariant().ToLowerInvariant()}/{s.SourceRelativePath}",
                 UriKind.Relative), s));
         
         // Methods.

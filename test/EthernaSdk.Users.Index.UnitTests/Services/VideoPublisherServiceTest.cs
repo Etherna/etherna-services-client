@@ -26,15 +26,7 @@ namespace Etherna.Sdk.Users.Index.Services
     public class VideoPublisherServiceTest
     {
         // Fields.
-        private readonly IChunkService chunkService;
-        private readonly IVideoPublisherService videoPublisherService;
-
-        // Constructor.
-        public VideoPublisherServiceTest()
-        {
-            chunkService = new ChunkService();
-            videoPublisherService = new VideoPublisherService(chunkService);
-        }
+        private readonly VideoPublisherService videoPublisherService = new(new ChunkService());
 
         // Tests.
         [Fact]
@@ -53,7 +45,14 @@ namespace Etherna.Sdk.Users.Index.Services
                 videoSources: new[]
                 {
                     new VideoManifestVideoSource(
-                        fileName: "720p.m3u8",
+                        sourceRelativePath: "master.m3u8",
+                        swarmHash: SwarmHash.Zero,
+                        videoType: VideoType.Hls,
+                        quality: null,
+                        totalSourceSize: 0,
+                        additionalFiles: []),
+                    new VideoManifestVideoSource(
+                        sourceRelativePath: "720p/playlist.m3u8",
                         swarmHash: SwarmHash.Zero,
                         videoType: VideoType.Hls,
                         quality: null,
@@ -84,18 +83,19 @@ namespace Etherna.Sdk.Users.Index.Services
                 chunkDirectory.FullName);
             
             // Assert.
-            Assert.Equal("389542c84e9bf611a119a6a71d64a49c931ec3f2ada23bcfc50592a4c5fdeb66", result);
+            Assert.Equal("06902415095c715c4f09469110f1a66f0734f176e993a59a2497b376d4215611", result);
             Assert.Equal(
                 new[]
                 {
-                    "06342e7e027dfdb35b426d58a67e3bef58269dd61f641e10755ab93a789d3bc5.chunk",
+                    "06902415095c715c4f09469110f1a66f0734f176e993a59a2497b376d4215611.chunk",
                     "0cc878d32c96126d47f63fbe391114ee1438cd521146fc975dea1546d302b6c0.chunk",
-                    "247b8d39d2e7e3ce0a7d7b6bb24d47e7bd5d656ef34ac50d29466bbed0f1b452.chunk",
-                    "389542c84e9bf611a119a6a71d64a49c931ec3f2ada23bcfc50592a4c5fdeb66.chunk",
+                    "1b5f8d76cf6138abe1be02c5c7a99e9f68f20f9d7aba2bcf43102a90a10b5336.chunk",
                     "4db76c367ba03914e71db8e182095247cb2b96d03ce70f414c99db482be13b95.chunk",
-                    "7203b2e34f565dbb86003fb1cb4d98edb3309e12807feb525b79e65834029f88.chunk",
+                    "6c9fd645de3400e910825230f99e29b266be1ae159d939198df347957da1fc32.chunk",
                     "7242541ed2fc108f8f90a9c73604ca82171a66495f8c5e77053a43f484798e05.chunk",
+                    "74078a89d6464471fd925f725ecd61675b136b12a1e15f42d14f009d0787dce3.chunk",
                     "8504f2a107ca940beafc4ce2f6c9a9f0968c62a5b5893ff0e4e1e2983048d276.chunk",
+                    "d49adebbe9e0c03b4a38ca853e29b589330900dc4de42dc64a01d05b6ca39093.chunk",
                     "e3d7946f40bd3163ab914286fdd0ecf52df00b8ac29083a580f393b6e37043d5.chunk"
                 },
                 Directory.GetFiles(chunkDirectory.FullName).Select(Path.GetFileName).Order());

@@ -375,16 +375,6 @@ namespace Etherna.Sdk.Users.Index.Clients
         {
             if (!Enum.TryParse<VideoType>(videoSourceDto.Type, true, out var videoType))
                 videoType = VideoType.Mp4;
-
-            var fileName = videoSourceDto.Path.Split(SwarmAddress.Separator).Last();
-            if (!Path.HasExtension(fileName))
-                fileName += videoType switch
-                {
-                    VideoType.Mp4 => ".mp4",
-                    VideoType.Dash => ".mpd",
-                    VideoType.Hls => ".m3u8",
-                    _ => throw new InvalidOperationException()
-                };
             
             var videoSourceSwarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
             var videoSourceSwarmAddress = videoSourceSwarmUri.ToSwarmAddress(videoManifestHashStr);
@@ -432,12 +422,12 @@ namespace Etherna.Sdk.Users.Index.Clients
             }
 
             return new(
-                fileName,
-                hash,
-                videoType,
-                videoSourceDto.Quality,
-                videoSourceDto.Size,
-                additionalFiles.ToArray());
+                sourceRelativePath: videoSourceDto.Path,
+                swarmHash: hash,
+                videoType: videoType,
+                quality: videoSourceDto.Quality,
+                totalSourceSize: videoSourceDto.Size,
+                additionalFiles: additionalFiles.ToArray());
         }
 
         private async Task<VideoManifestImageSource> BuildVideoManifestImageSourceAsync(

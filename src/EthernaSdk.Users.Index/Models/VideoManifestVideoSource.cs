@@ -15,11 +15,12 @@
 using Etherna.BeeNet.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
     public class VideoManifestVideoSource(
-        string fileName,
+        string sourceRelativePath,
         SwarmHash swarmHash,
         VideoType videoType,
         string? quality,
@@ -30,7 +31,7 @@ namespace Etherna.Sdk.Users.Index.Models
         /// <summary>
         /// The file name, used to set the download file name in mantaray
         /// </summary>
-        public string FileName { get; } = fileName;
+        public string FileName => Path.GetFileName(SourceRelativePath);
 
         /// <summary>
         /// The video mime content type, used to set content type with the mantaray manifest
@@ -42,11 +43,16 @@ namespace Etherna.Sdk.Users.Index.Models
             VideoType.Mp4 => "video/mp4",
             _ => throw new NotSupportedException()
         };
-        
+
         /// <summary>
         /// The video stream quality
         /// </summary>
         public string? Quality { get; } = quality;
+        
+        /// <summary>
+        /// Relative path inside the source directory
+        /// </summary>
+        public string SourceRelativePath { get; } = sourceRelativePath;
 
         /// <summary>
         /// Absolute swarm hash. Used to link internal mantaray path to resource.
