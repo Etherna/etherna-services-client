@@ -13,6 +13,7 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet;
+using Etherna.BeeNet.Exceptions;
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Index.GenClients;
 using Etherna.Sdk.Users.Index.Models;
@@ -143,26 +144,32 @@ namespace Etherna.Sdk.Users.Index.Clients
 
             // Build response.
             List<VideoPreview> videoPreviews = [];
-            foreach (var v in result.Elements)
+            foreach (var v in result.Elements.Where(v => v.Hash is not null))
             {
-                List<VideoManifestImageSource> thumbnailSources = [];
-                foreach (var thumbSource in v.Thumbnail.Sources)
-                    thumbnailSources.Add(
-                        await BuildVideoManifestImageSourceAsync(thumbSource, v.Hash).ConfigureAwait(false));
+                try
+                {
+                    List<VideoManifestImageSource> thumbnailSources = [];
+                    foreach (var thumbSource in v.Thumbnail!.Sources)
+                        thumbnailSources.Add(
+                            BuildVideoManifestImageSource(thumbSource, v.Hash!));
                 
-                videoPreviews.Add(new VideoPreview(
-                    hash: v.Hash is not null ?
-                        v.Hash : (SwarmHash?)null,
-                    id: v.Id,
-                    createdAt: v.CreatedAt,
-                    duration: v.Duration,
-                    ownerAddress: v.OwnerAddress,
-                    thumbnail: new VideoManifestImage(
-                        aspectRatio: v.Thumbnail.AspectRatio,
-                        blurhash: v.Thumbnail.Blurhash,
-                        sources: thumbnailSources),
-                    title: v.Title,
-                    updatedAt: v.UpdatedAt));
+                    videoPreviews.Add(new VideoPreview(
+                        hash: v.Hash is not null ?
+                            v.Hash : (SwarmHash?)null,
+                        id: v.Id,
+                        createdAt: v.CreatedAt,
+                        duration: v.Duration,
+                        ownerAddress: v.OwnerAddress,
+                        thumbnail: new VideoManifestImage(
+                            aspectRatio: v.Thumbnail.AspectRatio,
+                            blurhash: v.Thumbnail.Blurhash,
+                            sources: thumbnailSources),
+                        title: v.Title,
+                        updatedAt: v.UpdatedAt));
+                }
+                catch (NullReferenceException)
+                {
+                }
             }
             
             return new PaginatedResult<VideoPreview>(
@@ -242,7 +249,9 @@ namespace Etherna.Sdk.Users.Index.Clients
                 result.MaxPage);
         }
 
-        public async Task<PaginatedResult<IndexedVideo>> GetVideosByOwnerAsync(string userAddress, int? page = null,
+        public async Task<PaginatedResult<IndexedVideo>> GetVideosByOwnerAsync(
+            string userAddress,
+            int? page = null,
             int? take = null,
             CancellationToken cancellationToken = default)
         {
@@ -250,7 +259,12 @@ namespace Etherna.Sdk.Users.Index.Clients
 
             List<IndexedVideo> indexedVideos = [];
             foreach (var v in result.Elements)
-                indexedVideos.Add(await BuildIndexedVideoAsync(v).ConfigureAwait(false));
+                try
+                {
+                    indexedVideos.Add(await BuildIndexedVideoAsync(v).ConfigureAwait(false));
+                }
+                catch (BeeNetApiException e) when(e.StatusCode == 404)
+                { }
             
             return new PaginatedResult<IndexedVideo>(
                 indexedVideos,
@@ -326,9 +340,9 @@ namespace Etherna.Sdk.Users.Index.Clients
                 //thumb sources
                 foreach (var thumbnailSource in videoDto.LastValidManifest.Thumbnail.Sources)
                     thumbnailSources.Add(
-                        await BuildVideoManifestImageSourceAsync(
+                        BuildVideoManifestImageSource(
                             thumbnailSource,
-                            videoDto.LastValidManifest.Hash).ConfigureAwait(false));
+                            videoDto.LastValidManifest.Hash));
                 
                 //video sources
                 foreach (var videoSource in videoDto.LastValidManifest.Sources)
@@ -338,32 +352,65 @@ namespace Etherna.Sdk.Users.Index.Clients
                             videoDto.LastValidManifest.Hash).ConfigureAwait(false));
             }
             
+            // Build published video manifest.
+            PublishedVideoManifest? publishedVideoManifest = null;
+            if (videoDto.LastValidManifest is not null)
+            {
+                //aspect ratio con be 0 from manifest v1. Migrate taking it from thumbnail
+                var aspectRatio = videoDto.LastValidManifest.AspectRatio != 0
+                    ? videoDto.LastValidManifest.AspectRatio
+                    : videoDto.LastValidManifest.Thumbnail.AspectRatio;
+                
+                //create at was indicated in milliseconds with manifest v1
+                DateTimeOffset createdAt;
+                try
+                {
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(videoDto.LastValidManifest.CreatedAt);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    createdAt = DateTimeOffset.FromUnixTimeMilliseconds(videoDto.LastValidManifest.CreatedAt);
+                }
+                
+                //same for updated at
+                DateTimeOffset? updatedAt = null;
+                if (videoDto.LastValidManifest.UpdatedAt is not null)
+                {
+                    try
+                    {
+                        updatedAt = DateTimeOffset.FromUnixTimeSeconds(videoDto.LastValidManifest.UpdatedAt.Value);
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        updatedAt = DateTimeOffset.FromUnixTimeMilliseconds(videoDto.LastValidManifest.UpdatedAt.Value);
+                    }
+                }
+                
+                publishedVideoManifest = new PublishedVideoManifest(
+                    hash: videoDto.LastValidManifest.Hash,
+                    manifest: new(
+                        aspectRatio: aspectRatio,
+                        batchId: videoDto.LastValidManifest.BatchId ?? PostageBatchId.Zero,
+                        createdAt: createdAt,
+                        description: videoDto.LastValidManifest.Description ?? "",
+                        duration: TimeSpan.FromSeconds(videoDto.LastValidManifest.Duration ?? 0),
+                        title: videoDto.LastValidManifest.Title ?? "",
+                        videoDto.OwnerAddress,
+                        personalData: videoDto.LastValidManifest.PersonalData,
+                        videoSources: videoSources,
+                        thumbnail: new VideoManifestImage(
+                            aspectRatio: videoDto.LastValidManifest.Thumbnail.AspectRatio,
+                            blurhash: videoDto.LastValidManifest.Thumbnail.Blurhash,
+                            sources: thumbnailSources),
+                        updatedAt: updatedAt));
+            }
+            
             return new IndexedVideo(
                 id: videoDto.Id,
                 creationDateTime: videoDto.CreationDateTime,
                 currentVoteValue: videoDto.CurrentVoteValue.HasValue ?
                     Enum.Parse<VoteValue>(videoDto.CurrentVoteValue.Value.ToString()) : null,
-                lastValidManifest: videoDto.LastValidManifest is not null ?
-                    new PublishedVideoManifest(
-                        hash: videoDto.LastValidManifest.Hash,
-                        manifest: new(
-                            aspectRatio: videoDto.LastValidManifest.AspectRatio,
-                            batchId: videoDto.LastValidManifest.BatchId ?? PostageBatchId.Zero,
-                            createdAt: DateTimeOffset.FromUnixTimeSeconds(videoDto.LastValidManifest.CreatedAt),
-                            description: videoDto.LastValidManifest.Description ?? "",
-                            duration: TimeSpan.FromSeconds(videoDto.LastValidManifest.Duration ?? 0),
-                            title: videoDto.LastValidManifest.Title ?? "",
-                            videoDto.OwnerAddress,
-                            personalData: videoDto.LastValidManifest.PersonalData,
-                            videoSources: videoSources,
-                            thumbnail: new VideoManifestImage(
-                                aspectRatio: videoDto.LastValidManifest.Thumbnail.AspectRatio,
-                                blurhash: videoDto.LastValidManifest.Thumbnail.Blurhash,
-                                sources: thumbnailSources),
-                            updatedAt: videoDto.LastValidManifest.UpdatedAt is null ?
-                                null :
-                                DateTimeOffset.FromUnixTimeSeconds(videoDto.LastValidManifest.UpdatedAt.Value)),
-                        manifestVersion: null) : null,
+                lastValidManifest: publishedVideoManifest,
                 ownerAddress: videoDto.OwnerAddress,
                 totDownvotes: videoDto.TotDownvotes,
                 totUpvotes: videoDto.TotUpvotes);
@@ -378,7 +425,6 @@ namespace Etherna.Sdk.Users.Index.Clients
             
             var videoSourceSwarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
             var videoSourceSwarmAddress = videoSourceSwarmUri.ToSwarmAddress(videoManifestHashStr);
-            var hash = (await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceSwarmAddress).ConfigureAwait(false)).Hash;
             
             // Check for additional files.
             List<VideoManifestVideoSourceAdditionalFile> additionalFiles = [];
@@ -420,18 +466,18 @@ namespace Etherna.Sdk.Users.Index.Clients
                 }
             }
 
-            return new(
+            return VideoManifestVideoSource.BuildFromPublishedContent(
+                swarmAddress: videoSourceSwarmAddress,
                 sourceRelativePath: videoSourceDto.Path,
-                swarmHash: hash,
                 videoType: videoType,
                 quality: videoSourceDto.Quality,
                 totalSourceSize: videoSourceDto.Size,
                 additionalFiles: additionalFiles.ToArray());
         }
 
-        private async Task<VideoManifestImageSource> BuildVideoManifestImageSourceAsync(
+        private static VideoManifestImageSource BuildVideoManifestImageSource(
             ImageSourceDto imageSourceDto,
-            string? videoManifestHashStr)
+            string videoManifestHashStr)
         {
             if (!Enum.TryParse<ImageType>(imageSourceDto.Type, true, out var imageType))
                 imageType = ImageType.Jpeg; //only used jpeg at first
@@ -447,21 +493,14 @@ namespace Etherna.Sdk.Users.Index.Clients
                     _ => throw new InvalidOperationException()
                 };
 
-            var hash = SwarmHash.Zero;
             var swarmUri = new SwarmUri(imageSourceDto.Path, UriKind.RelativeOrAbsolute);
-            if (swarmUri.UriKind == UriKind.Absolute)
-                hash = (await beeClient.ResolveAddressToChunkReferenceAsync(
-                    swarmUri.ToSwarmAddress()).ConfigureAwait(false)).Hash;
-            else if (videoManifestHashStr != null)
-            {
-                hash = (await beeClient.ResolveAddressToChunkReferenceAsync(
-                    swarmUri.ToSwarmAddress(videoManifestHashStr)).ConfigureAwait(false)).Hash;
-            }
-            
-            return new(
+
+            return VideoManifestImageSource.BuildFromPublishedContent(
                 fileName,
                 imageType,
-                hash,
+                swarmUri.UriKind == UriKind.Absolute
+                    ? swarmUri.ToSwarmAddress()
+                    : swarmUri.ToSwarmAddress(videoManifestHashStr),
                 imageSourceDto.Width
             );
         }

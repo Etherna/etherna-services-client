@@ -26,7 +26,8 @@ namespace Etherna.Sdk.Users.Index.Services
     public class VideoPublisherServiceTest
     {
         // Fields.
-        private readonly VideoPublisherService videoPublisherService = new(new ChunkService());
+        private readonly VideoPublisherService videoPublisherService = new(
+            new ChunkService());
 
         // Tests.
         [Fact]
@@ -44,16 +45,16 @@ namespace Etherna.Sdk.Users.Index.Services
                 personalData: "my personal data",
                 videoSources: new[]
                 {
-                    new VideoManifestVideoSource(
+                    VideoManifestVideoSource.BuildFromNewContent(
                         sourceRelativePath: "master.m3u8",
-                        swarmHash: SwarmHash.Zero,
+                        contentSwarmHash: SwarmHash.Zero,
                         videoType: VideoType.Hls,
                         quality: null,
                         totalSourceSize: 0,
                         additionalFiles: []),
-                    new VideoManifestVideoSource(
+                    VideoManifestVideoSource.BuildFromNewContent(
                         sourceRelativePath: "720p/playlist.m3u8",
-                        swarmHash: SwarmHash.Zero,
+                        contentSwarmHash: SwarmHash.Zero,
                         videoType: VideoType.Hls,
                         quality: null,
                         totalSourceSize: 45678,
@@ -68,10 +69,10 @@ namespace Etherna.Sdk.Users.Index.Services
                     "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
                     new[]
                     {
-                        new VideoManifestImageSource(
+                        VideoManifestImageSource.BuildFromNewContent(
                             fileName: "720.png",
                             imageType: ImageType.Png,
-                            SwarmHash.Zero,
+                            contentSwarmHash: SwarmHash.Zero,
                             width: 720)
                     }),
                 updatedAt: new DateTimeOffset(2024, 07, 12, 12, 01, 08, TimeSpan.Zero));

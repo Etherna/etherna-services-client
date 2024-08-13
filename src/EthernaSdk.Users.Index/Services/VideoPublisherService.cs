@@ -22,14 +22,14 @@ using Etherna.BeeNet.Services;
 using Etherna.Sdk.Users.Index.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Users.Index.Services
 {
-    public class VideoPublisherService(IChunkService chunkService)
+    public class VideoPublisherService(
+        IChunkService chunkService)
         : IVideoPublisherService
     {
         // Consts.
@@ -122,7 +122,8 @@ namespace Etherna.Sdk.Users.Index.Services
                 mantarayManifest.Add(
                     videoSource.Uri.ToString(),
                     ManifestEntry.NewFile(
-                        videoSource.Metadata.SwarmHash,
+                        videoSource.Metadata.ContentSwarmHash ??
+                            throw new InvalidOperationException("Content swarm hash can't be null here"),
                         new Dictionary<string, string>
                         {
                             [ManifestEntry.ContentTypeKey] = videoSource.Metadata.MimeContentType,
@@ -151,7 +152,8 @@ namespace Etherna.Sdk.Users.Index.Services
                 mantarayManifest.Add(
                     thumbnailSource.Uri.ToString(),
                     ManifestEntry.NewFile(
-                        thumbnailSource.Metadata.SwarmHash,
+                        thumbnailSource.Metadata.ContentSwarmHash ??
+                            throw new InvalidOperationException("Content swarm hash can't be null here"),
                         new Dictionary<string, string>
                         {
                             [ManifestEntry.ContentTypeKey] = thumbnailSource.Metadata.MimeContentType,

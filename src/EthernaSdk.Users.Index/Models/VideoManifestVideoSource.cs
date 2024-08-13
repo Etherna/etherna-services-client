@@ -21,15 +21,57 @@ using System.Linq;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifestVideoSource(
-        string sourceRelativePath,
-        SwarmHash swarmHash,
-        VideoType videoType,
-        string? quality,
-        long totalSourceSize,
-        VideoManifestVideoSourceAdditionalFile[] additionalFiles)
+    public class VideoManifestVideoSource
     {
+        // Fields.
+        private readonly VideoManifestVideoSourceAdditionalFile[] additionalFiles;
+
+        // Constructors.
+        private VideoManifestVideoSource(
+            string sourceRelativePath,
+            VideoType videoType,
+            string? quality,
+            long totalSourceSize,
+            VideoManifestVideoSourceAdditionalFile[] additionalFiles)
+        {
+            this.additionalFiles = additionalFiles;
+            Quality = quality;
+            SourceRelativePath = sourceRelativePath;
+            TotalSourceSize = totalSourceSize;
+            VideoType = videoType;
+        }
+        
+        // Builders.
+        public static VideoManifestVideoSource BuildFromPublishedContent(
+            SwarmAddress swarmAddress,
+            string sourceRelativePath,
+            VideoType videoType,
+            string? quality,
+            long totalSourceSize,
+            VideoManifestVideoSourceAdditionalFile[] additionalFiles) =>
+            new(sourceRelativePath, videoType, quality, totalSourceSize, additionalFiles)
+        {
+            SwarmAddress = swarmAddress
+        };
+        
+        public static VideoManifestVideoSource BuildFromNewContent(
+            SwarmHash contentSwarmHash,
+            string sourceRelativePath,
+            VideoType videoType,
+            string? quality,
+            long totalSourceSize,
+            VideoManifestVideoSourceAdditionalFile[] additionalFiles) =>
+            new(sourceRelativePath, videoType, quality, totalSourceSize, additionalFiles)
+        {
+            ContentSwarmHash = contentSwarmHash
+        };
+
         // Properties.
+        /// <summary>
+        /// Content direct swarm hash. Used to link internal mantaray path to resource.
+        /// </summary>
+        public SwarmHash? ContentSwarmHash { get; set; }
+        
         /// <summary>
         /// The file name, used to set the download file name in mantaray
         /// </summary>
@@ -49,27 +91,24 @@ namespace Etherna.Sdk.Users.Index.Models
         /// <summary>
         /// The video stream quality
         /// </summary>
-        public string? Quality { get; } = quality;
+        public string? Quality { get; }
         
         /// <summary>
         /// Relative path inside the source directory
         /// </summary>
-        public string SourceRelativePath { get; } = sourceRelativePath;
-
-        /// <summary>
-        /// Absolute swarm hash. Used to link internal mantaray path to resource.
-        /// </summary>
-        public SwarmHash SwarmHash { get; } = swarmHash;
+        public string SourceRelativePath { get; }
+        
+        public SwarmAddress SwarmAddress { get; private set; }
 
         /// <summary>
         /// The video stream byte size
         /// </summary>
-        public long TotalSourceSize { get; } = totalSourceSize;
+        public long TotalSourceSize { get; }
 
         /// <summary>
         /// The video type, used to derive mime conten type
         /// </summary>
-        public VideoType VideoType { get; } = videoType;
+        public VideoType VideoType { get; }
 
         public IEnumerable<(SwarmUri Uri, VideoManifestVideoSourceAdditionalFile File)> AdditionalFiles =>
             additionalFiles.Select(f => (new SwarmUri(

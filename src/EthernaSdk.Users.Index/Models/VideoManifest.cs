@@ -47,6 +47,29 @@ namespace Etherna.Sdk.Users.Index.Models
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
         
+        // Static methods.
+        public VideoManifest DeserializeManifest(string jsonManifestPreview, string jsonManifestDetail)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Properties.
+        public float AspectRatio { get; } = aspectRatio;
+        public PostageBatchId BatchId { get; set; } = batchId ?? PostageBatchId.Zero; //can be updated later
+        public DateTimeOffset CreatedAt { get; } = createdAt;
+        public string Description { get; } = description;
+        public TimeSpan Duration { get; } = duration;
+        public string Title { get; } = title;
+        public string OwnerEthAddress { get; } = ownerEthAddress;
+        public VideoManifestPersonalData? PersonalData { get; } = TryParsePersonalData(personalData);
+        public string? PersonalDataRaw { get; } = personalData;
+        public VideoManifestImage Thumbnail { get; } = thumbnail;
+        public DateTimeOffset? UpdatedAt { get; set; } = updatedAt;
+        public IEnumerable<(SwarmUri Uri, VideoManifestVideoSource Metadata)> VideoSources { get; }
+            = videoSources.Select(s => (new SwarmUri(
+                s.GetManifestVideoSourceBaseDirectory() + s.SourceRelativePath,
+                UriKind.Relative), s));
+        
         // Methods.
         public string SerializeDetailsManifest()
         {
@@ -81,30 +104,6 @@ namespace Etherna.Sdk.Users.Index.Models
             return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         
-        // Static methods.
-        public VideoManifest DeserializeManifest(string jsonManifestPreview, string jsonManifestDetail)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Properties.
-        public float AspectRatio { get; } = aspectRatio;
-        public PostageBatchId BatchId { get; set; } = batchId ?? PostageBatchId.Zero; //can be updated later
-        public DateTimeOffset CreatedAt { get; } = createdAt;
-        public string Description { get; } = description;
-        public TimeSpan Duration { get; } = duration;
-        public string Title { get; } = title;
-        public string OwnerEthAddress { get; } = ownerEthAddress;
-        public VideoManifestPersonalData? PersonalData { get; } = TryParsePersonalData(personalData);
-        public string? PersonalDataRaw { get; } = personalData;
-        public VideoManifestImage Thumbnail { get; } = thumbnail;
-        public DateTimeOffset? UpdatedAt { get; set; } = updatedAt;
-        public IEnumerable<(SwarmUri Uri, VideoManifestVideoSource Metadata)> VideoSources { get; }
-            = videoSources.Select(s => (new SwarmUri(
-                s.GetManifestVideoSourceBaseDirectory() + s.SourceRelativePath,
-                UriKind.Relative), s));
-        
-        // Methods.
         private static VideoManifestPersonalData? TryParsePersonalData(string? personalDataRaw)
         {
             if (personalDataRaw is null) return null;

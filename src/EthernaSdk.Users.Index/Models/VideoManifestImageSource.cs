@@ -17,22 +17,53 @@ using System;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifestImageSource(
-        string fileName,
-        ImageType imageType,
-        SwarmHash swarmHash,
-        int width)
+    public class VideoManifestImageSource
     {
+        // Constructors.
+        private VideoManifestImageSource(
+            string fileName,
+            ImageType imageType,
+            int width)
+        {
+            FileName = fileName;
+            ImageType = imageType;
+            Width = width;
+        }
+        
+        // Builders.
+        public static VideoManifestImageSource BuildFromPublishedContent(
+            string fileName,
+            ImageType imageType,
+            SwarmAddress swarmAddress,
+            int width) => new(fileName, imageType, width)
+        {
+            SwarmAddress = swarmAddress
+        };
+        
+        public static VideoManifestImageSource BuildFromNewContent(
+            string fileName,
+            ImageType imageType,
+            SwarmHash contentSwarmHash,
+            int width) => new(fileName, imageType, width)
+        {
+            ContentSwarmHash = contentSwarmHash
+        };
+
         // Properties.
+        /// <summary>
+        /// Content direct swarm hash. Used to link internal mantaray path to resource.
+        /// </summary>
+        public SwarmHash? ContentSwarmHash { get; set; }
+        
         /// <summary>
         /// The file name, used to set the download file name in mantaray
         /// </summary>
-        public string FileName { get; } = fileName;
+        public string FileName { get; }
 
         /// <summary>
         /// The video type, used to derive mime content type
         /// </summary>
-        public ImageType ImageType { get; } = imageType;
+        public ImageType ImageType { get; }
 
         /// <summary>
         /// The video mime content type, used to set content type with the mantaray manifest
@@ -45,12 +76,9 @@ namespace Etherna.Sdk.Users.Index.Models
             ImageType.Webp => "image/webp",
             _ => throw new NotSupportedException()
         };
+        
+        public SwarmAddress SwarmAddress { get; private set; }
 
-        /// <summary>
-        /// Absolute swarm hash. Used to link internal mantaray path to resource.
-        /// </summary>
-        public SwarmHash SwarmHash { get; } = swarmHash;
-
-        public int Width { get; } = width;
+        public int Width { get; }
     }
 }

@@ -6150,7 +6150,7 @@ namespace Etherna.Sdk.Index.GenClients
         public string OwnerAddress { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("thumbnail")]
-        public Image2Dto Thumbnail { get; set; } = default!;
+        public Image2Dto? Thumbnail { get; set; } = default!;
 
         [System.Text.Json.Serialization.JsonPropertyName("title")]
         public string? Title { get; set; } = default!;

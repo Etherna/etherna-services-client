@@ -51,16 +51,16 @@ namespace Etherna.Sdk.Users.Index.Models
                             personalData: "my personal data",
                             videoSources: new []
                             {
-                                new VideoManifestVideoSource(
+                                VideoManifestVideoSource.BuildFromNewContent(
                                     sourceRelativePath: "master.m3u8",
-                                    swarmHash: SwarmHash.Zero,
+                                    contentSwarmHash: SwarmHash.Zero,
                                     videoType: VideoType.Hls,
                                     quality: null,
                                     totalSourceSize: 0,
                                     additionalFiles: []),
-                                new VideoManifestVideoSource(
+                                VideoManifestVideoSource.BuildFromNewContent(
                                     sourceRelativePath: "720p/playlist.m3u8",
-                                    swarmHash: SwarmHash.Zero,
+                                    contentSwarmHash: SwarmHash.Zero,
                                     videoType: VideoType.Hls,
                                     quality: null,
                                     totalSourceSize: 45678,
@@ -73,11 +73,14 @@ namespace Etherna.Sdk.Users.Index.Models
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: 0.123f,
                                 "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
-                                new []{ new VideoManifestImageSource(
-                                    fileName: "720.png",
-                                    imageType: ImageType.Png,
-                                    swarmHash: SwarmHash.Zero, 
-                                    width: 720) }),
+                                new []
+                                {
+                                    VideoManifestImageSource.BuildFromNewContent(
+                                        fileName: "720.png",
+                                        imageType: ImageType.Png,
+                                        contentSwarmHash: SwarmHash.Zero, 
+                                        width: 720)
+                                }),
                             updatedAt: new DateTimeOffset(2024, 07, 12, 12, 01, 08, TimeSpan.Zero)),
                         """{"v":"2.0","title":"I\u0027m a title","createdAt":1720111542,"updatedAt":1720785668,"ownerAddress":"0x7cd4878e21d9ce3da6611ae27a1b73827af81374","duration":42,"thumbnail":{"aspectRatio":0.123,"blurhash":"UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay","sources":[{"width":720,"type":"png","path":"thumb/720.png"}]}}""",
                         """{"description":"My description","aspectRatio":0.123,"batchId":"f389278a2fa242de94e858e318bbfa7c10489533797ff923f9aa4524fabfcd34","personalData":"my personal data","sources":[{"type":"hls","path":"sources/hls/master.m3u8","size":0},{"type":"hls","path":"sources/hls/720p/playlist.m3u8","size":45678}]}""")

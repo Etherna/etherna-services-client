@@ -18,12 +18,10 @@ namespace Etherna.Sdk.Users.Index.Models
 {
     public class PublishedVideoManifest(
         SwarmHash hash,
-        VideoManifest manifest,
-        string? manifestVersion)
+        VideoManifest manifest)
     {
         // Properties.
         public SwarmHash Hash { get; } = hash;
         public VideoManifest Manifest { get; } = manifest;
-        public string? ManifestVersion { get; } = manifestVersion;
     }
 }
