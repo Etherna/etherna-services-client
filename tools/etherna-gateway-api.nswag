@@ -92,7 +92,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../src/EthernaSdk.Gateway/GenClients/NSwagEthernaGatewayClient.cs",
+      "output": "../src/EthernaSdk.Gateway.Common/GenClients/NSwagEthernaGatewayClient.cs",
       "newLineBehavior": "Auto"
     }
   }

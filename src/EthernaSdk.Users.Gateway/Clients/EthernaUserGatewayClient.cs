@@ -60,6 +60,12 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             DateTimeOffset? freePinEndOfLife = null,
             CancellationToken cancellationToken = default) =>
             generatedResourcesClient.FreeAsync(hash.ToString(), freePinEndOfLife, cancellationToken);
+        
+        public Task AnnounceUploadAsync(
+            SwarmHash hash,
+            PostageBatchId batchId,
+            CancellationToken cancellationToken = default) =>
+            generatedResourcesClient.AnnounceUploadAsync(hash.ToString(), batchId.ToString(), cancellationToken);
 
         public async Task<IDictionary<SwarmHash, bool>> AreResourcesDownloadFundedAsync(
             IEnumerable<SwarmHash> resourceHashes,
