@@ -61,11 +61,11 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             CancellationToken cancellationToken = default) =>
             generatedResourcesClient.FreeAsync(hash.ToString(), freePinEndOfLife, cancellationToken);
         
-        public Task AnnounceUploadAsync(
-            SwarmHash hash,
+        public Task AnnounceChunksUploadAsync(
+            SwarmHash rootHash,
             PostageBatchId batchId,
             CancellationToken cancellationToken = default) =>
-            generatedResourcesClient.AnnounceUploadAsync(hash.ToString(), batchId.ToString(), cancellationToken);
+            generatedResourcesClient.AnnounceUploadAsync(rootHash.ToString(), batchId.ToString(), cancellationToken);
 
         public async Task<IDictionary<SwarmHash, bool>> AreResourcesDownloadFundedAsync(
             IEnumerable<SwarmHash> resourceHashes,

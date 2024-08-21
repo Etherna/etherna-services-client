@@ -44,13 +44,13 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Announce upload hash upload with an owned postage batch, to try pin chunks on right node
+        /// Announce chunks upload to help pin the root hash on the same node owning the postage batch
         /// </summary>
-        /// <param name="hash">The swarm resource hash</param>
+        /// <param name="rootHash">The swarm resource hash</param>
         /// <param name="batchId">ID of Postage Batch that is used to upload data with</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        Task AnnounceUploadAsync(
-            SwarmHash hash,
+        Task AnnounceChunksUploadAsync(
+            SwarmHash rootHash,
             PostageBatchId batchId,
             CancellationToken cancellationToken = default);
 
