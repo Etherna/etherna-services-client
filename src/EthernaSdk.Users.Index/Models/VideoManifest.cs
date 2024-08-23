@@ -38,6 +38,7 @@ namespace Etherna.Sdk.Users.Index.Models
         string? personalData,
         IEnumerable<VideoManifestVideoSource> videoSources,
         VideoManifestImage thumbnail,
+        IEnumerable<VideoManifestCaptionSource> captionSources,
         DateTimeOffset? updatedAt = null)
     {
         // Fields.
@@ -56,6 +57,8 @@ namespace Etherna.Sdk.Users.Index.Models
         // Properties.
         public float AspectRatio { get; } = aspectRatio;
         public PostageBatchId BatchId { get; set; } = batchId ?? PostageBatchId.Zero; //can be updated later
+        public IEnumerable<(SwarmUri Uri, VideoManifestCaptionSource Source)> CaptionSources { get; }
+            = captionSources.Select(s => (new SwarmUri($"captions/{s.FileName}", UriKind.Relative), s));
         public DateTimeOffset CreatedAt { get; } = createdAt;
         public string Description { get; } = description;
         public TimeSpan Duration { get; } = duration;
@@ -78,6 +81,9 @@ namespace Etherna.Sdk.Users.Index.Models
                 aspectRatio: AspectRatio,
                 batchId: BatchId,
                 personalData: PersonalDataRaw,
+                captions: CaptionSources.Select(s => new Manifest2CaptionSourceDto(
+                    s.Source.CaptionName,
+                    path: s.Uri)),
                 sources: VideoSources.Select(s => new Manifest2VideoSourceDto(
                     type: s.Metadata.VideoType,
                     quality: s.Metadata.Quality,

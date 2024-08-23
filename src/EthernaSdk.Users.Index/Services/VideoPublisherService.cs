@@ -160,6 +160,21 @@ namespace Etherna.Sdk.Users.Index.Services
                             [ManifestEntry.FilenameKey] = thumbnailSource.Metadata.FileName
                         }));
             }
+            
+            //add captions files, only if uri is relative
+            foreach (var captionSource in manifest.CaptionSources.Where(
+                         cs => cs.Uri.UriKind == UriKind.Relative))
+            {
+                mantarayManifest.Add(
+                    captionSource.Uri.ToString(),
+                    ManifestEntry.NewFile(
+                        captionSource.Source.ContentSwarmHash,
+                        new Dictionary<string, string>
+                        {
+                            [ManifestEntry.ContentTypeKey] = captionSource.Source.MimeContentType,
+                            [ManifestEntry.FilenameKey] = captionSource.Source.FileName
+                        }));
+            }
 
             return (await mantarayManifest.GetHashAsync().ConfigureAwait(false)).Hash;
         }
