@@ -402,6 +402,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                             aspectRatio: videoDto.LastValidManifest.Thumbnail.AspectRatio,
                             blurhash: videoDto.LastValidManifest.Thumbnail.Blurhash,
                             sources: thumbnailSources),
+                        captionSources: [],
                         updatedAt: updatedAt));
             }
             

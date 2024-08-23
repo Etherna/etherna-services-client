@@ -39,7 +39,7 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
-        public string V => "2.0";
+        public string V => "2.1";
         public string Title { get; private set; }
         public long CreatedAt { get; private set; }
         public long? UpdatedAt { get; private set; }

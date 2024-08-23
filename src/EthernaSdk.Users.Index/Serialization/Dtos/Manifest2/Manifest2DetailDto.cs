@@ -32,12 +32,14 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
             float aspectRatio,
             PostageBatchId batchId,
             string? personalData,
+            IEnumerable<Manifest2CaptionSourceDto> captions,
             IEnumerable<Manifest2VideoSourceDto> sources)
         {
             Description = description;
             AspectRatio = aspectRatio;
             BatchId = batchId.ToString();
             PersonalData = personalData;
+            Captions = captions;
             Sources = sources;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -48,6 +50,7 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
         public string Description { get; private set; }
         public float AspectRatio { get; private set; }
         public string BatchId { get; private set; }
+        public IEnumerable<Manifest2CaptionSourceDto> Captions { get; private set; }
         public string? PersonalData
         {
             get => _personalData;
