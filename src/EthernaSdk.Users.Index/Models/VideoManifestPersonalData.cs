@@ -30,8 +30,6 @@ namespace Etherna.Sdk.Users.Index.Models
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
-        
-        // Constructor.
 
         // Properties.
         public string ClientName { get; } = clientName;
