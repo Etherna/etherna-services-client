@@ -43,8 +43,8 @@ namespace Etherna.Sdk.Users.Index.Services
                 title: "I'm a title",
                 ownerEthAddress: "0x7cd4878e21d9ce3da6611ae27a1b73827af81374",
                 personalData: "my personal data",
-                videoSources: new[]
-                {
+                videoSources:
+                [
                     VideoManifestVideoSource.BuildFromNewContent(
                         sourceRelativePath: "master.m3u8",
                         contentSwarmHash: SwarmHash.Zero,
@@ -63,18 +63,24 @@ namespace Etherna.Sdk.Users.Index.Services
                             new("1.ts", SwarmHash.Zero),
                             new("2.ts", SwarmHash.Zero)
                         ])
-                },
+                ],
                 thumbnail: new VideoManifestImage(
                     aspectRatio: 0.123f,
                     "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
-                    new[]
-                    {
+                    [
                         VideoManifestImageSource.BuildFromNewContent(
                             fileName: "720.png",
                             imageType: ImageType.Png,
                             contentSwarmHash: SwarmHash.Zero,
                             width: 720)
-                    }),
+                    ]),
+                captionSources:
+                [
+                    new VideoManifestCaptionSource(
+                        "eng",
+                        "0.ts",
+                        SwarmHash.Zero)
+                ],
                 updatedAt: new DateTimeOffset(2024, 07, 12, 12, 01, 08, TimeSpan.Zero));
             var chunkDirectory = Directory.CreateTempSubdirectory();
 
@@ -84,19 +90,18 @@ namespace Etherna.Sdk.Users.Index.Services
                 chunkDirectory.FullName);
             
             // Assert.
-            Assert.Equal("c8182105053c7ad4c02b945454d2ce9db84f257469c2c3c5a31142c5a7ad217e", result);
+            Assert.Equal("6a458d04f02b773040f9880737b9b56187fd4ac6d96daa89bce1d81a2513e180", result);
             Assert.Equal(
-                new[]
-                {
+                [
                     "0cc878d32c96126d47f63fbe391114ee1438cd521146fc975dea1546d302b6c0.chunk",
-                    "1b5f8d76cf6138abe1be02c5c7a99e9f68f20f9d7aba2bcf43102a90a10b5336.chunk",
-                    "6c9fd645de3400e910825230f99e29b266be1ae159d939198df347957da1fc32.chunk",
-                    "7242541ed2fc108f8f90a9c73604ca82171a66495f8c5e77053a43f484798e05.chunk",
+                    "17810f7220710a3e3a8f3a166134e2b015b0b460a833aa0505baa00867dcdb60.chunk",
+                    "6a458d04f02b773040f9880737b9b56187fd4ac6d96daa89bce1d81a2513e180.chunk",
                     "8504f2a107ca940beafc4ce2f6c9a9f0968c62a5b5893ff0e4e1e2983048d276.chunk",
-                    "c8182105053c7ad4c02b945454d2ce9db84f257469c2c3c5a31142c5a7ad217e.chunk",
-                    "e250fc8865894b98b21a28002decf162874f00a81f44c8af96c1249bef84c3fc.chunk",
-                    "e3d7946f40bd3163ab914286fdd0ecf52df00b8ac29083a580f393b6e37043d5.chunk",
-                },
+                    "a966438c28b6566f5762471c52cbd4e3d83445f2ed07d20e93b9205f6c9e9998.chunk",
+                    "bf934a28b9f9058b96d51ff9eb0d2420cdd086de2ecdd206aa104d3adb69c9cc.chunk",
+                    "dd031c128974182a84ccc69a3a6d1fdfd6962ac958f215d012866cce425281b4.chunk",
+                    "e250fc8865894b98b21a28002decf162874f00a81f44c8af96c1249bef84c3fc.chunk"
+                ],
                 Directory.GetFiles(chunkDirectory.FullName).Select(Path.GetFileName).Order());
             
             // Cleanup.

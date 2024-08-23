@@ -17,31 +17,16 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Users.Index.Models
 {
-    public class VideoManifestCaptionSource
+    [SuppressMessage("Performance", "CA1822:Mark members as static")]
+    public class VideoManifestCaptionSource(
+        string captionName,
+        string fileName,
+        SwarmHash contentSwarmHash)
     {
-        // Constructors.
-        private VideoManifestCaptionSource(
-            string captionName,
-            string fileName)
-        {
-            CaptionName = captionName;
-            FileName = fileName;
-        }
-
-        // Builders.
-        public static VideoManifestCaptionSource BuildFromNewContent(
-            string captionName,
-            string fileName,
-            SwarmHash contentSwarmHash) => new(captionName, fileName)
-        {
-            ContentSwarmHash = contentSwarmHash
-        };
-        
         // Properties.
-        public SwarmHash ContentSwarmHash { get; set; }
-        public string CaptionName { get; }
-        public string FileName { get; }
-        [SuppressMessage("Performance", "CA1822:Mark members as static")]
+        public SwarmHash ContentSwarmHash { get; } = contentSwarmHash;
+        public string CaptionName { get; } = captionName;
+        public string FileName { get; } = fileName;
         public string MimeContentType => "text/vtt";
     }
 }
