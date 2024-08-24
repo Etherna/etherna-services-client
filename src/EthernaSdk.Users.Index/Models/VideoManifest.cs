@@ -82,7 +82,8 @@ namespace Etherna.Sdk.Users.Index.Models
                 batchId: BatchId,
                 personalData: PersonalDataRaw,
                 captions: CaptionSources.Select(s => new Manifest2CaptionSourceDto(
-                    s.Source.CaptionName,
+                    s.Source.Label,
+                    s.Source.LanguageCode,
                     path: s.Uri)),
                 sources: VideoSources.Select(s => new Manifest2VideoSourceDto(
                     type: s.Metadata.VideoType,

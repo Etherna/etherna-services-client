@@ -20,10 +20,12 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
     {
         // Constructors.
         public Manifest2CaptionSourceDto(
-            string name,
+            string label,
+            string lang,
             SwarmUri path)
         {
-            Name = name;
+            Label = label;
+            Lang = lang;
             Path = path.ToString();
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -31,7 +33,8 @@ namespace Etherna.Sdk.Users.Index.Serialization.Dtos.Manifest2
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
-        public string Name { get; private set; }
+        public string Label { get; private set; }
+        public string Lang { get; private set; }
         public string Path { get; private set; }
     }
 }

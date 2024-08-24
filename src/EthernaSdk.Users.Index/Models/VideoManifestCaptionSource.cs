@@ -19,14 +19,16 @@ namespace Etherna.Sdk.Users.Index.Models
 {
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
     public class VideoManifestCaptionSource(
-        string captionName,
+        string label,
+        string languageCode,
         string fileName,
         SwarmHash contentSwarmHash)
     {
         // Properties.
         public SwarmHash ContentSwarmHash { get; } = contentSwarmHash;
-        public string CaptionName { get; } = captionName;
         public string FileName { get; } = fileName;
+        public string Label { get; } = label;
+        public string LanguageCode { get; } = languageCode;
         public string MimeContentType => "text/vtt";
     }
 }
