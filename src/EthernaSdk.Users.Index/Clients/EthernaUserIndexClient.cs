@@ -338,7 +338,7 @@ namespace Etherna.Sdk.Users.Index.Clients
             if (videoDto.LastValidManifest is not null) //can be null, see: https://etherna.atlassian.net/browse/EID-229
             {
                 //thumb sources
-                foreach (var thumbnailSource in videoDto.LastValidManifest.Thumbnail.Sources)
+                foreach (var thumbnailSource in videoDto.LastValidManifest.Thumbnail?.Sources ?? [])
                     thumbnailSources.Add(
                         BuildVideoManifestImageSource(
                             thumbnailSource,
@@ -359,7 +359,7 @@ namespace Etherna.Sdk.Users.Index.Clients
                 //aspect ratio con be 0 from manifest v1. Migrate taking it from thumbnail
                 var aspectRatio = videoDto.LastValidManifest.AspectRatio != 0
                     ? videoDto.LastValidManifest.AspectRatio
-                    : videoDto.LastValidManifest.Thumbnail.AspectRatio;
+                    : videoDto.LastValidManifest.Thumbnail?.AspectRatio ?? 1;
                 
                 //create at was indicated in milliseconds with manifest v1
                 DateTimeOffset createdAt;
@@ -399,8 +399,8 @@ namespace Etherna.Sdk.Users.Index.Clients
                         personalData: videoDto.LastValidManifest.PersonalData,
                         videoSources: videoSources,
                         thumbnail: new VideoManifestImage(
-                            aspectRatio: videoDto.LastValidManifest.Thumbnail.AspectRatio,
-                            blurhash: videoDto.LastValidManifest.Thumbnail.Blurhash,
+                            aspectRatio: videoDto.LastValidManifest.Thumbnail?.AspectRatio ?? 1,
+                            blurhash: videoDto.LastValidManifest.Thumbnail?.Blurhash ?? "",
                             sources: thumbnailSources),
                         captionSources: [],
                         updatedAt: updatedAt));
