@@ -335,7 +335,7 @@ namespace Etherna.Sdk.Users.Index.Clients
         {
             List<VideoManifestImageSource> thumbnailSources = [];
             List<VideoManifestVideoSource> videoSources = [];
-            if (videoDto.LastValidManifest is not null) //can be null, see: https://etherna.atlassian.net/browse/EID-229
+            if (videoDto.LastValidManifest is not null)
             {
                 //thumb sources
                 foreach (var thumbnailSource in videoDto.LastValidManifest.Thumbnail?.Sources ?? [])
