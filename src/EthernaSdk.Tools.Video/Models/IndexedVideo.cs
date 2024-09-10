@@ -12,29 +12,26 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet.Models;
-using Etherna.Sdk.Tools.Video.Models;
+using System;
 
-namespace Etherna.Sdk.Users.Index.Models
+namespace Etherna.Sdk.Tools.Video.Models
 {
-    public class VideoPreview(
+    public class IndexedVideo(
         string id,
-        long? createdAt,
-        long? duration,
-        SwarmHash? hash,
+        DateTimeOffset creationDateTime,
+        VoteValue? currentVoteValue,
+        PublishedVideoManifest? lastValidManifest,
         string ownerAddress,
-        VideoManifestImage thumbnail,
-        string? title,
-        long? updatedAt)
+        long totDownvotes,
+        long totUpvotes)
     {
         // Properties.
         public string Id { get; } = id;
-        public long? CreatedAt { get; } = createdAt;
-        public long? Duration { get; } = duration;
-        public SwarmHash? Hash { get; } = hash;
+        public DateTimeOffset CreationDateTime { get; } = creationDateTime;
+        public VoteValue? CurrentVoteValue { get; } = currentVoteValue;
+        public PublishedVideoManifest? LastValidManifest { get; } = lastValidManifest;
         public string OwnerAddress { get; } = ownerAddress;
-        public VideoManifestImage Thumbnail { get; } = thumbnail;
-        public string? Title { get; } = title;
-        public long? UpdatedAt { get; } = updatedAt;
+        public long TotDownvotes { get; } = totDownvotes;
+        public long TotUpvotes { get; } = totUpvotes;
     }
 }

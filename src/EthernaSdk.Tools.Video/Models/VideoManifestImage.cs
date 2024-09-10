@@ -13,28 +13,21 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Tools.Video.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Etherna.Sdk.Users.Index.Models
+namespace Etherna.Sdk.Tools.Video.Models
 {
-    public class VideoPreview(
-        string id,
-        long? createdAt,
-        long? duration,
-        SwarmHash? hash,
-        string ownerAddress,
-        VideoManifestImage thumbnail,
-        string? title,
-        long? updatedAt)
+    public class VideoManifestImage(
+        float aspectRatio,
+        string blurhash,
+        IEnumerable<VideoManifestImageSource> sources)
     {
         // Properties.
-        public string Id { get; } = id;
-        public long? CreatedAt { get; } = createdAt;
-        public long? Duration { get; } = duration;
-        public SwarmHash? Hash { get; } = hash;
-        public string OwnerAddress { get; } = ownerAddress;
-        public VideoManifestImage Thumbnail { get; } = thumbnail;
-        public string? Title { get; } = title;
-        public long? UpdatedAt { get; } = updatedAt;
+        public float AspectRatio { get; } = aspectRatio;
+        public string Blurhash { get; } = blurhash;
+        public IEnumerable<(SwarmUri Uri, VideoManifestImageSource Metadata)> Sources { get; } = sources.Select(
+            s => (new SwarmUri($"thumb/{s.FileName}", UriKind.Relative), s));
     }
 }

@@ -12,29 +12,22 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet.Models;
+using Etherna.Sdk.Index.GenClients;
 using Etherna.Sdk.Tools.Video.Models;
+using System.Threading.Tasks;
 
-namespace Etherna.Sdk.Users.Index.Models
+namespace Etherna.Sdk.Tools.Video.Services
 {
-    public class VideoPreview(
-        string id,
-        long? createdAt,
-        long? duration,
-        SwarmHash? hash,
-        string ownerAddress,
-        VideoManifestImage thumbnail,
-        string? title,
-        long? updatedAt)
+    public interface IVideoParserService
     {
-        // Properties.
-        public string Id { get; } = id;
-        public long? CreatedAt { get; } = createdAt;
-        public long? Duration { get; } = duration;
-        public SwarmHash? Hash { get; } = hash;
-        public string OwnerAddress { get; } = ownerAddress;
-        public VideoManifestImage Thumbnail { get; } = thumbnail;
-        public string? Title { get; } = title;
-        public long? UpdatedAt { get; } = updatedAt;
+        Task<IndexedVideo> BuildIndexedVideoAsync(Video2Dto videoDto);
+
+        Task<VideoManifestVideoSource> BuildVideoManifestVideoSourceAsync(
+            VideoSourceDto videoSourceDto,
+            string videoManifestHashStr);
+
+        VideoManifestImageSource BuildVideoManifestImageSource(
+            ImageSourceDto imageSourceDto,
+            string videoManifestHashStr);
     }
 }
