@@ -53,21 +53,19 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
-        public string V => "1.2";
-        
         //from v1.0
+        public string Title { get; set; }
         public string Description { get; set; }
-        public long Duration { get; set; }
         public string OriginalQuality { get; set; }
         public string OwnerAddress { get; set; }
-        public IEnumerable<Manifest1VideoSourceDto> Sources { get; set; }
+        public long Duration { get; set; }
         public Manifest1ThumbnailDto? Thumbnail { get; set; }
-        public string Title { get; set; }
+        public IEnumerable<Manifest1VideoSourceDto> Sources { get; set; }
         
         //from v1.1
-        public string? BatchId { get; set; }
         public long? CreatedAt { get; set; }
         public long? UpdatedAt { get; set; }
+        public string? BatchId { get; set; }
         
         //from v1.2
         public string? PersonalData
@@ -80,6 +78,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
                 _personalData = value;
             }
         }
+        public string V => "1.2";
         
         // Methods.
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]

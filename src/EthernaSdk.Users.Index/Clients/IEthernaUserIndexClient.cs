@@ -14,7 +14,6 @@
 
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Index.GenClients;
-using Etherna.Sdk.Tools.Video.Models;
 using Etherna.Sdk.Users.Index.Models;
 using System.Collections.Generic;
 using System.Threading;
