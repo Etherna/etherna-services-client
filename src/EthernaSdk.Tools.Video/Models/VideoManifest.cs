@@ -47,12 +47,6 @@ namespace Etherna.Sdk.Tools.Video.Models
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
-        
-        // Static methods.
-        public VideoManifest DeserializeManifest(string jsonManifestPreview, string jsonManifestDetail)
-        {
-            throw new NotImplementedException();
-        }
 
         // Properties.
         public float AspectRatio { get; } = aspectRatio;

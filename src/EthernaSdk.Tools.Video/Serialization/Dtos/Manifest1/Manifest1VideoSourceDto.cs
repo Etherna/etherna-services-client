@@ -12,6 +12,8 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.Sdk.Tools.Video.Models;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
@@ -28,8 +30,19 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 
         // Properties.
         public int Bitrate => 420;
-        public string Quality { get; private set; }
-        public string Reference { get; private set; }
-        public long Size { get; private set; }
+        public string Quality { get; set; }
+        public string Reference { get; set; }
+        public long Size { get; set; }
+
+        // Methods.
+        public ValidationError[] GetValidationErrors()
+        {
+            var errors = new List<ValidationError>();
+
+            if (string.IsNullOrWhiteSpace(Quality))
+                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has empty quality"));
+
+            return errors.ToArray();
+        }
     }
 }

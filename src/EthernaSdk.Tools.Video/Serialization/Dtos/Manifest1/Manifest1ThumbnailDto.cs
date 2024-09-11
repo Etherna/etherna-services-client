@@ -12,8 +12,11 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.Sdk.Tools.Video.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 {
@@ -25,8 +28,30 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
         private Manifest1ThumbnailDto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         
-        public float AspectRatio { get; private set; }
-        public string Blurhash { get; private set; }
-        public IDictionary<string, string> Sources { get; private set; }
+        // Properties.
+        public float AspectRatio { get; set; }
+        public string Blurhash { get; set; }
+        public IDictionary<string, string> Sources { get; set; }
+
+        // Methods.
+        [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]
+        public ValidationError[] GetValidationErrors()
+        {
+            var errors = new List<ValidationError>();
+
+            if (Sources is null || !Sources.Any())
+                errors.Add(new ValidationError(ValidationErrorType.InvalidThumbnailSource, "Thumbnail has missing sources"));
+
+            foreach (var source in Sources ?? new Dictionary<string, string>())
+            {
+                if (string.IsNullOrWhiteSpace(source.Key))
+                    errors.Add(new ValidationError(ValidationErrorType.InvalidThumbnailSource, $"Thumbnail has source with missing width"));
+                if (!int.TryParse(source.Key.Replace("w", "", StringComparison.OrdinalIgnoreCase), out var width) ||
+                    width <= 0)
+                    errors.Add(new ValidationError(ValidationErrorType.InvalidThumbnailSource, $"Thumbnail has wrong width"));
+            }
+
+            return errors.ToArray();
+        }
     }
 }

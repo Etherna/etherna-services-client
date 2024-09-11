@@ -12,9 +12,11 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.Sdk.Tools.Video.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 {
@@ -23,7 +25,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
     internal sealed class Manifest1Dto
     {
         // Consts.
-        private const int PersonalDataMaxLength = 200;
+        public const int DescriptionMaxLength = 5000;
+        public const int PersonalDataMaxLength = 200;
+        public const int TitleMaxLength = 200;
 
         // Fields.
         private string? _personalData;
@@ -32,18 +36,60 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private Manifest1Dto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        
+        // Methods.
+        [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]
+        public ValidationError[] GetValidationErrors()
+        {
+            var errors = new List<ValidationError>();
+            
+            if (Description is null)
+                errors.Add(new ValidationError(ValidationErrorType.MissingDescription));
+            else if (Description.Length > DescriptionMaxLength)
+                errors.Add(new ValidationError(ValidationErrorType.InvalidDescription, "Description is too long"));
+            
+            if (Duration == 0)
+                errors.Add(new ValidationError(ValidationErrorType.MissingDuration));
+            
+            if (Sources is null || !Sources.Any())
+                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Missing sources"));
+
+            foreach (var source in Sources ?? [])
+                errors.AddRange(source.GetValidationErrors());
+
+            if (Thumbnail is not null)
+                errors.AddRange(Thumbnail.GetValidationErrors());
+            
+            if (string.IsNullOrWhiteSpace(Title))
+                errors.Add(new ValidationError(ValidationErrorType.MissingTitle));
+            else if (Title.Length > TitleMaxLength)
+                errors.Add(new ValidationError(ValidationErrorType.InvalidTitle, "Title is too long"));
+
+            if (PersonalData is not null &&
+                PersonalData.Length > PersonalDataMaxLength)
+                errors.Add(new ValidationError(ValidationErrorType.InvalidPersonalData, "Personal data is too long"));
+            
+            return errors.ToArray();
+        }
 
         // Properties.
-        public string Title { get; private set; }
-        public string Description { get; private set; }
-        public string OriginalQuality { get; private set; }
-        public string OwnerAddress { get; private set; }
-        public long Duration { get; private set; }
-        public Manifest1ThumbnailDto? Thumbnail { get; private set; }
-        public IEnumerable<Manifest1VideoSourceDto> Sources { get; private set; }
-        public long CreatedAt { get; private set; }
-        public long? UpdatedAt { get; private set; }
-        public string BatchId { get; private set; }
+        public string V => "1.2";
+        
+        //from v1.0
+        public string Description { get; set; }
+        public long Duration { get; set; }
+        public string OriginalQuality { get; set; }
+        public string OwnerAddress { get; set; }
+        public IEnumerable<Manifest1VideoSourceDto> Sources { get; set; }
+        public Manifest1ThumbnailDto? Thumbnail { get; set; }
+        public string Title { get; set; }
+        
+        //from v1.1
+        public string? BatchId { get; set; }
+        public long? CreatedAt { get; set; }
+        public long? UpdatedAt { get; set; }
+        
+        //from v1.2
         public string? PersonalData
         {
             get => _personalData;
@@ -54,6 +100,5 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
                 _personalData = value;
             }
         }
-        public string V => "1.2";
     }
 }
