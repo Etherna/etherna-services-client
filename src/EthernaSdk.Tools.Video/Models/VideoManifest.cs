@@ -70,7 +70,7 @@ namespace Etherna.Sdk.Tools.Video.Models
         // Methods.
         public string SerializeDetailsManifest()
         {
-            var manifestDetails = new Manifest2DetailDto(
+            var manifestDetails = new Manifest2DetailsDto(
                 description: Description,
                 aspectRatio: AspectRatio,
                 batchId: BatchId,

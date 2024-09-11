@@ -20,6 +20,8 @@ using Etherna.Sdk.Tools.Video.Services;
 using Etherna.Sdk.Users.Index.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -30,7 +32,7 @@ namespace Etherna.Sdk.Users.Index.Clients
     public class EthernaUserIndexClient(
         Uri baseUrl,
         HttpClient httpClient,
-        IVideoParserService videoParserService) : IEthernaUserIndexClient
+        IVideoManifestService videoManifestService) : IEthernaUserIndexClient
     {
         // Fields.
         private readonly CommentsClient generatedCommentsClient = new(baseUrl.AbsoluteUri, httpClient);
@@ -131,9 +133,35 @@ namespace Etherna.Sdk.Users.Index.Clients
                 try
                 {
                     List<VideoManifestImageSource> thumbnailSources = [];
-                    foreach (var thumbSource in v.Thumbnail!.Sources)
-                        thumbnailSources.Add(
-                            videoParserService.BuildVideoManifestImageSource(thumbSource, v.Hash!));
+                    foreach (var thumbSourceDto in v.Thumbnail!.Sources)
+                    {
+                        if (!Enum.TryParse<ImageType>(thumbSourceDto.Type, true, out var imageType))
+                            imageType = ImageType.Jpeg; //only used jpeg at first
+
+                        var fileName = thumbSourceDto.Path.Split(SwarmAddress.Separator).Last();
+                        if (!Path.HasExtension(fileName))
+                            fileName += imageType switch
+                            {
+                                ImageType.Avif => ".avif",
+                                ImageType.Jpeg => ".jpeg",
+                                ImageType.Png => ".png",
+                                ImageType.Webp => ".webp",
+                                _ => throw new InvalidOperationException()
+                            };
+
+                        var swarmUri = new SwarmUri(thumbSourceDto.Path, UriKind.RelativeOrAbsolute);
+
+                        var thumbSource = VideoManifestImageSource.BuildFromPublishedContent(
+                            fileName,
+                            imageType,
+                            swarmUri.UriKind == UriKind.Absolute
+                                ? swarmUri.ToSwarmAddress()
+                                : swarmUri.ToSwarmAddress(v.Hash!),
+                            thumbSourceDto.Width
+                        );
+                        
+                        thumbnailSources.Add(thumbSource);
+                    }
                 
                     videoPreviews.Add(new VideoPreview(
                         hash: v.Hash is not null ?
@@ -201,7 +229,7 @@ namespace Etherna.Sdk.Users.Index.Clients
             CancellationToken cancellationToken = default)
         {
             var response = await generatedVideosClient.Find2Async(videoId, cancellationToken).ConfigureAwait(false);
-            return await videoParserService.BuildIndexedVideoAsync(response).ConfigureAwait(false);
+            return await BuildIndexedVideoAsync(response).ConfigureAwait(false);
         }
 
         public async Task<IndexedVideo> GetVideoByManifestAsync(
@@ -209,7 +237,7 @@ namespace Etherna.Sdk.Users.Index.Clients
             CancellationToken cancellationToken = default)
         {
             var response = await generatedVideosClient.Manifest2Async(manifestHash.ToString(), cancellationToken).ConfigureAwait(false);
-            return await videoParserService.BuildIndexedVideoAsync(response).ConfigureAwait(false);
+            return await BuildIndexedVideoAsync(response).ConfigureAwait(false);
         }
 
         public async Task<PaginatedResult<Comment>> GetVideoCommentsAsync(string videoId, int? page = null, int? take = null,
@@ -243,7 +271,7 @@ namespace Etherna.Sdk.Users.Index.Clients
             foreach (var v in result.Elements)
                 try
                 {
-                    indexedVideos.Add(await videoParserService.BuildIndexedVideoAsync(v).ConfigureAwait(false));
+                    indexedVideos.Add(await BuildIndexedVideoAsync(v).ConfigureAwait(false));
                 }
                 catch (BeeNetApiException e) when(e.StatusCode == 404)
                 { }
@@ -311,5 +339,37 @@ namespace Etherna.Sdk.Users.Index.Clients
 
         public Task VotesVideoAsync(string id, VoteValue value, CancellationToken cancellationToken = default) =>
             generatedVideosClient.VotesAsync(id, Enum.Parse<Value>(value.ToString()), cancellationToken);
+        
+        // Helpers.
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
+        [SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
+        private async Task<IndexedVideo> BuildIndexedVideoAsync(Video2Dto videoDto)
+        {
+            ArgumentNullException.ThrowIfNull(videoDto, nameof(videoDto));
+
+            // Build published video manifest.
+            PublishedVideoManifest? publishedVideoManifest = null;
+            if (videoDto.LastValidManifest is not null)
+            {
+                try
+                {
+                    publishedVideoManifest = await videoManifestService.GetPublishedVideoManifestAsync(
+                        videoDto.LastValidManifest.Hash).ConfigureAwait(false);
+                }
+                catch
+                { }
+            }
+            
+            // Build indexed video.
+            return new IndexedVideo(
+                id: videoDto.Id,
+                creationDateTime: videoDto.CreationDateTime,
+                currentVoteValue: videoDto.CurrentVoteValue.HasValue ?
+                    Enum.Parse<VoteValue>(videoDto.CurrentVoteValue.Value.ToString()) : null,
+                lastValidManifest: publishedVideoManifest,
+                ownerAddress: videoDto.OwnerAddress,
+                totDownvotes: videoDto.TotDownvotes,
+                totUpvotes: videoDto.TotUpvotes);
+        }
     }
 }

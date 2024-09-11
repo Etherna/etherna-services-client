@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet;
 using Etherna.BeeNet.Hashing.Pipeline;
 using Etherna.BeeNet.Hashing.Postage;
 using Etherna.BeeNet.Hashing.Signer;
@@ -19,18 +20,23 @@ using Etherna.BeeNet.Hashing.Store;
 using Etherna.BeeNet.Manifest;
 using Etherna.BeeNet.Models;
 using Etherna.BeeNet.Services;
+using Etherna.Sdk.Tools.Video.Exceptions;
 using Etherna.Sdk.Tools.Video.Models;
+using Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1;
+using Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Tools.Video.Services
 {
-    public class VideoPublisherService(
+    public class VideoManifestService(
+        IBeeClient beeClient,
         IChunkService chunkService)
-        : IVideoPublisherService
+        : IVideoManifestService
     {
         // Consts.
         private const string DetailsManifestFileName = "details";
@@ -177,6 +183,28 @@ namespace Etherna.Sdk.Tools.Video.Services
             }
 
             return (await mantarayManifest.GetHashAsync().ConfigureAwait(false)).Hash;
+        }
+
+        public async Task<PublishedVideoManifest> GetPublishedVideoManifestAsync(SwarmHash manifestHash)
+        {
+            using var rootManifestStream = (await beeClient.GetFileAsync(manifestHash).ConfigureAwait(false)).Stream;
+            var rootManifestJsonElement = await JsonSerializer.DeserializeAsync<JsonElement>(rootManifestStream).ConfigureAwait(false);
+
+            // Find version.
+            var versionStr = rootManifestJsonElement.TryGetProperty("v", out var jsonVersion) ?
+                jsonVersion.GetString()! :
+                "1.0"; //first version didn't have an identifier
+            var version = new Version(versionStr);
+
+            // Deserialize document.
+            var videoManifest = version.Major switch
+            {
+                1 => Manifest1Dto.DeserializeVideoManifest(rootManifestJsonElement),
+                2 => await Manifest2PreviewDto.DeserializeVideoManifestAsync(manifestHash, rootManifestJsonElement, beeClient).ConfigureAwait(false),
+                _ => throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Invalid version")])
+            };
+
+            return new PublishedVideoManifest(manifestHash, videoManifest);
         }
     }
 }

@@ -14,6 +14,7 @@
 
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Tools.Video.Models;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
@@ -36,8 +37,22 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
-        public int Width { get; private set; }
-        public string Type { get; private set; }
-        public string Path { get; private set; }
+        public int Width { get; set; }
+        public string Type { get; set; }
+        public string Path { get; set; }
+        
+        // Methods.
+        public ValidationError[] GetValidationErrors()
+        {
+            var errors = new List<ValidationError>();
+
+            if (string.IsNullOrWhiteSpace(Type))
+                errors.Add(new ValidationError(ValidationErrorType.InvalidThumbnailSource, $"Thumbnail has empty type"));
+            
+            if (Width <= 0)
+                errors.Add(new ValidationError(ValidationErrorType.InvalidThumbnailSource, $"Thumbnail has wrong width"));
+            
+            return errors.ToArray();
+        }
     }
 }

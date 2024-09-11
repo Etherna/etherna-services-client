@@ -13,6 +13,9 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
+using Etherna.Sdk.Tools.Video.Models;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
@@ -33,8 +36,17 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
-        public string Label { get; private set; }
-        public string Lang { get; private set; }
-        public string Path { get; private set; }
+        public string Label { get; set; }
+        public string Lang { get; set; }
+        public string Path { get; set; }
+        
+        // Methods.
+        [SuppressMessage("Performance", "CA1822:Mark members as static")]
+        public ValidationError[] GetValidationErrors()
+        {
+            var errors = new List<ValidationError>();
+            
+            return errors.ToArray();
+        }
     }
 }

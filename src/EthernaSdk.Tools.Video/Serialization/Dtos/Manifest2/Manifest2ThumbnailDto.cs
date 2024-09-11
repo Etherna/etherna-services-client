@@ -12,7 +12,10 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.Sdk.Tools.Video.Models;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
@@ -33,8 +36,23 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         
         // Properties.
-        public float AspectRatio { get; private set; }
-        public string Blurhash { get; private set; }
-        public IEnumerable<Manifest2ThumbnailSourceDto> Sources { get; private set; }
+        public float AspectRatio { get; set; }
+        public string Blurhash { get; set; }
+        public IEnumerable<Manifest2ThumbnailSourceDto> Sources { get; set; }
+        
+        // Methods.
+        [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]
+        public ValidationError[] GetValidationErrors()
+        {
+            var errors = new List<ValidationError>();
+            
+            if (Sources is null || !Sources.Any())
+                errors.Add(new ValidationError(ValidationErrorType.InvalidThumbnailSource, "Thumbnail has missing sources"));
+
+            foreach (var source in Sources ?? [])
+                errors.AddRange(source.GetValidationErrors());
+            
+            return errors.ToArray();
+        }
     }
 }

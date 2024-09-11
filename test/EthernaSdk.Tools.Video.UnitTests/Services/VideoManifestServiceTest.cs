@@ -12,9 +12,11 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet;
 using Etherna.BeeNet.Models;
 using Etherna.BeeNet.Services;
 using Etherna.Sdk.Tools.Video.Models;
+using Moq;
 using System;
 using System.IO;
 using System.Linq;
@@ -23,10 +25,11 @@ using Xunit;
 
 namespace Etherna.Sdk.Tools.Video.Services
 {
-    public class VideoPublisherServiceTest
+    public class VideoManifestServiceTest
     {
         // Fields.
-        private readonly VideoPublisherService videoPublisherService = new(
+        private readonly VideoManifestService videoPublisherService = new(
+            new Mock<IBeeClient>().Object,
             new ChunkService());
 
         // Tests.

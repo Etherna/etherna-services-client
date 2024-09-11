@@ -31,17 +31,17 @@ namespace Etherna.Sdk.Users
         {
             ArgumentNullException.ThrowIfNull(builder, nameof(builder));
             
-            builder.Services.AddScoped<IVideoParserService, VideoParserService>();
+            builder.Services.AddScoped<IVideoManifestService, VideoManifestService>();
             
             // Register client.
             builder.Services.AddSingleton<IEthernaUserIndexClient>(serviceProvider =>
             {
                 var clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var videoParserService = serviceProvider.GetRequiredService<IVideoParserService>();
+                var videoManifestService = serviceProvider.GetRequiredService<IVideoManifestService>();
                 return new EthernaUserIndexClient(
                     new Uri(indexBaseUrl, UriKind.Absolute),
                     clientFactory.CreateClient(builder.HttpClientName),
-                    videoParserService);
+                    videoManifestService);
             });
 
             return builder;

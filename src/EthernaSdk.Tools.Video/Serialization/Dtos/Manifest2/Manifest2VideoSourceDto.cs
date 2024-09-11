@@ -14,11 +14,14 @@
 
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Tools.Video.Models;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
     [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase")]
+    [SuppressMessage("Performance", "CA1822:Mark members as static")]
     public sealed class Manifest2VideoSourceDto
     {
         // Constructors.
@@ -38,9 +41,32 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
-        public string Type { get; private set; }
-        public string? Quality { get; private set; }
-        public string Path { get; private set; }
-        public long Size { get; private set; }
+        public string Type { get; set; }
+        public string? Quality { get; set; }
+        public string Path { get; set; }
+        public long Size { get; set; }
+
+        // Methods.
+        [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]
+        public ValidationError[] GetValidationErrors()
+        {
+            var errors = new List<ValidationError>();
+
+            if (Path is null ||
+                SwarmUri.FromString(Path) is { UriKind: System.UriKind.Relative, HasPath: false })
+                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has empty path"));
+
+            if (Quality is not null &&
+                string.IsNullOrWhiteSpace(Quality))
+                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has empty quality"));
+
+            if (Size <= 0 && !(Path ?? "").EndsWith("/manifest.m3u8", StringComparison.InvariantCultureIgnoreCase))
+                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has invalid size"));
+
+            if (string.IsNullOrWhiteSpace(Type))
+                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has empty type"));
+
+            return errors.ToArray();
+        }
     }
 }

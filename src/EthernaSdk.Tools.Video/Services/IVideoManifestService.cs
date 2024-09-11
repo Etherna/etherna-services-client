@@ -12,22 +12,21 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.Sdk.Index.GenClients;
+using Etherna.BeeNet.Hashing.Postage;
+using Etherna.BeeNet.Models;
 using Etherna.Sdk.Tools.Video.Models;
 using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Tools.Video.Services
 {
-    public interface IVideoParserService
+    public interface IVideoManifestService
     {
-        Task<IndexedVideo> BuildIndexedVideoAsync(Video2Dto videoDto);
+        Task<SwarmHash> CreateVideoManifestChunksAsync(
+            VideoManifest manifest,
+            string chunksDirectory,
+            bool createDirectory = true,
+            IPostageStampIssuer? postageStampIssuer = null);
 
-        Task<VideoManifestVideoSource> BuildVideoManifestVideoSourceAsync(
-            VideoSourceDto videoSourceDto,
-            string videoManifestHashStr);
-
-        VideoManifestImageSource BuildVideoManifestImageSource(
-            ImageSourceDto imageSourceDto,
-            string videoManifestHashStr);
+        Task<PublishedVideoManifest> GetPublishedVideoManifestAsync(SwarmHash manifestHash);
     }
 }
