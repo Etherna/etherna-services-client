@@ -22,7 +22,7 @@ namespace Etherna.Sdk.Tools.Video.Exceptions
     public class VideoManifestValidationException : Exception
     {
         // Constructors.
-        public VideoManifestValidationException() : this([])
+        public VideoManifestValidationException() : this(Array.Empty<ValidationError>())
         { }
 
         public VideoManifestValidationException(string message) : base(message)
