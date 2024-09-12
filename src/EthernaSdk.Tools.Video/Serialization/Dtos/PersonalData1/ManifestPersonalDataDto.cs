@@ -12,7 +12,9 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.PersonalData1
@@ -39,16 +41,12 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.PersonalData1
         // Properties.
         public string V => "1";
         
-        [JsonInclude]
-        public string CliName { get; private set; }
-        
-        [JsonInclude]
-        public string CliV { get; private set; }
-        
-        [JsonInclude]
-        public string SrcName { get; private set; }
-        
-        [JsonInclude]
-        public string SrcVId { get; private set; }
+        public string CliName { get; set; }
+        public string CliV { get; set; }
+        public string SrcName { get; set; }
+        public string SrcVId { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
     }
 }

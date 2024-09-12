@@ -79,6 +79,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
             }
         }
         public string V => "1.2";
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
         
         // Methods.
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]
@@ -141,7 +144,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
                     s.Quality + ".mp4",
                     VideoType.Mp4,
                     s.Quality,
-                    s.Size,
+                    s.Size ?? 100,
                     [])),
                 manifestDto.Thumbnail is null ? defaultThumbnail :
                     new VideoManifestImage(

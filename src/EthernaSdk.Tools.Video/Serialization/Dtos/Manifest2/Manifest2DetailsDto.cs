@@ -18,11 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
-    public class Manifest2DetailsDto
+    internal sealed class Manifest2DetailsDto
     {
         // Consts.
         public const int DescriptionMaxLength = 5000;
@@ -52,10 +54,10 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
+        //from v2.0
         public string Description { get; set; }
         public float AspectRatio { get; set; }
         public string BatchId { get; set; }
-        public IEnumerable<Manifest2CaptionSourceDto> Captions { get; set; }
         public string? PersonalData
         {
             get => _personalData;
@@ -67,6 +69,12 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             }
         }
         public IEnumerable<Manifest2VideoSourceDto> Sources { get; set; }
+        
+        //from v2.1
+        public IEnumerable<Manifest2CaptionSourceDto> Captions { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
         
         // Methods.
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]

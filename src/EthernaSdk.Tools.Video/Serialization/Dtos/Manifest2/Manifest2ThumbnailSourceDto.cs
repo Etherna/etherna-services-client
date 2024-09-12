@@ -16,11 +16,13 @@ using Etherna.BeeNet.Models;
 using Etherna.Sdk.Tools.Video.Models;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
     [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase")]
-    public class Manifest2ThumbnailSourceDto
+    internal sealed class Manifest2ThumbnailSourceDto
     {
         // Constructors.
         public Manifest2ThumbnailSourceDto(
@@ -40,6 +42,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
         public int Width { get; set; }
         public string Type { get; set; }
         public string Path { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
         
         // Methods.
         public ValidationError[] GetValidationErrors()

@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 {
@@ -32,6 +34,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
         public float AspectRatio { get; set; }
         public string Blurhash { get; set; }
         public IDictionary<string, string> Sources { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
 
         // Methods.
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]

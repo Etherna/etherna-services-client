@@ -17,12 +17,14 @@ using Etherna.Sdk.Tools.Video.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
     [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase")]
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
-    public sealed class Manifest2VideoSourceDto
+    internal sealed class Manifest2VideoSourceDto
     {
         // Constructors.
         public Manifest2VideoSourceDto(
@@ -45,6 +47,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
         public string? Quality { get; set; }
         public string Path { get; set; }
         public long Size { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
 
         // Methods.
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]

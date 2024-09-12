@@ -16,10 +16,12 @@ using Etherna.BeeNet.Models;
 using Etherna.Sdk.Tools.Video.Models;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
-    public class Manifest2CaptionSourceDto
+    internal sealed class Manifest2CaptionSourceDto
     {
         // Constructors.
         public Manifest2CaptionSourceDto(
@@ -39,6 +41,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
         public string Label { get; set; }
         public string Lang { get; set; }
         public string Path { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
         
         // Methods.
         [SuppressMessage("Performance", "CA1822:Mark members as static")]

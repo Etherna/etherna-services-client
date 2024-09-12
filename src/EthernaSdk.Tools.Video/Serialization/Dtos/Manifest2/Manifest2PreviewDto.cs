@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
-    public class Manifest2PreviewDto
+    internal sealed class Manifest2PreviewDto
     {
         // Consts.
         public const int TitleMaxLength = 200;
@@ -73,6 +73,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
         public string OwnerAddress { get; set; }
         public long Duration { get; set; }
         public Manifest2ThumbnailDto? Thumbnail { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
         
         // Methods.
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]
@@ -107,13 +110,13 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             
             // Get preview manifest.
             var previewManifestDto = previewManifestJsonElement.Deserialize<Manifest2PreviewDto>(jsonSerializerOptions)
-                ?? throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Empty json")]);
+                ?? throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Empty json preview manifest")]);
 
             // Get details manifest.
             using var detailsManifestStream = (await beeClient.GetFileAsync($"{manifestHash}/details").ConfigureAwait(false)).Stream;
             var detailsManifestDto = await JsonSerializer.DeserializeAsync<Manifest2DetailsDto>(
                 detailsManifestStream, jsonSerializerOptions).ConfigureAwait(false) ??
-                throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Empty json detail")]);
+                throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Empty json details manifest")]);
             
             // Validate manifests.
             List<ValidationError> errors = [];

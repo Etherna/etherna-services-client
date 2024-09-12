@@ -15,6 +15,8 @@
 using Etherna.Sdk.Tools.Video.Models;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 {
@@ -32,7 +34,10 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
         public int Bitrate => 420;
         public string Quality { get; set; }
         public string Reference { get; set; }
-        public long Size { get; set; }
+        public long? Size { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
 
         // Methods.
         public ValidationError[] GetValidationErrors()

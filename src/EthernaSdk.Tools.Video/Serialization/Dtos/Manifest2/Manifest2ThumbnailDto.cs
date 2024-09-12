@@ -16,10 +16,12 @@ using Etherna.Sdk.Tools.Video.Models;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
-    public sealed class Manifest2ThumbnailDto
+    internal sealed class Manifest2ThumbnailDto
     {
         // Constructors.
         public Manifest2ThumbnailDto(
@@ -39,6 +41,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
         public float AspectRatio { get; set; }
         public string Blurhash { get; set; }
         public IEnumerable<Manifest2ThumbnailSourceDto> Sources { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement>? ExtraElements { get; set; }
         
         // Methods.
         [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract")]
