@@ -68,6 +68,39 @@ namespace Etherna.Sdk.Tools.Video.Models
                 UriKind.Relative), s));
         
         // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not VideoManifest other) return false;
+            return GetType() == other.GetType() &&
+                   AspectRatio.Equals(other.AspectRatio) &&
+                   BatchId.Equals(other.BatchId) &&
+                   CaptionSources.SequenceEqual(other.CaptionSources) &&
+                   DateTimeOffset.Equals(CreatedAt, other.CreatedAt) &&
+                   string.Equals(Description, other.Description, StringComparison.Ordinal) &&
+                   Duration.Equals(other.Duration) &&
+                   string.Equals(Title, other.Title, StringComparison.Ordinal) &&
+                   string.Equals(OwnerEthAddress, other.OwnerEthAddress, StringComparison.Ordinal) &&
+                   EqualityComparer<VideoManifestPersonalData>.Default.Equals(PersonalData, other.PersonalData)&&
+                   string.Equals(PersonalDataRaw, other.PersonalDataRaw, StringComparison.Ordinal) &&
+                   Thumbnail.Equals(other.Thumbnail) &&
+                   EqualityComparer<DateTimeOffset?>.Default.Equals(UpdatedAt, other.UpdatedAt) &&
+                   VideoSources.SequenceEqual(other.VideoSources);
+        }
+
+        public override int GetHashCode() =>
+            AspectRatio.GetHashCode() ^
+            CaptionSources.GetHashCode() ^
+            CreatedAt.GetHashCode() ^
+            string.GetHashCode(Description, StringComparison.Ordinal) ^
+            Duration.GetHashCode() ^
+            string.GetHashCode(Title, StringComparison.Ordinal) ^
+            string.GetHashCode(OwnerEthAddress, StringComparison.Ordinal) ^
+            PersonalData?.GetHashCode() ?? 0 ^
+            string.GetHashCode(PersonalDataRaw, StringComparison.Ordinal) ^
+            Thumbnail.GetHashCode() ^
+            VideoSources.GetHashCode();
+        
         public string SerializeDetailsManifest()
         {
             var manifestDetails = new Manifest2DetailsDto(
@@ -105,6 +138,7 @@ namespace Etherna.Sdk.Tools.Video.Models
             return JsonSerializer.Serialize(manifestPreview, jsonSerializerOptions);
         }
         
+        // Helpers.
         private static VideoManifestPersonalData? TryParsePersonalData(string? personalDataRaw)
         {
             if (personalDataRaw is null) return null;

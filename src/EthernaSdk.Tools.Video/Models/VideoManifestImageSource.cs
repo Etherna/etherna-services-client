@@ -14,6 +14,7 @@
 
 using Etherna.BeeNet.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Etherna.Sdk.Tools.Video.Models
 {
@@ -80,5 +81,25 @@ namespace Etherna.Sdk.Tools.Video.Models
         public SwarmAddress SwarmAddress { get; private set; }
 
         public int Width { get; }
+        
+        // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not VideoManifestImageSource other) return false;
+            return GetType() == other.GetType() &&
+                   EqualityComparer<SwarmHash?>.Default.Equals(ContentSwarmHash, other.ContentSwarmHash) &&
+                   string.Equals(FileName, other.FileName, StringComparison.Ordinal) &&
+                   ImageType.Equals(other.ImageType) &&
+                   string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal) &&
+                   SwarmAddress.Equals(other.SwarmAddress) &&
+                   Width.Equals(other.Width);
+        }
+        
+        public override int GetHashCode() =>
+            string.GetHashCode(FileName, StringComparison.Ordinal) ^
+            ImageType.GetHashCode() ^
+            string.GetHashCode(MimeContentType, StringComparison.Ordinal) ^
+            Width.GetHashCode();
     }
 }

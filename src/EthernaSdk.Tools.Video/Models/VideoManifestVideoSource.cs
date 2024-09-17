@@ -116,6 +116,31 @@ namespace Etherna.Sdk.Tools.Video.Models
                 UriKind.Relative), f));
         
         // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not VideoManifestVideoSource other) return false;
+            return GetType() == other.GetType() &&
+                   EqualityComparer<SwarmHash?>.Default.Equals(ContentSwarmHash, other.ContentSwarmHash) &&
+                   string.Equals(FileName, other.FileName, StringComparison.Ordinal) &&
+                   string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal) &&
+                   string.Equals(Quality, other.Quality, StringComparison.Ordinal) &&
+                   string.Equals(SourceRelativePath, other.SourceRelativePath, StringComparison.Ordinal) &&
+                   SwarmAddress.Equals(other.SwarmAddress) &&
+                   TotalSourceSize.Equals(other.TotalSourceSize) &&
+                   VideoType.Equals(other.VideoType) &&
+                   AdditionalFiles.SequenceEqual(other.AdditionalFiles);
+        }
+
+        public override int GetHashCode() =>
+            string.GetHashCode(FileName, StringComparison.Ordinal) ^
+            string.GetHashCode(MimeContentType, StringComparison.Ordinal) ^
+            string.GetHashCode(Quality, StringComparison.Ordinal) ^
+            string.GetHashCode(SourceRelativePath, StringComparison.Ordinal) ^
+            TotalSourceSize.GetHashCode() ^
+            VideoType.GetHashCode() ^
+            AdditionalFiles.GetHashCode();
+        
         public string GetManifestVideoSourceBaseDirectory() =>
             $"sources/{VideoType.ToStringInvariant().ToLowerInvariant()}/";
     }

@@ -13,6 +13,7 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
+using System;
 
 namespace Etherna.Sdk.Tools.Video.Models
 {
@@ -23,5 +24,18 @@ namespace Etherna.Sdk.Tools.Video.Models
         // Properties.
         public SwarmHash Hash { get; } = hash;
         public VideoManifest Manifest { get; } = manifest;
+        
+        // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not PublishedVideoManifest other) return false;
+            return GetType() == other.GetType() &&
+                   Hash.Equals(other.Hash) &&
+                   Manifest.Equals(other.Manifest);
+        }
+
+        public override int GetHashCode() =>
+            HashCode.Combine(Hash, Manifest);
     }
 }

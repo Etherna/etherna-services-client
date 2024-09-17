@@ -49,6 +49,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 
         // Constructors.
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        [JsonConstructor]
         private Manifest1Dto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -151,7 +152,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
                         manifestDto.Thumbnail.AspectRatio,
                         manifestDto.Thumbnail.Blurhash,
                         manifestDto.Thumbnail.Sources.Select(s => VideoManifestImageSource.BuildFromPublishedContent(
-                            s.Key + ".jpg",
+                            s.Key.TrimEnd('w') + ".jpg",
                             ImageType.Jpeg,
                             SwarmAddress.FromString(s.Value),
                             int.Parse(s.Key.TrimEnd('w'), CultureInfo.InvariantCulture)))),

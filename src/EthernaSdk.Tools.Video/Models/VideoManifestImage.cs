@@ -29,5 +29,21 @@ namespace Etherna.Sdk.Tools.Video.Models
         public string Blurhash { get; } = blurhash;
         public IEnumerable<(SwarmUri Uri, VideoManifestImageSource Metadata)> Sources { get; } = sources.Select(
             s => (new SwarmUri($"thumb/{s.FileName}", UriKind.Relative), s));
+        
+        // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not VideoManifestImage other) return false;
+            return GetType() == other.GetType() &&
+                   AspectRatio.Equals(other.AspectRatio) &&
+                   string.Equals(Blurhash, other.Blurhash, StringComparison.Ordinal) &&
+                   Sources.SequenceEqual(other.Sources);
+        }
+
+        public override int GetHashCode() =>
+            AspectRatio.GetHashCode() ^
+            string.GetHashCode(Blurhash, StringComparison.Ordinal) ^
+            Sources.GetHashCode();
     }
 }

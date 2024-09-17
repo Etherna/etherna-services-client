@@ -18,8 +18,11 @@ using Etherna.BeeNet.Services;
 using Etherna.Sdk.Tools.Video.Models;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -31,12 +34,103 @@ namespace Etherna.Sdk.Tools.Video.Services
         private readonly VideoManifestService videoManifestService = new(
             new Mock<IBeeClient>().Object,
             new ChunkService());
+        // Classes.
+        public class ParseManifestTestElement(
+            SwarmHash manifestHash,
+            string seriaizedManifest,
+            PublishedVideoManifest expectedManifest)
+        {
+            public SwarmHash ManifestHash { get; } = manifestHash;
+            public string SeriaizedManifest { get; } = seriaizedManifest;
+            public PublishedVideoManifest ExpectedManifest { get; } = expectedManifest;
+        }
+
+        // Data.
+        public static IEnumerable<object[]> ParseManifestTests
+        {
+            get
+            {
+                var tests = new List<ParseManifestTestElement>
+                {
+                    //v1.0
+                    new(SwarmHash.Zero,
+                        """
+                        {
+                          "title": "Test 1",
+                          "description": "desc",
+                          "createdAt": 1645091199100,
+                          "duration": 18,
+                          "originalQuality": "720p",
+                          "ownerAddress": "0x6163C4b8264a03CCAc412B83cbD1B551B6c6C246",
+                          "thumbnail": {
+                            "blurhash": "UTHoa;-VEVO=??v]SlOu2ep0slR:kisia*bJ",
+                            "aspectRatio": 1.7777777777777777,
+                            "sources": {
+                              "720w": "5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1",
+                              "480w": "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325"
+                            }
+                          },
+                          "sources": [
+                            {
+                              "quality": "720p",
+                              "reference": "94f4fcb1a902597c2bc53c5b48637af952a99328ec299f33e129740818a9e302",
+                              "size": 448350,
+                              "bitrate": 216398
+                            }
+                          ],
+                          "v": "1.0"
+                        }
+                        """,
+                        new PublishedVideoManifest(SwarmHash.Zero, new VideoManifest(
+                            1.7777777777777777f,
+                            PostageBatchId.Zero,
+                            DateTimeOffset.Parse("2/17/2022 9:46:39.100 AM +00:00"),
+                            "desc",
+                            TimeSpan.FromSeconds(18), 
+                            "Test 1",
+                            "0x6163C4b8264a03CCAc412B83cbD1B551B6c6C246",
+                            personalData: null,
+                            [
+                                VideoManifestVideoSource.BuildFromPublishedContent(
+                                    "94f4fcb1a902597c2bc53c5b48637af952a99328ec299f33e129740818a9e302",
+                                    "720p.mp4",
+                                    VideoType.Mp4,
+                                    "720p",
+                                    448350,
+                                    [])
+                            ],
+                            new VideoManifestImage(
+                                1.7777777777777777f,
+                                "UTHoa;-VEVO=??v]SlOu2ep0slR:kisia*bJ",
+                                [
+                                    VideoManifestImageSource.BuildFromPublishedContent(
+                                        "720.jpg",
+                                        ImageType.Jpeg,
+                                        "5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1",
+                                        720),
+                                    VideoManifestImageSource.BuildFromPublishedContent(
+                                        "480.jpg",
+                                        ImageType.Jpeg,
+                                        "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325",
+                                        480)
+                                ]),
+                            [],
+                            updatedAt: null)))
+                };
+
+                return tests.Select(t => new object[] { t });
+            }
+        }
 
         // Tests.
         [Fact]
         public async Task CreateVideoManifestChunksAsync()
         {
-            // Prepare.
+            // Setup.
+            var videoManifestService = new VideoManifestService(
+                new Mock<IBeeClient>().Object,
+                new ChunkService());
+            
             var videoManifest = new VideoManifest(
                 aspectRatio: 0.123f,
                 batchId: "f389278a2fa242de94e858e318bbfa7c10489533797ff923f9aa4524fabfcd34",
@@ -110,6 +204,37 @@ namespace Etherna.Sdk.Tools.Video.Services
             
             // Cleanup.
             Directory.Delete(chunkDirectory.FullName, true);
+        }
+        
+        [Theory, MemberData(nameof(ParseManifestTests))]
+        public async Task ParseManifestAsync(ParseManifestTestElement test)
+        {
+            ArgumentNullException.ThrowIfNull(test, nameof(test));
+            
+            // Setup.
+            var manifestByteArray = Encoding.UTF8.GetBytes(test.SeriaizedManifest);
+            using var manifestStream = new MemoryStream(manifestByteArray);
+            
+            var beeMock = new Mock<IBeeClient>();
+            beeMock.Setup(b => b.GetFileAsync(
+                    test.ManifestHash,
+                    It.IsAny<bool?>(),
+                    It.IsAny<RedundancyStrategy?>(),
+                    It.IsAny<bool?>(),
+                    It.IsAny<string?>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(
+                    new FileResponse(null, new Dictionary<string, IEnumerable<string>>(), manifestStream)));
+        
+            VideoManifestService videoManifestService = new(
+                beeMock.Object,
+                new Mock<ChunkService>().Object);
+
+            // Action.
+            var videoManifest = await videoManifestService.GetPublishedVideoManifestAsync(test.ManifestHash);
+
+            // Assert.
+            Assert.Equal(test.ExpectedManifest, videoManifest);
         }
     }
 }
