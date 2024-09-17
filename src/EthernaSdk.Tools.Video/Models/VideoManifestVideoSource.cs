@@ -54,8 +54,8 @@ namespace Etherna.Sdk.Tools.Video.Models
             SwarmAddress = swarmAddress
         };
         
-        public static VideoManifestVideoSource BuildFromNewContent(
-            SwarmHash contentSwarmHash,
+        public static VideoManifestVideoSource BuildFromDirectContentHash(
+            SwarmHash directContentHash,
             string sourceRelativePath,
             VideoType videoType,
             string? quality,
@@ -63,7 +63,7 @@ namespace Etherna.Sdk.Tools.Video.Models
             VideoManifestVideoSourceAdditionalFile[] additionalFiles) =>
             new(sourceRelativePath, videoType, quality, totalSourceSize, additionalFiles)
         {
-            ContentSwarmHash = contentSwarmHash
+            ContentSwarmHash = directContentHash
         };
 
         // Properties.

@@ -28,7 +28,7 @@ namespace Etherna.Sdk.Tools.Video.Services
     public class VideoManifestServiceTest
     {
         // Fields.
-        private readonly VideoManifestService videoPublisherService = new(
+        private readonly VideoManifestService videoManifestService = new(
             new Mock<IBeeClient>().Object,
             new ChunkService());
 
@@ -48,16 +48,16 @@ namespace Etherna.Sdk.Tools.Video.Services
                 personalData: "my personal data",
                 videoSources:
                 [
-                    VideoManifestVideoSource.BuildFromNewContent(
+                    VideoManifestVideoSource.BuildFromDirectContentHash(
                         sourceRelativePath: "master.m3u8",
-                        contentSwarmHash: SwarmHash.Zero,
+                        directContentHash: SwarmHash.Zero,
                         videoType: VideoType.Hls,
                         quality: null,
                         totalSourceSize: 0,
                         additionalFiles: []),
-                    VideoManifestVideoSource.BuildFromNewContent(
+                    VideoManifestVideoSource.BuildFromDirectContentHash(
                         sourceRelativePath: "720p/playlist.m3u8",
-                        contentSwarmHash: SwarmHash.Zero,
+                        directContentHash: SwarmHash.Zero,
                         videoType: VideoType.Hls,
                         quality: null,
                         totalSourceSize: 45678,
@@ -71,10 +71,10 @@ namespace Etherna.Sdk.Tools.Video.Services
                     aspectRatio: 0.123f,
                     "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
                     [
-                        VideoManifestImageSource.BuildFromNewContent(
+                        VideoManifestImageSource.BuildFromDirectContentHash(
                             fileName: "720.png",
                             imageType: ImageType.Png,
-                            contentSwarmHash: SwarmHash.Zero,
+                            directContentHash: SwarmHash.Zero,
                             width: 720)
                     ]),
                 captionSources:
@@ -89,22 +89,22 @@ namespace Etherna.Sdk.Tools.Video.Services
             var chunkDirectory = Directory.CreateTempSubdirectory();
 
             // Run.
-            var result = await videoPublisherService.CreateVideoManifestChunksAsync(
+            var result = await videoManifestService.CreateVideoManifestChunksAsync(
                 videoManifest,
                 chunkDirectory.FullName);
             
             // Assert.
-            Assert.Equal("b1b982c642ccf2c989e71ca022f8242a70005da081020ceaa1fab1ec3f3be654", result);
+            Assert.Equal("dbdf9da90a4c1ad04899527ec7a6b35e3cac07709947ce23ee01ff3526cf494d", result);
             Assert.Equal(
                 [
                     "0cc878d32c96126d47f63fbe391114ee1438cd521146fc975dea1546d302b6c0.chunk",
-                    "6115e0287b1d06dfe32a0a47e13de4512742e2cc7c2bf0dd78ae090e25d224c3.chunk",
                     "8504f2a107ca940beafc4ce2f6c9a9f0968c62a5b5893ff0e4e1e2983048d276.chunk",
+                    "8d32d3dbda22b76d7b5d27237c38ec37f65db202a995a84955a8808316a70a13.chunk",
                     "a966438c28b6566f5762471c52cbd4e3d83445f2ed07d20e93b9205f6c9e9998.chunk",
-                    "b1b982c642ccf2c989e71ca022f8242a70005da081020ceaa1fab1ec3f3be654.chunk",
+                    "dbdf9da90a4c1ad04899527ec7a6b35e3cac07709947ce23ee01ff3526cf494d.chunk",
                     "dd031c128974182a84ccc69a3a6d1fdfd6962ac958f215d012866cce425281b4.chunk",
-                    "e250fc8865894b98b21a28002decf162874f00a81f44c8af96c1249bef84c3fc.chunk",
-                    "ea159eff3a8d34080b78d5d06c856f6eb86050e7dd559229fe2517393ea4a11c.chunk"
+                    "e189fae0c2bbd455c1d81bc53817e173cf292bd0e9cfd1a3f7e8d02c02534344.chunk",
+                    "e250fc8865894b98b21a28002decf162874f00a81f44c8af96c1249bef84c3fc.chunk"
                 ],
                 Directory.GetFiles(chunkDirectory.FullName).Select(Path.GetFileName).Order());
             

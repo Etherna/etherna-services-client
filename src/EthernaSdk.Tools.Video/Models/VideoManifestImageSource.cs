@@ -40,13 +40,13 @@ namespace Etherna.Sdk.Tools.Video.Models
             SwarmAddress = swarmAddress
         };
         
-        public static VideoManifestImageSource BuildFromNewContent(
+        public static VideoManifestImageSource BuildFromDirectContentHash(
             string fileName,
             ImageType imageType,
-            SwarmHash contentSwarmHash,
+            SwarmHash directContentHash,
             int width) => new(fileName, imageType, width)
         {
-            ContentSwarmHash = contentSwarmHash
+            ContentSwarmHash = directContentHash
         };
 
         // Properties.
