@@ -30,10 +30,6 @@ namespace Etherna.Sdk.Tools.Video.Services
 {
     public class VideoManifestServiceTest
     {
-        // Fields.
-        private readonly VideoManifestService videoManifestService = new(
-            new Mock<IBeeClient>().Object,
-            new ChunkService());
         // Classes.
         public class ParseManifestTestElement(
             SwarmHash manifestHash,
