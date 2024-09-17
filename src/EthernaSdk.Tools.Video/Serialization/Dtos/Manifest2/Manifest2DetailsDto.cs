@@ -50,6 +50,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             Sources = sources;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        [JsonConstructor]
         private Manifest2DetailsDto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -71,7 +72,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
         public IEnumerable<Manifest2VideoSourceDto> Sources { get; set; }
         
         //from v2.1
-        public IEnumerable<Manifest2CaptionSourceDto> Captions { get; set; }
+        public IEnumerable<Manifest2CaptionSourceDto>? Captions { get; set; }
 
         [JsonExtensionData]
         public Dictionary<string, JsonElement>? ExtraElements { get; set; }
@@ -97,6 +98,8 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
                 errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Missing sources"));
             foreach (var source in Sources ?? [])
                 errors.AddRange(source.GetValidationErrors());
+            if ((Sources ?? []).Count(s => s.Size == 0) > 1)
+                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "More than one video source has 0 size"));
             
             if (PersonalData is not null &&
                 PersonalData.Length > PersonalDataMaxLength)

@@ -39,6 +39,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             Type = type.ToString().ToLowerInvariant();
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        [JsonConstructor]
         private Manifest2VideoSourceDto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -58,15 +59,12 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             var errors = new List<ValidationError>();
 
             if (Path is null ||
-                SwarmUri.FromString(Path) is { UriKind: System.UriKind.Relative, HasPath: false })
+                SwarmUri.FromString(Path) is { UriKind: UriKind.Relative, HasPath: false })
                 errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has empty path"));
 
             if (Quality is not null &&
                 string.IsNullOrWhiteSpace(Quality))
                 errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has empty quality"));
-
-            if (Size <= 0 && !(Path ?? "").EndsWith("/manifest.m3u8", StringComparison.InvariantCultureIgnoreCase))
-                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has invalid size"));
 
             if (string.IsNullOrWhiteSpace(Type))
                 errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has empty type"));

@@ -62,6 +62,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             Thumbnail = thumbnail;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        [JsonConstructor]
         private Manifest2PreviewDto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -128,7 +129,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             // Parse additional data.
             //captions
             List<VideoManifestCaptionSource> captions = [];
-            foreach (var captionDto in detailsManifestDto.Captions)
+            foreach (var captionDto in detailsManifestDto.Captions ?? [])
             {
                 var captionSwarmUri = new SwarmUri(captionDto.Path, UriKind.RelativeOrAbsolute);
                 var captionSwarmAddress = captionSwarmUri.ToSwarmAddress(manifestHash);
@@ -208,11 +209,13 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
                         //retrieve segments as additional files
                         foreach (var segment in playlist.MediaSegments.First().Segments)
                         {
+                            var playlistDirectoryPath =
+                                videoSourceSwarmAddress.Path[..videoSourceSwarmAddress.Path.LastIndexOf(SwarmAddress.Separator)] + SwarmAddress.Separator;
+                            
                             // Read segments info.
                             var segmentSwarmAddress = new SwarmAddress(
                                 videoSourceSwarmAddress.Hash,
-                                videoSourceSwarmAddress.Path.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator +
-                                segment.Uri);
+                                playlistDirectoryPath + segment.Uri);
                             
                             additionalFiles.Add(new VideoManifestVideoSourceAdditionalFile(
                                 Path.GetFileName(segment.Uri),

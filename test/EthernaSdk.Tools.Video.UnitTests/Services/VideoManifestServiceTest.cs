@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -33,11 +32,13 @@ namespace Etherna.Sdk.Tools.Video.Services
         // Classes.
         public class ParseManifestTestElement(
             SwarmHash manifestHash,
-            string seriaizedManifest,
+            Dictionary<SwarmAddress, byte[]> swarmResources,
+            Dictionary<SwarmAddress, SwarmHash> swarmAdditionalResources,
             PublishedVideoManifest expectedManifest)
         {
             public SwarmHash ManifestHash { get; } = manifestHash;
-            public string SeriaizedManifest { get; } = seriaizedManifest;
+            public Dictionary<SwarmAddress, byte[]> SwarmResources { get; } = swarmResources;
+            public Dictionary<SwarmAddress, SwarmHash> SwarmAdditionalResources { get; } = swarmAdditionalResources;
             public PublishedVideoManifest ExpectedManifest { get; } = expectedManifest;
         }
 
@@ -49,36 +50,109 @@ namespace Etherna.Sdk.Tools.Video.Services
                 var tests = new List<ParseManifestTestElement>
                 {
                     //v1.1
+                    //v2.0
                     new(SwarmHash.Zero,
-                        """
+                        new Dictionary<SwarmAddress, byte[]>
                         {
-                          "v": "1.1",
-                          "title": "title 3",
-                          "description": "test!!!",
-                          "duration": 19,
-                          "originalQuality": "1954p",
-                          "ownerAddress": "0x6163C4b8264a03CCAc412B83cbD1B551B6c6C246",
-                          "createdAt": 1660397733617,
-                          "updatedAt": 1660397733617,
-                          "thumbnail": {
-                            "blurhash": "UTHoa;-VEVO=??v]SlOu2ep0slR:kisia*bJ",
-                            "aspectRatio": 1.7777777777777777,
-                            "sources": {
-                              "720w": "5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1",
-                              "480w": "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325"
-                            }
-                          },
-                          "sources": [
-                            {
-                              "reference": "e44671417466df08d3b67d74a081021ab2bba70224fc0d6e4d00c35d80328c6c",
-                              "quality": "1954p",
-                              "size": 3739997,
-                              "bitrate": 1574736
-                            }
-                          ],
-                          "batchId": "5d35cbf4cea6349c1f74340ce9f0befd7a60a17426508da7b205871d683a3a23"
-                        }
-                        """,
+                            [SwarmHash.Zero] = """{"v":"2.0","title":"I'm a title","createdAt":1724285934,"updatedAt":1724285934,"ownerAddress":"0x6163C4b8264a03CCAc412B83cbD1B551B6c6C246","duration":587,"thumbnail":{"aspectRatio":1.7777778,"blurhash":"UEENPeIpX=w=f*j[ngRktTj=adtSaKjYo#R*","sources":[{"width":480,"type":"jpeg","path":"thumb/270.jpg"},{"width":960,"type":"jpeg","path":"thumb/540.jpg"}]}}"""u8.ToArray(),
+                            [new SwarmAddress(SwarmHash.Zero, "/details")] = """{"description":"my description","aspectRatio":1.7777778,"batchId":"9d4d4e923cc054a94f7884772f5f4e588be0c3ec10c3ec397b64c7307c4c3336","personalData":"{\u0022v\u0022:\u00221\u0022,\u0022cliName\u0022:\u0022EthernaImporter\u0022,\u0022cliV\u0022:\u00220.3.9.0\u0022,\u0022srcName\u0022:\u0022youtube\u0022,\u0022srcVId\u0022:\u00225a7ace3d1c209f7f1982fa4ed0113d8fb35bdbf2698761cb4f8da276bbef3993\u0022}","sources":[{"type":"hls","path":"sources/hls/master.m3u8","size":0},{"type":"hls","quality":"480p","path":"sources/hls/480p/playlist.m3u8","size":2471},{"type":"hls","quality":"360p","path":"sources/hls/360p/playlist.m3u8","size":2448}]}"""u8.ToArray(),
+                            [new SwarmAddress(SwarmHash.Zero, "/sources/hls/480p/playlist.m3u8")] =
+                                """
+                                #EXTM3U
+                                #EXT-X-VERSION:3
+                                #EXT-X-TARGETDURATION:13
+                                #EXT-X-MEDIA-SEQUENCE:0
+                                #EXT-X-PLAYLIST-TYPE:VOD
+                                #EXTINF:9.800000,
+                                0.ts
+                                #EXTINF:10.000000,
+                                1.ts
+                                #EXTINF:10.000000,
+                                2.ts
+                                #EXT-X-ENDLIST
+                                """u8.ToArray(),
+                            [new SwarmAddress(SwarmHash.Zero, "/sources/hls/360p/playlist.m3u8")] =
+                                """
+                                #EXTM3U
+                                #EXT-X-VERSION:3
+                                #EXT-X-TARGETDURATION:14
+                                #EXT-X-MEDIA-SEQUENCE:0
+                                #EXT-X-PLAYLIST-TYPE:VOD
+                                #EXTINF:9.800000,
+                                0.ts
+                                #EXTINF:10.000000,
+                                1.ts
+                                #EXTINF:10.000000,
+                                2.ts
+                                #EXT-X-ENDLIST
+                                """u8.ToArray()
+                        },
+                        new Dictionary<SwarmAddress, SwarmHash>
+                        {
+                            [new SwarmAddress(SwarmHash.Zero, "/sources/hls/480p/0.ts")] = "0000000000000000000000000000000000000000000000000000000000000001",
+                            [new SwarmAddress(SwarmHash.Zero, "/sources/hls/480p/1.ts")] = "0000000000000000000000000000000000000000000000000000000000000002",
+                            [new SwarmAddress(SwarmHash.Zero, "/sources/hls/480p/2.ts")] = "0000000000000000000000000000000000000000000000000000000000000003",
+                            [new SwarmAddress(SwarmHash.Zero, "/sources/hls/360p/0.ts")] = "0000000000000000000000000000000000000000000000000000000000000004",
+                            [new SwarmAddress(SwarmHash.Zero, "/sources/hls/360p/1.ts")] = "0000000000000000000000000000000000000000000000000000000000000005",
+                            [new SwarmAddress(SwarmHash.Zero, "/sources/hls/360p/2.ts")] = "0000000000000000000000000000000000000000000000000000000000000006"
+                        },
+                        new PublishedVideoManifest(SwarmHash.Zero, new VideoManifest(
+                            1.7777778f,
+                            PostageBatchId.FromString("9d4d4e923cc054a94f7884772f5f4e588be0c3ec10c3ec397b64c7307c4c3336"),
+                            DateTimeOffset.Parse("8/22/2024 12:18:54 AM +00:00"),
+                            "my description",
+                            TimeSpan.FromSeconds(587),
+                            "I'm a title",
+                            "0x6163C4b8264a03CCAc412B83cbD1B551B6c6C246",
+                            """{"v":"1","cliName":"EthernaImporter","cliV":"0.3.9.0","srcName":"youtube","srcVId":"5a7ace3d1c209f7f1982fa4ed0113d8fb35bdbf2698761cb4f8da276bbef3993"}""",
+                            [
+                                VideoManifestVideoSource.BuildFromPublishedContent(
+                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/master.m3u8"),
+                                    "master.m3u8",
+                                    VideoType.Hls,
+                                    null,
+                                    0,
+                                    []),
+                                VideoManifestVideoSource.BuildFromPublishedContent(
+                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/480p/playlist.m3u8"),
+                                    "480p/playlist.m3u8",
+                                    VideoType.Hls,
+                                    "480p",
+                                    2471,
+                                    []),
+                                VideoManifestVideoSource.BuildFromPublishedContent(
+                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/360p/playlist.m3u8"),
+                                    "360p/playlist.m3u8",
+                                    VideoType.Hls,
+                                    "360p",
+                                    2448,
+                                    [])
+                            ],
+                            new VideoManifestImage(
+                                1.7777778f,
+                                "UEENPeIpX=w=f*j[ngRktTj=adtSaKjYo#R*",
+                                [
+                                    VideoManifestImageSource.BuildFromPublishedContent(
+                                        "270.jpg",
+                                        ImageType.Jpeg,
+                                        new SwarmAddress(SwarmHash.Zero, "thumb/270.jpg"),
+                                        480),
+                                    VideoManifestImageSource.BuildFromPublishedContent(
+                                        "540.jpg",
+                                        ImageType.Jpeg,
+                                        new SwarmAddress(SwarmHash.Zero, "thumb/540.jpg"),
+                                        960)
+                                ]),
+                            [],
+                            DateTimeOffset.Parse("8/22/2024 12:18:54 AM +00:00")))),
+                    
+                    //v1.1
+                    new(SwarmHash.Zero,
+                        new Dictionary<SwarmAddress, byte[]>
+                        {
+                            [SwarmHash.Zero] = """{"v":"1.1","title":"title 3","description":"test!!!","duration":19,"originalQuality":"1954p","ownerAddress":"0x6163C4b8264a03CCAc412B83cbD1B551B6c6C246","createdAt":1660397733617,"updatedAt":1660397733617,"thumbnail":{"blurhash":"UTHoa;-VEVO=??v]SlOu2ep0slR:kisia*bJ","aspectRatio":1.7777777777777777,"sources":{"720w":"5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1","480w":"0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325"}},"sources":[{"reference":"e44671417466df08d3b67d74a081021ab2bba70224fc0d6e4d00c35d80328c6c","quality":"1954p","size":3739997,"bitrate":1574736}],"batchId":"5d35cbf4cea6349c1f74340ce9f0befd7a60a17426508da7b205871d683a3a23"}"""u8.ToArray()
+                        },
+                        [],
                         new PublishedVideoManifest(SwarmHash.Zero, new VideoManifest(
                             1.7777777777777777f,
                             PostageBatchId.FromString("5d35cbf4cea6349c1f74340ce9f0befd7a60a17426508da7b205871d683a3a23"),
@@ -114,36 +188,14 @@ namespace Etherna.Sdk.Tools.Video.Services
                                 ]),
                             [],
                             updatedAt: DateTimeOffset.Parse("8/13/2022 1:35:33.617 PM +00:00")))),
-
+                    
                     //v1.0
                     new(SwarmHash.Zero,
-                        """
+                        new Dictionary<SwarmAddress, byte[]>
                         {
-                          "title": "Test 1",
-                          "description": "desc",
-                          "createdAt": 1645091199100,
-                          "duration": 18,
-                          "originalQuality": "720p",
-                          "ownerAddress": "0x6163C4b8264a03CCAc412B83cbD1B551B6c6C246",
-                          "thumbnail": {
-                            "blurhash": "UTHoa;-VEVO=??v]SlOu2ep0slR:kisia*bJ",
-                            "aspectRatio": 1.7777777777777777,
-                            "sources": {
-                              "720w": "5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1",
-                              "480w": "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325"
-                            }
-                          },
-                          "sources": [
-                            {
-                              "quality": "720p",
-                              "reference": "94f4fcb1a902597c2bc53c5b48637af952a99328ec299f33e129740818a9e302",
-                              "size": 448350,
-                              "bitrate": 216398
-                            }
-                          ],
-                          "v": "1.0"
-                        }
-                        """,
+                            [SwarmHash.Zero] = """{"title":"Test 1","description":"desc","createdAt":1645091199100,"duration":18,"originalQuality":"720p","ownerAddress":"0x6163C4b8264a03CCAc412B83cbD1B551B6c6C246","thumbnail":{"blurhash":"UTHoa;-VEVO=??v]SlOu2ep0slR:kisia*bJ","aspectRatio":1.7777777777777777,"sources":{"720w":"5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1","480w":"0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325"}},"sources":[{"quality":"720p","reference":"94f4fcb1a902597c2bc53c5b48637af952a99328ec299f33e129740818a9e302","size":448350,"bitrate":216398}],"v":"1.0"}"""u8.ToArray()
+                        },
+                        [],
                         new PublishedVideoManifest(SwarmHash.Zero, new VideoManifest(
                             1.7777777777777777f,
                             PostageBatchId.Zero,
@@ -275,19 +327,25 @@ namespace Etherna.Sdk.Tools.Video.Services
             ArgumentNullException.ThrowIfNull(test, nameof(test));
             
             // Setup.
-            var manifestByteArray = Encoding.UTF8.GetBytes(test.SeriaizedManifest);
-            using var manifestStream = new MemoryStream(manifestByteArray);
-            
             var beeMock = new Mock<IBeeClient>();
-            beeMock.Setup(b => b.GetFileAsync(
-                    test.ManifestHash,
-                    It.IsAny<bool?>(),
-                    It.IsAny<RedundancyStrategy?>(),
-                    It.IsAny<bool?>(),
-                    It.IsAny<string?>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(
-                    new FileResponse(null, new Dictionary<string, IEnumerable<string>>(), manifestStream)));
+            foreach (var (resourceAddress, resourceByteArray) in test.SwarmResources)
+            {
+                var resourceStream = new MemoryStream(resourceByteArray);
+                beeMock.Setup(b => b.GetFileAsync(
+                        resourceAddress,
+                        It.IsAny<bool?>(),
+                        It.IsAny<RedundancyStrategy?>(),
+                        It.IsAny<bool?>(),
+                        It.IsAny<string?>(),
+                        It.IsAny<CancellationToken>()))
+                    .Returns(Task.FromResult(
+                        new FileResponse(null, new Dictionary<string, IEnumerable<string>>(), resourceStream)));
+            }
+            foreach (var (resourceAddress, resourceHash) in test.SwarmAdditionalResources)
+            {
+                beeMock.Setup(b => b.ResolveAddressToChunkReferenceAsync(resourceAddress))
+                    .Returns(Task.FromResult(new SwarmChunkReference(resourceHash, null, false)));
+            }
         
             VideoManifestService videoManifestService = new(
                 beeMock.Object,
