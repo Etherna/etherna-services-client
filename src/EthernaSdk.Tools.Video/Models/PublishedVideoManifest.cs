@@ -13,28 +13,29 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using Etherna.Sdk.Tools.Video.Models;
+using System;
 
-namespace Etherna.Sdk.Users.Index.Models
+namespace Etherna.Sdk.Tools.Video.Models
 {
-    public class VideoPreview(
-        string id,
-        long? createdAt,
-        long? duration,
-        SwarmHash? hash,
-        string ownerAddress,
-        VideoManifestImage thumbnail,
-        string? title,
-        long? updatedAt)
+    public class PublishedVideoManifest(
+        SwarmHash hash,
+        VideoManifest manifest)
     {
         // Properties.
-        public string Id { get; } = id;
-        public long? CreatedAt { get; } = createdAt;
-        public long? Duration { get; } = duration;
-        public SwarmHash? Hash { get; } = hash;
-        public string OwnerAddress { get; } = ownerAddress;
-        public VideoManifestImage Thumbnail { get; } = thumbnail;
-        public string? Title { get; } = title;
-        public long? UpdatedAt { get; } = updatedAt;
+        public SwarmHash Hash { get; } = hash;
+        public VideoManifest Manifest { get; } = manifest;
+        
+        // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not PublishedVideoManifest other) return false;
+            return GetType() == other.GetType() &&
+                   Hash.Equals(other.Hash) &&
+                   Manifest.Equals(other.Manifest);
+        }
+
+        public override int GetHashCode() =>
+            HashCode.Combine(Hash, Manifest);
     }
 }
