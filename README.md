@@ -21,6 +21,8 @@ Etherna SDK .Net offers different NuGet packages with different scopes:
 * **EthernaSdk.Internal.AspNetCore** implements a registration adapter for Asp.Net Core projects, dedicated to internal Api clients.  
   Offers "client credentials" flow authentication, and manages access token expiration.
 
+* **EthernaSdk.Tools.Video** implement tools to work with etherna videos
+
 ## Issue reports
 
 If you've discovered a bug, or have an idea for a new feature, please report it to our issue manager based on Jira https://etherna.atlassian.net/projects/ECC.
