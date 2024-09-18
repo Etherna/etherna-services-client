@@ -12,20 +12,11 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet;
-using Etherna.BeeNet.Models;
-using Etherna.Sdk.Tools.Video.Exceptions;
 using Etherna.Sdk.Tools.Video.Models;
-using M3U8Parser;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 {
@@ -34,17 +25,6 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
     {
         // Consts.
         public const int TitleMaxLength = 200;
-        
-        // Fields.
-        private static readonly VideoManifestImage defaultThumbnail = new(
-            1.8f,
-            "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
-            [new VideoManifestImageSource("thumb.jpg", ImageType.Jpeg, 100, SwarmHash.Zero)]);
-        private static readonly JsonSerializerOptions jsonSerializerOptions = new()
-        {
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-            PropertyNameCaseInsensitive = true,
-        };
 
         // Constructors.
         public Manifest2PreviewDto(string title,
@@ -99,172 +79,6 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
                 errors.AddRange(Thumbnail.GetValidationErrors());
             
             return errors.ToArray();
-        }
-        
-        // Static methods.
-        public static async Task<VideoManifest> DeserializeVideoManifestAsync(
-            SwarmHash manifestHash,
-            JsonElement previewManifestJsonElement,
-            IBeeClient beeClient)
-        {
-            ArgumentNullException.ThrowIfNull(beeClient, nameof(beeClient));
-            
-            // Get preview manifest.
-            var previewManifestDto = previewManifestJsonElement.Deserialize<Manifest2PreviewDto>(jsonSerializerOptions)
-                ?? throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Empty json preview manifest")]);
-
-            // Get details manifest.
-            using var detailsManifestStream = (await beeClient.GetFileAsync($"{manifestHash}/details").ConfigureAwait(false)).Stream;
-            var detailsManifestDto = await JsonSerializer.DeserializeAsync<Manifest2DetailsDto>(
-                detailsManifestStream, jsonSerializerOptions).ConfigureAwait(false) ??
-                throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Empty json details manifest")]);
-            
-            // Validate manifests.
-            List<ValidationError> errors = [];
-            errors.AddRange(previewManifestDto.GetValidationErrors());
-            errors.AddRange(detailsManifestDto.GetValidationErrors());
-            if (errors.Count != 0)
-                throw new VideoManifestValidationException(errors.ToArray());
-            
-            // Parse additional data.
-            //captions
-            List<VideoManifestCaptionSource> captions = [];
-            foreach (var captionDto in detailsManifestDto.Captions ?? [])
-            {
-                var captionSwarmUri = new SwarmUri(captionDto.Path, UriKind.RelativeOrAbsolute);
-                var captionSwarmAddress = captionSwarmUri.ToSwarmAddress(manifestHash);
-                var captionChunkReference = await beeClient.ResolveAddressToChunkReferenceAsync(captionSwarmAddress).ConfigureAwait(false);
-                var captionFileName = captionDto.Path.Split(SwarmAddress.Separator).Last();
-
-                captions.Add(new(
-                    captionDto.Label,
-                    captionDto.Lang,
-                    captionFileName,
-                    captionChunkReference.Hash));
-            }
-            
-            //thumb sources
-            List<VideoManifestImageSource> thumbnailSources = [];
-            foreach (var thumbnailSourceDto in previewManifestDto.Thumbnail?.Sources ?? [])
-            {
-                var imageType = Enum.Parse<ImageType>(thumbnailSourceDto.Type, true);
-
-                var fileName = thumbnailSourceDto.Path.Split(SwarmAddress.Separator).Last();
-                if (!Path.HasExtension(fileName))
-                    fileName += imageType switch
-                    {
-                        ImageType.Avif => ".avif",
-                        ImageType.Jpeg => ".jpeg",
-                        ImageType.Png => ".png",
-                        ImageType.Webp => ".webp",
-                        _ => throw new InvalidOperationException()
-                    };
-
-                var swarmUri = new SwarmUri(thumbnailSourceDto.Path, UriKind.RelativeOrAbsolute);
-
-                var thumbnailAddress = swarmUri.ToSwarmAddress(manifestHash);
-                var thumbnailChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(thumbnailAddress).ConfigureAwait(false);
-                
-                var thumbnailSource = new VideoManifestImageSource(
-                    fileName,
-                    imageType,
-                    thumbnailSourceDto.Width,
-                    thumbnailChunkRef.Hash);
-                
-                thumbnailSources.Add(thumbnailSource);
-            }
-                
-            //video sources
-            List<VideoManifestVideoSource> videoSources = [];
-            foreach (var videoSourceDto in detailsManifestDto.Sources)
-            {
-                var videoType = Enum.Parse<VideoType>(videoSourceDto.Type, true);
-                
-                var videoSourceSwarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
-                var videoSourceSwarmAddress = videoSourceSwarmUri.ToSwarmAddress(manifestHash);
-                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceSwarmAddress).ConfigureAwait(false);
-                
-                var sourceDirectoryPath = VideoManifestVideoSource.GetManifestVideoSourceBaseDirectory(videoType);
-                if (!videoSourceDto.Path.StartsWith(sourceDirectoryPath, StringComparison.Ordinal))
-                    throw new VideoManifestValidationException(
-                        [new ValidationError(ValidationErrorType.InvalidVideoSource, "Invalid video source path")]);
-                var sourceRelativePath = videoSourceDto.Path[sourceDirectoryPath.Length..];
-                
-                // Check for additional files.
-                List<VideoManifestVideoSourceAdditionalFile> additionalFiles = [];
-                switch (videoType)
-                {
-                    case VideoType.Hls:
-                    {
-                        //if is master playlist, skip it
-                        if (videoSourceDto.Size == 0)
-                            break;
-                        
-                        //if is a stream playlist, read it from swarm
-                        var response = await beeClient.GetFileAsync(videoSourceSwarmAddress).ConfigureAwait(false);
-                        using var memoryStream = new MemoryStream();
-                        await response.Stream.CopyToAsync(memoryStream).ConfigureAwait(false);
-                        memoryStream.Position = 0;
-                
-                        var byteArrayContent = memoryStream.ToArray();
-                        await response.Stream.DisposeAsync().ConfigureAwait(false);
-
-                        var playlistString = Encoding.UTF8.GetString(byteArrayContent);
-                        var playlist = MediaPlaylist.LoadFromText(playlistString);
-                        
-                        var playlistDirectoryPath =
-                            (videoSourceSwarmAddress.Path[..videoSourceSwarmAddress.Path.LastIndexOf(SwarmAddress.Separator)] + SwarmAddress.Separator).TrimStart(SwarmAddress.Separator);
-                            
-                        //retrieve segments as additional files
-                        foreach (var segment in playlist.MediaSegments.First().Segments)
-                        {
-                            var segmentPath = playlistDirectoryPath + segment.Uri;
-                            var segmentRelativePath = segmentPath[sourceDirectoryPath.Length..];
-                            
-                            var segmentSwarmAddress = new SwarmAddress(
-                                videoSourceSwarmAddress.Hash,
-                                segmentPath);
-                            
-                            additionalFiles.Add(new VideoManifestVideoSourceAdditionalFile(
-                                segmentRelativePath,
-                                (await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress).ConfigureAwait(false)).Hash));
-                        }
-                        
-                        break;
-                    }
-                }
-
-                var videoSource = new VideoManifestVideoSource(
-                    sourceRelativePath,
-                    videoType,
-                    videoSourceDto.Quality,
-                    videoSourceDto.Size,
-                    additionalFiles.ToArray(),
-                    videoSourceChunkRef.Hash);
-
-                videoSources.Add(videoSource);
-            }
-
-            // Build manifest.
-            return new VideoManifest(
-                detailsManifestDto.AspectRatio,
-                detailsManifestDto.BatchId,
-                DateTimeOffset.FromUnixTimeSeconds(previewManifestDto.CreatedAt),
-                detailsManifestDto.Description,
-                TimeSpan.FromSeconds(previewManifestDto.Duration),
-                previewManifestDto.Title,
-                previewManifestDto.OwnerAddress,
-                detailsManifestDto.PersonalData,
-                videoSources,
-                previewManifestDto.Thumbnail is null ? defaultThumbnail :
-                    new VideoManifestImage(
-                        previewManifestDto.Thumbnail.AspectRatio,
-                        previewManifestDto.Thumbnail.Blurhash,
-                        thumbnailSources),
-                captions,
-                previewManifestDto.UpdatedAt.HasValue ?
-                    DateTimeOffset.FromUnixTimeSeconds(previewManifestDto.UpdatedAt.Value) :
-                    null);
         }
     }
 }

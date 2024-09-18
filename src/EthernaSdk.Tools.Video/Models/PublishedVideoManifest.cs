@@ -13,17 +13,20 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Etherna.Sdk.Tools.Video.Models
 {
     public class PublishedVideoManifest(
         SwarmHash hash,
-        VideoManifest manifest)
+        VideoManifest? manifest,
+        ValidationError[] validationErrors)
     {
         // Properties.
         public SwarmHash Hash { get; } = hash;
-        public VideoManifest Manifest { get; } = manifest;
+        public VideoManifest? Manifest { get; } = manifest;
+        public IReadOnlyCollection<ValidationError> ValidationErrors { get; } = validationErrors;
         
         // Methods.
         public override bool Equals(object? obj)
@@ -32,10 +35,13 @@ namespace Etherna.Sdk.Tools.Video.Models
             if (obj is not PublishedVideoManifest other) return false;
             return GetType() == other.GetType() &&
                    Hash.Equals(other.Hash) &&
-                   Manifest.Equals(other.Manifest);
+                   EqualityComparer<VideoManifest?>.Default.Equals(Manifest, other.Manifest) &&
+                   ValidationErrors.SequenceEqual(other.ValidationErrors);
         }
 
         public override int GetHashCode() =>
-            HashCode.Combine(Hash, Manifest);
+            Hash.GetHashCode() ^
+            Manifest?.GetHashCode() ?? 0 ^
+            ValidationErrors.GetHashCode();
     }
 }

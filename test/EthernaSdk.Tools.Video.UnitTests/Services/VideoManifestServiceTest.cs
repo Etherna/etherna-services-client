@@ -175,7 +175,8 @@ namespace Etherna.Sdk.Tools.Video.Services
                                     "2.vtt",
                                     "0000000000000000000000000000000000000000000000000000000000000009")
                             ],
-                            DateTimeOffset.Parse("8/22/2024 12:18:54 AM +00:00")))),
+                            DateTimeOffset.Parse("8/22/2024 12:18:54 AM +00:00")),
+                            [])),
                     
                     //v2.0
                     new(SwarmHash.Zero,
@@ -284,7 +285,8 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         "0000000000000000000000000000000000000000000000000000000000000011")
                                 ]),
                             [],
-                            DateTimeOffset.Parse("8/22/2024 12:18:54 AM +00:00")))),
+                            DateTimeOffset.Parse("8/22/2024 12:18:54 AM +00:00")),
+                            [])),
                     
                     //v1.1
                     new(SwarmHash.Zero,
@@ -332,7 +334,8 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325")
                                 ]),
                             [],
-                            updatedAt: DateTimeOffset.Parse("8/13/2022 1:35:33.617 PM +00:00")))),
+                            updatedAt: DateTimeOffset.Parse("8/13/2022 1:35:33.617 PM +00:00")),
+                            [])),
                     
                     //v1.0
                     new(SwarmHash.Zero,
@@ -380,7 +383,8 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325")
                                 ]),
                             [],
-                            updatedAt: null)))
+                            updatedAt: null),
+                            []))
                 };
 
                 return tests.Select(t => new object[] { t });

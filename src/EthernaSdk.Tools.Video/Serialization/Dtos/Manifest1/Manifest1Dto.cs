@@ -12,18 +12,13 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using Etherna.BeeNet;
-using Etherna.BeeNet.Models;
-using Etherna.Sdk.Tools.Video.Exceptions;
 using Etherna.Sdk.Tools.Video.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 {
@@ -37,16 +32,6 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
         public const int TitleMaxLength = 200;
 
         // Fields.
-        private static readonly VideoManifestImage defaultThumbnail = new(
-            1.8f,
-            "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
-            [new VideoManifestImageSource("thumb.jpg", ImageType.Jpeg, 100, SwarmHash.Zero)]);
-        private static readonly JsonSerializerOptions jsonSerializerOptions = new()
-        {
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-            PropertyNameCaseInsensitive = true,
-        };
-        
         private string? _personalData;
 
         // Constructors.
@@ -118,74 +103,6 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
                 errors.Add(new ValidationError(ValidationErrorType.InvalidPersonalData, "Personal data is too long"));
             
             return errors.ToArray();
-        }
-        
-        // Static methods.
-        public static async Task<VideoManifest> DeserializeVideoManifestAsync(
-            JsonElement manifestJsonElement,
-            IBeeClient beeClient)
-        {
-            // Get manifest.
-            var manifestDto = manifestJsonElement.Deserialize<Manifest1Dto>(jsonSerializerOptions)
-                ?? throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Empty json")]);
-            
-            // Validate manifest.
-            var validationErrors = manifestDto.GetValidationErrors();
-            if (validationErrors.Length > 0)
-                throw new VideoManifestValidationException(validationErrors);
-
-            // Build manifest.
-            //video sources
-            List<VideoManifestVideoSource> videoSources = [];
-            foreach (var videoSourceDto in manifestDto.Sources)
-            {
-                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceDto.Reference).ConfigureAwait(false);
-                videoSources.Add(new VideoManifestVideoSource(
-                    videoSourceDto.Quality + ".mp4",
-                    VideoType.Mp4,
-                    videoSourceDto.Quality,
-                    videoSourceDto.Size ?? 100,
-                    [],
-                    videoSourceChunkRef.Hash));
-            }
-            
-            //thumbnail
-            var thumbnail = defaultThumbnail;
-            if (manifestDto.Thumbnail is not null)
-            {
-                List<VideoManifestImageSource> imgSources = [];
-                foreach (var imgSourceDto in manifestDto.Thumbnail.Sources)
-                {
-                    var imgSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(imgSourceDto.Value).ConfigureAwait(false);
-                    imgSources.Add(new VideoManifestImageSource(
-                        imgSourceDto.Key.TrimEnd('w') + ".jpg",
-                        ImageType.Jpeg,
-                        int.Parse(imgSourceDto.Key.TrimEnd('w'), CultureInfo.InvariantCulture),
-                        imgSourceChunkRef.Hash));
-                }
-
-                thumbnail = new VideoManifestImage(
-                    manifestDto.Thumbnail.AspectRatio,
-                    manifestDto.Thumbnail.Blurhash,
-                    imgSources);
-            }
-            
-            //manifest
-            return new VideoManifest(
-                manifestDto.Thumbnail?.AspectRatio ?? 1,
-                manifestDto.BatchId is null ? (PostageBatchId?)null : PostageBatchId.FromString(manifestDto.BatchId),
-                DateTimeOffset.FromUnixTimeMilliseconds(manifestDto.CreatedAt ?? 0),
-                manifestDto.Description,
-                TimeSpan.FromSeconds(manifestDto.Duration),
-                manifestDto.Title,
-                manifestDto.OwnerAddress,
-                manifestDto.PersonalData,
-                videoSources,
-                thumbnail,
-                [],
-                manifestDto.UpdatedAt.HasValue ?
-                    DateTimeOffset.FromUnixTimeMilliseconds(manifestDto.UpdatedAt.Value) :
-                    null);
         }
     }
 }

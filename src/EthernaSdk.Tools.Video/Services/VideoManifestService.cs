@@ -20,10 +20,8 @@ using Etherna.BeeNet.Hashing.Store;
 using Etherna.BeeNet.Manifest;
 using Etherna.BeeNet.Models;
 using Etherna.BeeNet.Services;
-using Etherna.Sdk.Tools.Video.Exceptions;
 using Etherna.Sdk.Tools.Video.Models;
-using Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1;
-using Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2;
+using Etherna.Sdk.Tools.Video.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -195,14 +193,14 @@ namespace Etherna.Sdk.Tools.Video.Services
             var version = new Version(versionStr);
 
             // Deserialize document.
-            var videoManifest = version.Major switch
+            var (videoManifest, errors) = version.Major switch
             {
-                1 => await Manifest1Dto.DeserializeVideoManifestAsync(rootManifestJsonElement, beeClient).ConfigureAwait(false),
-                2 => await Manifest2PreviewDto.DeserializeVideoManifestAsync(manifestHash, rootManifestJsonElement, beeClient).ConfigureAwait(false),
-                _ => throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Invalid version")])
+                1 => await ManifestSerializer.TryDeserializeManifest1Async(rootManifestJsonElement, beeClient).ConfigureAwait(false),
+                2 => await ManifestSerializer.TryDeserializeManifest2Async(manifestHash, rootManifestJsonElement, beeClient).ConfigureAwait(false),
+                _ => (null, [new ValidationError(ValidationErrorType.JsonConvert, "Invalid version")])
             };
 
-            return new PublishedVideoManifest(manifestHash, videoManifest);
+            return new PublishedVideoManifest(manifestHash, videoManifest, errors);
         }
     }
 }
