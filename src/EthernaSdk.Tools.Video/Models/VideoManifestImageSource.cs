@@ -18,53 +18,28 @@ using System.Collections.Generic;
 
 namespace Etherna.Sdk.Tools.Video.Models
 {
-    public class VideoManifestImageSource
+    public class VideoManifestImageSource(
+        string fileName,
+        ImageType imageType,
+        int width,
+        SwarmHash directContentHash,
+        SwarmAddress? swarmAddress)
     {
-        // Constructors.
-        private VideoManifestImageSource(
-            string fileName,
-            ImageType imageType,
-            int width)
-        {
-            FileName = fileName;
-            ImageType = imageType;
-            Width = width;
-        }
-        
-        // Builders.
-        public static VideoManifestImageSource BuildFromPublishedContent(
-            string fileName,
-            ImageType imageType,
-            SwarmAddress swarmAddress,
-            int width) => new(fileName, imageType, width)
-        {
-            SwarmAddress = swarmAddress
-        };
-        
-        public static VideoManifestImageSource BuildFromDirectContentHash(
-            string fileName,
-            ImageType imageType,
-            SwarmHash directContentHash,
-            int width) => new(fileName, imageType, width)
-        {
-            ContentSwarmHash = directContentHash
-        };
-
         // Properties.
         /// <summary>
         /// Content direct swarm hash. Used to link internal mantaray path to resource.
         /// </summary>
-        public SwarmHash? ContentSwarmHash { get; set; }
-        
+        public SwarmHash ContentSwarmHash { get; } = directContentHash;
+
         /// <summary>
         /// The file name, used to set the download file name in mantaray
         /// </summary>
-        public string FileName { get; }
+        public string FileName { get; } = fileName;
 
         /// <summary>
         /// The video type, used to derive mime content type
         /// </summary>
-        public ImageType ImageType { get; }
+        public ImageType ImageType { get; } = imageType;
 
         /// <summary>
         /// The video mime content type, used to set content type with the mantaray manifest
@@ -78,28 +53,30 @@ namespace Etherna.Sdk.Tools.Video.Models
             _ => throw new NotSupportedException()
         };
         
-        public SwarmAddress SwarmAddress { get; private set; }
+        public SwarmAddress? SwarmAddress { get; } = swarmAddress;
 
-        public int Width { get; }
-        
+        public int Width { get; } = width;
+
         // Methods.
         public override bool Equals(object? obj)
         {
             if (ReferenceEquals(this, obj)) return true;
             if (obj is not VideoManifestImageSource other) return false;
             return GetType() == other.GetType() &&
-                   EqualityComparer<SwarmHash?>.Default.Equals(ContentSwarmHash, other.ContentSwarmHash) &&
+                   ContentSwarmHash.Equals(other.ContentSwarmHash) &&
                    string.Equals(FileName, other.FileName, StringComparison.Ordinal) &&
                    ImageType.Equals(other.ImageType) &&
                    string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal) &&
-                   SwarmAddress.Equals(other.SwarmAddress) &&
+                   EqualityComparer<SwarmAddress?>.Default.Equals(SwarmAddress, other.SwarmAddress) &&
                    Width.Equals(other.Width);
         }
         
         public override int GetHashCode() =>
+            ContentSwarmHash.GetHashCode() ^
             string.GetHashCode(FileName, StringComparison.Ordinal) ^
             ImageType.GetHashCode() ^
             string.GetHashCode(MimeContentType, StringComparison.Ordinal) ^
+            SwarmAddress?.GetHashCode() ?? 0 ^
             Width.GetHashCode();
     }
 }

@@ -128,8 +128,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                 mantarayManifest.Add(
                     videoSource.Uri.ToString(),
                     ManifestEntry.NewFile(
-                        videoSource.Metadata.ContentSwarmHash ??
-                            throw new InvalidOperationException("Content swarm hash can't be null here"),
+                        videoSource.Metadata.ContentSwarmHash,
                         new Dictionary<string, string>
                         {
                             [ManifestEntry.ContentTypeKey] = videoSource.Metadata.MimeContentType,
@@ -158,8 +157,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                 mantarayManifest.Add(
                     thumbnailSource.Uri.ToString(),
                     ManifestEntry.NewFile(
-                        thumbnailSource.Metadata.ContentSwarmHash ??
-                            throw new InvalidOperationException("Content swarm hash can't be null here"),
+                        thumbnailSource.Metadata.ContentSwarmHash,
                         new Dictionary<string, string>
                         {
                             [ManifestEntry.ContentTypeKey] = thumbnailSource.Metadata.MimeContentType,
@@ -199,7 +197,7 @@ namespace Etherna.Sdk.Tools.Video.Services
             // Deserialize document.
             var videoManifest = version.Major switch
             {
-                1 => Manifest1Dto.DeserializeVideoManifest(rootManifestJsonElement),
+                1 => await Manifest1Dto.DeserializeVideoManifestAsync(rootManifestJsonElement, beeClient).ConfigureAwait(false),
                 2 => await Manifest2PreviewDto.DeserializeVideoManifestAsync(manifestHash, rootManifestJsonElement, beeClient).ConfigureAwait(false),
                 _ => throw new VideoManifestValidationException([new ValidationError(ValidationErrorType.JsonConvert, "Invalid version")])
             };

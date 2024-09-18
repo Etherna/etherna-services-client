@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet;
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Tools.Video.Exceptions;
 using Etherna.Sdk.Tools.Video.Models;
@@ -22,6 +23,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 {
@@ -38,7 +40,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
         private static readonly VideoManifestImage defaultThumbnail = new(
             1.8f,
             "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
-            [VideoManifestImageSource.BuildFromPublishedContent("thumb.jpg", ImageType.Jpeg, SwarmHash.Zero, 100)]);
+            [new VideoManifestImageSource("thumb.jpg", ImageType.Jpeg, 100, SwarmHash.Zero, null)]);
         private static readonly JsonSerializerOptions jsonSerializerOptions = new()
         {
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
@@ -119,7 +121,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
         }
         
         // Static methods.
-        public static VideoManifest DeserializeVideoManifest(JsonElement manifestJsonElement)
+        public static async Task<VideoManifest> DeserializeVideoManifestAsync(
+            JsonElement manifestJsonElement,
+            IBeeClient beeClient)
         {
             // Get manifest.
             var manifestDto = manifestJsonElement.Deserialize<Manifest1Dto>(jsonSerializerOptions)
@@ -131,6 +135,50 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
                 throw new VideoManifestValidationException(validationErrors);
 
             // Build manifest.
+            //video sources
+            List<VideoManifestVideoSource> videoSources = [];
+            foreach (var videoSourceDto in manifestDto.Sources)
+            {
+                var videoSourceAddress = SwarmAddress.FromString(videoSourceDto.Reference);
+                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceAddress).ConfigureAwait(false);
+                var videoSourceHash = videoSourceChunkRef.Hash;
+                
+                videoSources.Add(new VideoManifestVideoSource(
+                    videoSourceDto.Quality + ".mp4",
+                    VideoType.Mp4,
+                    videoSourceDto.Quality,
+                    videoSourceDto.Size ?? 100,
+                    [],
+                    videoSourceHash,
+                    videoSourceAddress));
+            }
+            
+            //thumbnail
+            var thumbnail = defaultThumbnail;
+            if (manifestDto.Thumbnail is not null)
+            {
+                List<VideoManifestImageSource> imgSources = [];
+                foreach (var imgSourceDto in manifestDto.Thumbnail.Sources)
+                {
+                    var imgSourceAddress = SwarmAddress.FromString(imgSourceDto.Value);
+                    var imgSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(imgSourceAddress).ConfigureAwait(false);
+                    var imgSourceHash = imgSourceChunkRef.Hash;
+
+                    imgSources.Add(new VideoManifestImageSource(
+                        imgSourceDto.Key.TrimEnd('w') + ".jpg",
+                        ImageType.Jpeg,
+                        int.Parse(imgSourceDto.Key.TrimEnd('w'), CultureInfo.InvariantCulture),
+                        imgSourceHash,
+                        imgSourceAddress));
+                }
+
+                thumbnail = new VideoManifestImage(
+                    manifestDto.Thumbnail.AspectRatio,
+                    manifestDto.Thumbnail.Blurhash,
+                    imgSources);
+            }
+            
+            //manifest
             return new VideoManifest(
                 manifestDto.Thumbnail?.AspectRatio ?? 1,
                 manifestDto.BatchId is null ? (PostageBatchId?)null : PostageBatchId.FromString(manifestDto.BatchId),
@@ -140,22 +188,8 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
                 manifestDto.Title,
                 manifestDto.OwnerAddress,
                 manifestDto.PersonalData,
-                manifestDto.Sources.Select(s => VideoManifestVideoSource.BuildFromPublishedContent(
-                    SwarmAddress.FromString(s.Reference),
-                    s.Quality + ".mp4",
-                    VideoType.Mp4,
-                    s.Quality,
-                    s.Size ?? 100,
-                    [])),
-                manifestDto.Thumbnail is null ? defaultThumbnail :
-                    new VideoManifestImage(
-                        manifestDto.Thumbnail.AspectRatio,
-                        manifestDto.Thumbnail.Blurhash,
-                        manifestDto.Thumbnail.Sources.Select(s => VideoManifestImageSource.BuildFromPublishedContent(
-                            s.Key.TrimEnd('w') + ".jpg",
-                            ImageType.Jpeg,
-                            SwarmAddress.FromString(s.Value),
-                            int.Parse(s.Key.TrimEnd('w'), CultureInfo.InvariantCulture)))),
+                videoSources,
+                thumbnail,
                 [],
                 manifestDto.UpdatedAt.HasValue ?
                     DateTimeOffset.FromUnixTimeMilliseconds(manifestDto.UpdatedAt.Value) :

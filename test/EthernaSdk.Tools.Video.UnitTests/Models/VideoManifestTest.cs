@@ -51,16 +51,16 @@ namespace Etherna.Sdk.Tools.Video.Models
                             personalData: "my personal data",
                             videoSources:
                             [
-                                VideoManifestVideoSource.BuildFromDirectContentHash(
+                                new VideoManifestVideoSource(
                                     sourceRelativePath: "master.m3u8",
-                                    directContentHash: SwarmHash.Zero,
                                     videoType: VideoType.Hls,
                                     quality: null,
                                     totalSourceSize: 0,
-                                    additionalFiles: []),
-                                VideoManifestVideoSource.BuildFromDirectContentHash(
-                                    sourceRelativePath: "720p/playlist.m3u8",
+                                    additionalFiles: [],
                                     directContentHash: SwarmHash.Zero,
+                                    swarmAddress: null),
+                                new VideoManifestVideoSource(
+                                    sourceRelativePath: "720p/playlist.m3u8",
                                     videoType: VideoType.Hls,
                                     quality: null,
                                     totalSourceSize: 45678,
@@ -68,17 +68,20 @@ namespace Etherna.Sdk.Tools.Video.Models
                                     [
                                         new("1.ts", SwarmHash.Zero),
                                         new("2.ts", SwarmHash.Zero)
-                                    ])
+                                    ],
+                                    directContentHash: SwarmHash.Zero,
+                                    swarmAddress: null)
                             ],
                             thumbnail: new VideoManifestImage(
                                 aspectRatio: 0.123f,
                                 "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
                                 [
-                                    VideoManifestImageSource.BuildFromDirectContentHash(
+                                    new VideoManifestImageSource(
                                         fileName: "720.png",
                                         imageType: ImageType.Png,
-                                        directContentHash: SwarmHash.Zero, 
-                                        width: 720)
+                                        width: 720,
+                                        directContentHash: SwarmHash.Zero,
+                                        swarmAddress: null)
                                 ]),
                             captionSources:
                             [
@@ -86,7 +89,8 @@ namespace Etherna.Sdk.Tools.Video.Models
                                     "eng",
                                     "en-uk",
                                     "0.ts",
-                                    SwarmHash.Zero)
+                                    SwarmHash.Zero,
+                                    null)
                             ],
                             updatedAt: new DateTimeOffset(2024, 07, 12, 12, 01, 08, TimeSpan.Zero)),
                         """{"v":"2.1","title":"I\u0027m a title","createdAt":1720111542,"updatedAt":1720785668,"ownerAddress":"0x7cd4878e21d9ce3da6611ae27a1b73827af81374","duration":42,"thumbnail":{"aspectRatio":0.123,"blurhash":"UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay","sources":[{"width":720,"type":"png","path":"thumb/720.png"}]}}""",

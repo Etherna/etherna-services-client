@@ -21,56 +21,20 @@ using System.Linq;
 
 namespace Etherna.Sdk.Tools.Video.Models
 {
-    public class VideoManifestVideoSource
+    public class VideoManifestVideoSource(
+        string sourceRelativePath,
+        VideoType videoType,
+        string? quality,
+        long totalSourceSize,
+        VideoManifestVideoSourceAdditionalFile[] additionalFiles,
+        SwarmHash directContentHash,
+        SwarmAddress? swarmAddress)
     {
-        // Fields.
-        private readonly VideoManifestVideoSourceAdditionalFile[] additionalFiles;
-
-        // Constructors.
-        private VideoManifestVideoSource(
-            string sourceRelativePath,
-            VideoType videoType,
-            string? quality,
-            long totalSourceSize,
-            VideoManifestVideoSourceAdditionalFile[] additionalFiles)
-        {
-            this.additionalFiles = additionalFiles;
-            Quality = quality;
-            SourceRelativePath = sourceRelativePath;
-            TotalSourceSize = totalSourceSize;
-            VideoType = videoType;
-        }
-        
-        // Builders.
-        public static VideoManifestVideoSource BuildFromPublishedContent(
-            SwarmAddress swarmAddress,
-            string sourceRelativePath,
-            VideoType videoType,
-            string? quality,
-            long totalSourceSize,
-            VideoManifestVideoSourceAdditionalFile[] additionalFiles) =>
-            new(sourceRelativePath, videoType, quality, totalSourceSize, additionalFiles)
-        {
-            SwarmAddress = swarmAddress
-        };
-        
-        public static VideoManifestVideoSource BuildFromDirectContentHash(
-            SwarmHash directContentHash,
-            string sourceRelativePath,
-            VideoType videoType,
-            string? quality,
-            long totalSourceSize,
-            VideoManifestVideoSourceAdditionalFile[] additionalFiles) =>
-            new(sourceRelativePath, videoType, quality, totalSourceSize, additionalFiles)
-        {
-            ContentSwarmHash = directContentHash
-        };
-
         // Properties.
         /// <summary>
         /// Content direct swarm hash. Used to link internal mantaray path to resource.
         /// </summary>
-        public SwarmHash? ContentSwarmHash { get; set; }
+        public SwarmHash ContentSwarmHash { get; } = directContentHash;
         
         /// <summary>
         /// The file name, used to set the download file name in mantaray
@@ -91,24 +55,24 @@ namespace Etherna.Sdk.Tools.Video.Models
         /// <summary>
         /// The video stream quality
         /// </summary>
-        public string? Quality { get; }
-        
+        public string? Quality { get; } = quality;
+
         /// <summary>
         /// Relative path inside the source directory
         /// </summary>
-        public string SourceRelativePath { get; }
-        
-        public SwarmAddress SwarmAddress { get; private set; }
+        public string SourceRelativePath { get; } = sourceRelativePath;
+
+        public SwarmAddress? SwarmAddress { get; } = swarmAddress;
 
         /// <summary>
         /// The video stream byte size
         /// </summary>
-        public long TotalSourceSize { get; }
+        public long TotalSourceSize { get; } = totalSourceSize;
 
         /// <summary>
         /// The video type, used to derive mime conten type
         /// </summary>
-        public VideoType VideoType { get; }
+        public VideoType VideoType { get; } = videoType;
 
         public IEnumerable<(SwarmUri Uri, VideoManifestVideoSourceAdditionalFile File)> AdditionalFiles =>
             additionalFiles.Select(f => (new SwarmUri(
@@ -121,22 +85,24 @@ namespace Etherna.Sdk.Tools.Video.Models
             if (ReferenceEquals(this, obj)) return true;
             if (obj is not VideoManifestVideoSource other) return false;
             return GetType() == other.GetType() &&
-                   EqualityComparer<SwarmHash?>.Default.Equals(ContentSwarmHash, other.ContentSwarmHash) &&
+                   ContentSwarmHash.Equals(other.ContentSwarmHash) &&
                    string.Equals(FileName, other.FileName, StringComparison.Ordinal) &&
                    string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal) &&
                    string.Equals(Quality, other.Quality, StringComparison.Ordinal) &&
                    string.Equals(SourceRelativePath, other.SourceRelativePath, StringComparison.Ordinal) &&
-                   SwarmAddress.Equals(other.SwarmAddress) &&
+                   EqualityComparer<SwarmAddress?>.Default.Equals(SwarmAddress, other.SwarmAddress) &&
                    TotalSourceSize.Equals(other.TotalSourceSize) &&
                    VideoType.Equals(other.VideoType) &&
                    AdditionalFiles.SequenceEqual(other.AdditionalFiles);
         }
 
         public override int GetHashCode() =>
+            ContentSwarmHash.GetHashCode() ^
             string.GetHashCode(FileName, StringComparison.Ordinal) ^
             string.GetHashCode(MimeContentType, StringComparison.Ordinal) ^
             string.GetHashCode(Quality, StringComparison.Ordinal) ^
             string.GetHashCode(SourceRelativePath, StringComparison.Ordinal) ^
+            SwarmAddress?.GetHashCode() ?? 0 ^
             TotalSourceSize.GetHashCode() ^
             VideoType.GetHashCode() ^
             AdditionalFiles.GetHashCode();

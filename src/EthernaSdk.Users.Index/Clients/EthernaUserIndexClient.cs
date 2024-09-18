@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet;
 using Etherna.BeeNet.Exceptions;
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Index.GenClients;
@@ -31,6 +32,7 @@ namespace Etherna.Sdk.Users.Index.Clients
 {
     public class EthernaUserIndexClient(
         Uri baseUrl,
+        IBeeClient beeClient,
         HttpClient httpClient,
         IVideoManifestService videoManifestService) : IEthernaUserIndexClient
     {
@@ -151,14 +153,17 @@ namespace Etherna.Sdk.Users.Index.Clients
 
                         var swarmUri = new SwarmUri(thumbSourceDto.Path, UriKind.RelativeOrAbsolute);
 
-                        var thumbSource = VideoManifestImageSource.BuildFromPublishedContent(
+                        var thumbAddress = swarmUri.UriKind == UriKind.Absolute
+                            ? swarmUri.ToSwarmAddress()
+                            : swarmUri.ToSwarmAddress(v.Hash!);
+                        var thumbChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(thumbAddress).ConfigureAwait(false);
+                        
+                        var thumbSource = new VideoManifestImageSource(
                             fileName,
                             imageType,
-                            swarmUri.UriKind == UriKind.Absolute
-                                ? swarmUri.ToSwarmAddress()
-                                : swarmUri.ToSwarmAddress(v.Hash!),
-                            thumbSourceDto.Width
-                        );
+                            thumbSourceDto.Width,
+                            thumbChunkRef.Hash,
+                            thumbAddress);
                         
                         thumbnailSources.Add(thumbSource);
                     }
