@@ -39,7 +39,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
         private static readonly VideoManifestImage defaultThumbnail = new(
             1.8f,
             "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
-            [new VideoManifestImageSource("thumb.jpg", ImageType.Jpeg, 100, SwarmHash.Zero, null)]);
+            [new VideoManifestImageSource("thumb.jpg", ImageType.Jpeg, 100, SwarmHash.Zero)]);
         private static readonly JsonSerializerOptions jsonSerializerOptions = new()
         {
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
@@ -134,15 +134,13 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
                 var captionSwarmUri = new SwarmUri(captionDto.Path, UriKind.RelativeOrAbsolute);
                 var captionSwarmAddress = captionSwarmUri.ToSwarmAddress(manifestHash);
                 var captionChunkReference = await beeClient.ResolveAddressToChunkReferenceAsync(captionSwarmAddress).ConfigureAwait(false);
-                var captionSwarmHash = captionChunkReference.Hash;
                 var captionFileName = captionDto.Path.Split(SwarmAddress.Separator).Last();
 
                 captions.Add(new(
                     captionDto.Label,
                     captionDto.Lang,
                     captionFileName,
-                    captionSwarmHash,
-                    captionSwarmAddress));
+                    captionChunkReference.Hash));
             }
             
             //thumb sources
@@ -164,18 +162,14 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 
                 var swarmUri = new SwarmUri(thumbnailSourceDto.Path, UriKind.RelativeOrAbsolute);
 
-                var thumbnailAddress = swarmUri.UriKind == UriKind.Absolute
-                    ? swarmUri.ToSwarmAddress()
-                    : swarmUri.ToSwarmAddress(manifestHash);
+                var thumbnailAddress = swarmUri.ToSwarmAddress(manifestHash);
                 var thumbnailChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(thumbnailAddress).ConfigureAwait(false);
-                var thumbnailHash = thumbnailChunkRef.Hash;
                 
                 var thumbnailSource = new VideoManifestImageSource(
                     fileName,
                     imageType,
                     thumbnailSourceDto.Width,
-                    thumbnailHash,
-                    thumbnailAddress);
+                    thumbnailChunkRef.Hash);
                 
                 thumbnailSources.Add(thumbnailSource);
             }
@@ -189,7 +183,6 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
                 var videoSourceSwarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
                 var videoSourceSwarmAddress = videoSourceSwarmUri.ToSwarmAddress(manifestHash);
                 var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceSwarmAddress).ConfigureAwait(false);
-                var videoSourceHash = videoSourceChunkRef.Hash;
                 
                 var sourceDirectoryPath = VideoManifestVideoSource.GetManifestVideoSourceBaseDirectory(videoType);
                 if (!videoSourceDto.Path.StartsWith(sourceDirectoryPath, StringComparison.Ordinal))
@@ -242,13 +235,12 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
                 }
 
                 var videoSource = new VideoManifestVideoSource(
-                    sourceRelativePath: sourceRelativePath,
-                    videoType: videoType,
-                    quality: videoSourceDto.Quality,
-                    totalSourceSize: videoSourceDto.Size,
-                    additionalFiles: additionalFiles.ToArray(),
-                    directContentHash: videoSourceHash,
-                    swarmAddress: videoSourceSwarmAddress);
+                    sourceRelativePath,
+                    videoType,
+                    videoSourceDto.Quality,
+                    videoSourceDto.Size,
+                    additionalFiles.ToArray(),
+                    videoSourceChunkRef.Hash);
 
                 videoSources.Add(videoSource);
             }

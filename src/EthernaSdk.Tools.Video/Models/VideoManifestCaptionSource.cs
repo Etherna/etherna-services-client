@@ -14,7 +14,6 @@
 
 using Etherna.BeeNet.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Tools.Video.Models
@@ -24,8 +23,7 @@ namespace Etherna.Sdk.Tools.Video.Models
         string label,
         string languageCode,
         string fileName,
-        SwarmHash directContentHash,
-        SwarmAddress? swarmAddress)
+        SwarmHash directContentHash)
     {
         // Properties.
         public SwarmHash ContentSwarmHash { get; } = directContentHash;
@@ -33,7 +31,6 @@ namespace Etherna.Sdk.Tools.Video.Models
         public string Label { get; } = label;
         public string LanguageCode { get; } = languageCode;
         public string MimeContentType => "text/vtt";
-        public SwarmAddress? SwarmAddress { get; } = swarmAddress;
 
         // Methods.
         public override bool Equals(object? obj)
@@ -45,8 +42,7 @@ namespace Etherna.Sdk.Tools.Video.Models
                    string.Equals(FileName, other.FileName, StringComparison.Ordinal) &&
                    string.Equals(Label, other.Label, StringComparison.Ordinal) &&
                    string.Equals(LanguageCode, other.LanguageCode, StringComparison.Ordinal) &&
-                   string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal) &&
-                   EqualityComparer<SwarmAddress?>.Default.Equals(SwarmAddress, other.SwarmAddress);
+                   string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal);
         }
         
         public override int GetHashCode() =>
@@ -54,7 +50,6 @@ namespace Etherna.Sdk.Tools.Video.Models
             string.GetHashCode(FileName, StringComparison.Ordinal) ^
             string.GetHashCode(Label, StringComparison.Ordinal) ^
             string.GetHashCode(LanguageCode, StringComparison.Ordinal) ^
-            string.GetHashCode(MimeContentType, StringComparison.Ordinal) ^
-            SwarmAddress?.GetHashCode() ?? 0;
+            string.GetHashCode(MimeContentType, StringComparison.Ordinal);
     }
 }

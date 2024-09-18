@@ -14,7 +14,6 @@
 
 using Etherna.BeeNet.Models;
 using System;
-using System.Collections.Generic;
 
 namespace Etherna.Sdk.Tools.Video.Models
 {
@@ -22,8 +21,7 @@ namespace Etherna.Sdk.Tools.Video.Models
         string fileName,
         ImageType imageType,
         int width,
-        SwarmHash directContentHash,
-        SwarmAddress? swarmAddress)
+        SwarmHash directContentHash)
     {
         // Properties.
         /// <summary>
@@ -52,8 +50,6 @@ namespace Etherna.Sdk.Tools.Video.Models
             ImageType.Webp => "image/webp",
             _ => throw new NotSupportedException()
         };
-        
-        public SwarmAddress? SwarmAddress { get; } = swarmAddress;
 
         public int Width { get; } = width;
 
@@ -67,7 +63,6 @@ namespace Etherna.Sdk.Tools.Video.Models
                    string.Equals(FileName, other.FileName, StringComparison.Ordinal) &&
                    ImageType.Equals(other.ImageType) &&
                    string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal) &&
-                   EqualityComparer<SwarmAddress?>.Default.Equals(SwarmAddress, other.SwarmAddress) &&
                    Width.Equals(other.Width);
         }
         
@@ -76,7 +71,6 @@ namespace Etherna.Sdk.Tools.Video.Models
             string.GetHashCode(FileName, StringComparison.Ordinal) ^
             ImageType.GetHashCode() ^
             string.GetHashCode(MimeContentType, StringComparison.Ordinal) ^
-            SwarmAddress?.GetHashCode() ?? 0 ^
             Width.GetHashCode();
     }
 }

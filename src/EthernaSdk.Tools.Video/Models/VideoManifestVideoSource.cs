@@ -27,8 +27,7 @@ namespace Etherna.Sdk.Tools.Video.Models
         string? quality,
         long totalSourceSize,
         VideoManifestVideoSourceAdditionalFile[] additionalFiles,
-        SwarmHash directContentHash,
-        SwarmAddress? swarmAddress)
+        SwarmHash directContentHash)
     {
         // Properties.
         /// <summary>
@@ -62,8 +61,6 @@ namespace Etherna.Sdk.Tools.Video.Models
         /// </summary>
         public string SourceRelativePath { get; } = sourceRelativePath;
 
-        public SwarmAddress? SwarmAddress { get; } = swarmAddress;
-
         /// <summary>
         /// The video stream byte size
         /// </summary>
@@ -90,7 +87,6 @@ namespace Etherna.Sdk.Tools.Video.Models
                    string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal) &&
                    string.Equals(Quality, other.Quality, StringComparison.Ordinal) &&
                    string.Equals(SourceRelativePath, other.SourceRelativePath, StringComparison.Ordinal) &&
-                   EqualityComparer<SwarmAddress?>.Default.Equals(SwarmAddress, other.SwarmAddress) &&
                    TotalSourceSize.Equals(other.TotalSourceSize) &&
                    VideoType.Equals(other.VideoType) &&
                    AdditionalFiles.SequenceEqual(other.AdditionalFiles);
@@ -102,7 +98,6 @@ namespace Etherna.Sdk.Tools.Video.Models
             string.GetHashCode(MimeContentType, StringComparison.Ordinal) ^
             string.GetHashCode(Quality, StringComparison.Ordinal) ^
             string.GetHashCode(SourceRelativePath, StringComparison.Ordinal) ^
-            SwarmAddress?.GetHashCode() ?? 0 ^
             TotalSourceSize.GetHashCode() ^
             VideoType.GetHashCode() ^
             AdditionalFiles.GetHashCode();

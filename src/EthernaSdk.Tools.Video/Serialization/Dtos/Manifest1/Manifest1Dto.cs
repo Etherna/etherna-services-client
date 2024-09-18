@@ -40,7 +40,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
         private static readonly VideoManifestImage defaultThumbnail = new(
             1.8f,
             "UcGkx38v?CKhoej[j[jtM|bHs:jZjaj[j@ay",
-            [new VideoManifestImageSource("thumb.jpg", ImageType.Jpeg, 100, SwarmHash.Zero, null)]);
+            [new VideoManifestImageSource("thumb.jpg", ImageType.Jpeg, 100, SwarmHash.Zero)]);
         private static readonly JsonSerializerOptions jsonSerializerOptions = new()
         {
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
@@ -139,18 +139,14 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
             List<VideoManifestVideoSource> videoSources = [];
             foreach (var videoSourceDto in manifestDto.Sources)
             {
-                var videoSourceAddress = SwarmAddress.FromString(videoSourceDto.Reference);
-                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceAddress).ConfigureAwait(false);
-                var videoSourceHash = videoSourceChunkRef.Hash;
-                
+                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceDto.Reference).ConfigureAwait(false);
                 videoSources.Add(new VideoManifestVideoSource(
                     videoSourceDto.Quality + ".mp4",
                     VideoType.Mp4,
                     videoSourceDto.Quality,
                     videoSourceDto.Size ?? 100,
                     [],
-                    videoSourceHash,
-                    videoSourceAddress));
+                    videoSourceChunkRef.Hash));
             }
             
             //thumbnail
@@ -160,16 +156,12 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
                 List<VideoManifestImageSource> imgSources = [];
                 foreach (var imgSourceDto in manifestDto.Thumbnail.Sources)
                 {
-                    var imgSourceAddress = SwarmAddress.FromString(imgSourceDto.Value);
-                    var imgSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(imgSourceAddress).ConfigureAwait(false);
-                    var imgSourceHash = imgSourceChunkRef.Hash;
-
+                    var imgSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(imgSourceDto.Value).ConfigureAwait(false);
                     imgSources.Add(new VideoManifestImageSource(
                         imgSourceDto.Key.TrimEnd('w') + ".jpg",
                         ImageType.Jpeg,
                         int.Parse(imgSourceDto.Key.TrimEnd('w'), CultureInfo.InvariantCulture),
-                        imgSourceHash,
-                        imgSourceAddress));
+                        imgSourceChunkRef.Hash));
                 }
 
                 thumbnail = new VideoManifestImage(

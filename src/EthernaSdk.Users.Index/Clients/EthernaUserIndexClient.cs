@@ -153,17 +153,14 @@ namespace Etherna.Sdk.Users.Index.Clients
 
                         var swarmUri = new SwarmUri(thumbSourceDto.Path, UriKind.RelativeOrAbsolute);
 
-                        var thumbAddress = swarmUri.UriKind == UriKind.Absolute
-                            ? swarmUri.ToSwarmAddress()
-                            : swarmUri.ToSwarmAddress(v.Hash!);
+                        var thumbAddress = swarmUri.ToSwarmAddress(v.Hash!);
                         var thumbChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(thumbAddress).ConfigureAwait(false);
                         
                         var thumbSource = new VideoManifestImageSource(
                             fileName,
                             imageType,
                             thumbSourceDto.Width,
-                            thumbChunkRef.Hash,
-                            thumbAddress);
+                            thumbChunkRef.Hash);
                         
                         thumbnailSources.Add(thumbSource);
                     }

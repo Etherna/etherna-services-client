@@ -119,8 +119,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                                     null,
                                     0,
                                     [],
-                                    "0000000000000000000000000000000000000000000000000000000000000012",
-                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/master.m3u8")),
+                                    "0000000000000000000000000000000000000000000000000000000000000012"),
                                 new VideoManifestVideoSource(
                                     "480p/playlist.m3u8",
                                     VideoType.Hls,
@@ -131,8 +130,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         new VideoManifestVideoSourceAdditionalFile("480p/1.ts", "0000000000000000000000000000000000000000000000000000000000000002"),
                                         new VideoManifestVideoSourceAdditionalFile("480p/2.ts", "0000000000000000000000000000000000000000000000000000000000000003")
                                     ],
-                                    "0000000000000000000000000000000000000000000000000000000000000013",
-                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/480p/playlist.m3u8")),
+                                    "0000000000000000000000000000000000000000000000000000000000000013"),
                                 new VideoManifestVideoSource(
                                     "360p/playlist.m3u8",
                                     VideoType.Hls,
@@ -143,8 +141,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         new VideoManifestVideoSourceAdditionalFile("360p/1.ts", "0000000000000000000000000000000000000000000000000000000000000005"),
                                         new VideoManifestVideoSourceAdditionalFile("360p/2.ts", "0000000000000000000000000000000000000000000000000000000000000006")
                                     ],
-                                    "0000000000000000000000000000000000000000000000000000000000000014",
-                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/360p/playlist.m3u8"))
+                                    "0000000000000000000000000000000000000000000000000000000000000014")
                             ],
                             new VideoManifestImage(
                                 1.7777778f,
@@ -154,34 +151,29 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         "270.jpg",
                                         ImageType.Jpeg,
                                         480,
-                                        "0000000000000000000000000000000000000000000000000000000000000010",
-                                        new SwarmAddress(SwarmHash.Zero, "thumb/270.jpg")),
+                                        "0000000000000000000000000000000000000000000000000000000000000010"),
                                     new VideoManifestImageSource(
                                         "540.jpg",
                                         ImageType.Jpeg,
                                         960,
-                                        "0000000000000000000000000000000000000000000000000000000000000011",
-                                        new SwarmAddress(SwarmHash.Zero, "thumb/540.jpg"))
+                                        "0000000000000000000000000000000000000000000000000000000000000011")
                                 ]),
                             [
                                 new VideoManifestCaptionSource(
                                     "Arabic",
                                     "ar",
                                     "0.vtt",
-                                    "0000000000000000000000000000000000000000000000000000000000000007",
-                                    new SwarmAddress(SwarmHash.Zero, "captions/0.vtt")),
+                                    "0000000000000000000000000000000000000000000000000000000000000007"),
                                 new VideoManifestCaptionSource(
                                     "Bulgarian",
                                     "bg",
                                     "1.vtt",
-                                    "0000000000000000000000000000000000000000000000000000000000000008",
-                                    new SwarmAddress(SwarmHash.Zero, "captions/1.vtt")),
+                                    "0000000000000000000000000000000000000000000000000000000000000008"),
                                 new VideoManifestCaptionSource(
                                     "Catalan",
                                     "ca",
                                     "2.vtt",
-                                    "0000000000000000000000000000000000000000000000000000000000000009",
-                                    new SwarmAddress(SwarmHash.Zero, "captions/2.vtt"))
+                                    "0000000000000000000000000000000000000000000000000000000000000009")
                             ],
                             DateTimeOffset.Parse("8/22/2024 12:18:54 AM +00:00")))),
                     
@@ -252,8 +244,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                                     null,
                                     0,
                                     [],
-                                    "0000000000000000000000000000000000000000000000000000000000000012",
-                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/master.m3u8")),
+                                    "0000000000000000000000000000000000000000000000000000000000000012"),
                                 new VideoManifestVideoSource(
                                     "480p/playlist.m3u8",
                                     VideoType.Hls,
@@ -264,8 +255,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         new VideoManifestVideoSourceAdditionalFile("480p/1.ts", "0000000000000000000000000000000000000000000000000000000000000002"),
                                         new VideoManifestVideoSourceAdditionalFile("480p/2.ts", "0000000000000000000000000000000000000000000000000000000000000003")
                                     ],
-                                    "0000000000000000000000000000000000000000000000000000000000000013",
-                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/480p/playlist.m3u8")),
+                                    "0000000000000000000000000000000000000000000000000000000000000013"),
                                 new VideoManifestVideoSource(
                                     "360p/playlist.m3u8",
                                     VideoType.Hls,
@@ -276,8 +266,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         new VideoManifestVideoSourceAdditionalFile("360p/1.ts", "0000000000000000000000000000000000000000000000000000000000000005"),
                                         new VideoManifestVideoSourceAdditionalFile("360p/2.ts", "0000000000000000000000000000000000000000000000000000000000000006")
                                     ],
-                                    "0000000000000000000000000000000000000000000000000000000000000014",
-                                    new SwarmAddress(SwarmHash.Zero, "sources/hls/360p/playlist.m3u8"))
+                                    "0000000000000000000000000000000000000000000000000000000000000014")
                             ],
                             new VideoManifestImage(
                                 1.7777778f,
@@ -287,14 +276,12 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         "270.jpg",
                                         ImageType.Jpeg,
                                         480,
-                                        "0000000000000000000000000000000000000000000000000000000000000010",
-                                        new SwarmAddress(SwarmHash.Zero, "thumb/270.jpg")),
+                                        "0000000000000000000000000000000000000000000000000000000000000010"),
                                     new VideoManifestImageSource(
                                         "540.jpg",
                                         ImageType.Jpeg,
                                         960,
-                                        "0000000000000000000000000000000000000000000000000000000000000011",
-                                        new SwarmAddress(SwarmHash.Zero, "thumb/540.jpg"))
+                                        "0000000000000000000000000000000000000000000000000000000000000011")
                                 ]),
                             [],
                             DateTimeOffset.Parse("8/22/2024 12:18:54 AM +00:00")))),
@@ -327,7 +314,6 @@ namespace Etherna.Sdk.Tools.Video.Services
                                     "1954p",
                                     3739997,
                                     [],
-                                    "e44671417466df08d3b67d74a081021ab2bba70224fc0d6e4d00c35d80328c6c",
                                     "e44671417466df08d3b67d74a081021ab2bba70224fc0d6e4d00c35d80328c6c")
                             ],
                             new VideoManifestImage(
@@ -338,13 +324,11 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         "720.jpg",
                                         ImageType.Jpeg,
                                         720,
-                                        "5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1",
                                         "5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1"),
                                     new VideoManifestImageSource(
                                         "480.jpg",
                                         ImageType.Jpeg,
                                         480,
-                                        "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325",
                                         "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325")
                                 ]),
                             [],
@@ -378,7 +362,6 @@ namespace Etherna.Sdk.Tools.Video.Services
                                     "720p",
                                     448350,
                                     [],
-                                    "94f4fcb1a902597c2bc53c5b48637af952a99328ec299f33e129740818a9e302",
                                     "94f4fcb1a902597c2bc53c5b48637af952a99328ec299f33e129740818a9e302")
                             ],
                             new VideoManifestImage(
@@ -389,13 +372,11 @@ namespace Etherna.Sdk.Tools.Video.Services
                                         "720.jpg",
                                         ImageType.Jpeg,
                                         720,
-                                        "5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1",
                                         "5d69d94f1ffa17560a88abc4a99aa40b0cabe6012766f51e5c19193887adacb1"),
                                     new VideoManifestImageSource(
                                         "480.jpg",
                                         ImageType.Jpeg,
                                         480,
-                                        "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325",
                                         "0b7425036143ed65932ac64cd6c4ddb4f2fd3e9bd51ed0f13bd406926c45c325")
                                 ]),
                             [],
@@ -432,8 +413,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                         quality: null,
                         totalSourceSize: 0,
                         additionalFiles: [],
-                        directContentHash: SwarmHash.Zero,
-                        swarmAddress: null),
+                        directContentHash: SwarmHash.Zero),
                     new VideoManifestVideoSource(
                         sourceRelativePath: "720p/playlist.m3u8",
                         videoType: VideoType.Hls,
@@ -444,8 +424,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                             new("1.ts", SwarmHash.Zero),
                             new("2.ts", SwarmHash.Zero)
                         ],
-                        directContentHash: SwarmHash.Zero,
-                        swarmAddress: null)
+                        directContentHash: SwarmHash.Zero)
                 ],
                 thumbnail: new VideoManifestImage(
                     aspectRatio: 0.123f,
@@ -455,8 +434,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                             fileName: "720.png",
                             imageType: ImageType.Png,
                             width: 720,
-                            directContentHash: SwarmHash.Zero,
-                            swarmAddress: null)
+                            directContentHash: SwarmHash.Zero)
                     ]),
                 captionSources:
                 [
@@ -464,8 +442,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                         "eng",
                         "en-uk",
                         "0.ts",
-                        SwarmHash.Zero,
-                        null)
+                        SwarmHash.Zero)
                 ],
                 updatedAt: new DateTimeOffset(2024, 07, 12, 12, 01, 08, TimeSpan.Zero));
             var chunkDirectory = Directory.CreateTempSubdirectory();
