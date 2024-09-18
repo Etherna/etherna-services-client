@@ -16,47 +16,33 @@ using Etherna.BeeNet;
 using Etherna.BeeNet.Exceptions;
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Index.GenClients;
+using Etherna.Sdk.Tools.Video.Models;
+using Etherna.Sdk.Tools.Video.Services;
 using Etherna.Sdk.Users.Index.Models;
-using M3U8Parser;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Users.Index.Clients
 {
-    public class EthernaUserIndexClient : IEthernaUserIndexClient
+    public class EthernaUserIndexClient(
+        Uri baseUrl,
+        IBeeClient beeClient,
+        HttpClient httpClient,
+        IVideoManifestService videoManifestService) : IEthernaUserIndexClient
     {
         // Fields.
-        private readonly IBeeClient beeClient;
-        private readonly CommentsClient generatedCommentsClient;
-        private readonly ModerationClient generatedModerationClient;
-        private readonly SearchClient generatedSearchClient;
-        private readonly SystemClient generatedSystemClient;
-        private readonly UsersClient generatedUsersClient;
-        private readonly VideosClient generatedVideosClient;
-
-        // Constructor.
-        public EthernaUserIndexClient(
-            Uri baseUrl,
-            IBeeClient beeClient,
-            HttpClient httpClient)
-        {
-            ArgumentNullException.ThrowIfNull(baseUrl, nameof(baseUrl));
-            
-            this.beeClient = beeClient;
-
-            generatedCommentsClient = new CommentsClient(baseUrl.AbsoluteUri, httpClient);
-            generatedModerationClient = new ModerationClient(baseUrl.AbsoluteUri, httpClient);
-            generatedSearchClient = new SearchClient(baseUrl.AbsoluteUri, httpClient);
-            generatedSystemClient = new SystemClient(baseUrl.AbsoluteUri, httpClient);
-            generatedUsersClient = new UsersClient(baseUrl.AbsoluteUri, httpClient);
-            generatedVideosClient = new VideosClient(baseUrl.AbsoluteUri, httpClient);
-        }
+        private readonly CommentsClient generatedCommentsClient = new(baseUrl.AbsoluteUri, httpClient);
+        private readonly ModerationClient generatedModerationClient = new(baseUrl.AbsoluteUri, httpClient);
+        private readonly SearchClient generatedSearchClient = new(baseUrl.AbsoluteUri, httpClient);
+        private readonly SystemClient generatedSystemClient = new(baseUrl.AbsoluteUri, httpClient);
+        private readonly UsersClient generatedUsersClient = new(baseUrl.AbsoluteUri, httpClient);
+        private readonly VideosClient generatedVideosClient = new(baseUrl.AbsoluteUri, httpClient);
 
         // Methods.
         public Task AdminForceNewValidationByManifestHashAsync(
@@ -149,9 +135,38 @@ namespace Etherna.Sdk.Users.Index.Clients
                 try
                 {
                     List<VideoManifestImageSource> thumbnailSources = [];
-                    foreach (var thumbSource in v.Thumbnail!.Sources)
-                        thumbnailSources.Add(
-                            BuildVideoManifestImageSource(thumbSource, v.Hash!));
+                    foreach (var thumbSourceDto in v.Thumbnail!.Sources)
+                    {
+                        if (!Enum.TryParse<ImageType>(thumbSourceDto.Type, true, out var imageType))
+                            imageType = ImageType.Jpeg; //only used jpeg at first
+
+                        var fileName = thumbSourceDto.Path.Split(SwarmAddress.Separator).Last();
+                        if (!Path.HasExtension(fileName))
+                            fileName += imageType switch
+                            {
+                                ImageType.Avif => ".avif",
+                                ImageType.Jpeg => ".jpeg",
+                                ImageType.Png => ".png",
+                                ImageType.Webp => ".webp",
+                                _ => throw new InvalidOperationException()
+                            };
+
+                        var swarmUri = new SwarmUri(thumbSourceDto.Path, UriKind.RelativeOrAbsolute);
+
+                        var thumbAddress = swarmUri.UriKind == UriKind.Absolute
+                            ? swarmUri.ToSwarmAddress()
+                            : swarmUri.ToSwarmAddress(v.Hash!);
+                        var thumbChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(thumbAddress).ConfigureAwait(false);
+                        
+                        var thumbSource = new VideoManifestImageSource(
+                            fileName,
+                            imageType,
+                            thumbSourceDto.Width,
+                            thumbChunkRef.Hash,
+                            thumbAddress);
+                        
+                        thumbnailSources.Add(thumbSource);
+                    }
                 
                     videoPreviews.Add(new VideoPreview(
                         hash: v.Hash is not null ?
@@ -331,81 +346,26 @@ namespace Etherna.Sdk.Users.Index.Clients
             generatedVideosClient.VotesAsync(id, Enum.Parse<Value>(value.ToString()), cancellationToken);
         
         // Helpers.
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
+        [SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
         private async Task<IndexedVideo> BuildIndexedVideoAsync(Video2Dto videoDto)
         {
-            List<VideoManifestImageSource> thumbnailSources = [];
-            List<VideoManifestVideoSource> videoSources = [];
-            if (videoDto.LastValidManifest is not null)
-            {
-                //thumb sources
-                foreach (var thumbnailSource in videoDto.LastValidManifest.Thumbnail?.Sources ?? [])
-                    thumbnailSources.Add(
-                        BuildVideoManifestImageSource(
-                            thumbnailSource,
-                            videoDto.LastValidManifest.Hash));
-                
-                //video sources
-                foreach (var videoSource in videoDto.LastValidManifest.Sources)
-                    videoSources.Add(
-                        await BuildVideoManifestVideoSourceAsync(
-                            videoSource,
-                            videoDto.LastValidManifest.Hash).ConfigureAwait(false));
-            }
-            
+            ArgumentNullException.ThrowIfNull(videoDto, nameof(videoDto));
+
             // Build published video manifest.
             PublishedVideoManifest? publishedVideoManifest = null;
             if (videoDto.LastValidManifest is not null)
             {
-                //aspect ratio con be 0 from manifest v1. Migrate taking it from thumbnail
-                var aspectRatio = videoDto.LastValidManifest.AspectRatio != 0
-                    ? videoDto.LastValidManifest.AspectRatio
-                    : videoDto.LastValidManifest.Thumbnail?.AspectRatio ?? 1;
-                
-                //create at was indicated in milliseconds with manifest v1
-                DateTimeOffset createdAt;
                 try
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(videoDto.LastValidManifest.CreatedAt);
+                    publishedVideoManifest = await videoManifestService.GetPublishedVideoManifestAsync(
+                        videoDto.LastValidManifest.Hash).ConfigureAwait(false);
                 }
-                catch (ArgumentOutOfRangeException)
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeMilliseconds(videoDto.LastValidManifest.CreatedAt);
-                }
-                
-                //same for updated at
-                DateTimeOffset? updatedAt = null;
-                if (videoDto.LastValidManifest.UpdatedAt is not null)
-                {
-                    try
-                    {
-                        updatedAt = DateTimeOffset.FromUnixTimeSeconds(videoDto.LastValidManifest.UpdatedAt.Value);
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        updatedAt = DateTimeOffset.FromUnixTimeMilliseconds(videoDto.LastValidManifest.UpdatedAt.Value);
-                    }
-                }
-                
-                publishedVideoManifest = new PublishedVideoManifest(
-                    hash: videoDto.LastValidManifest.Hash,
-                    manifest: new(
-                        aspectRatio: aspectRatio,
-                        batchId: videoDto.LastValidManifest.BatchId ?? PostageBatchId.Zero,
-                        createdAt: createdAt,
-                        description: videoDto.LastValidManifest.Description ?? "",
-                        duration: TimeSpan.FromSeconds(videoDto.LastValidManifest.Duration ?? 0),
-                        title: videoDto.LastValidManifest.Title ?? "",
-                        videoDto.OwnerAddress,
-                        personalData: videoDto.LastValidManifest.PersonalData,
-                        videoSources: videoSources,
-                        thumbnail: new VideoManifestImage(
-                            aspectRatio: videoDto.LastValidManifest.Thumbnail?.AspectRatio ?? 1,
-                            blurhash: videoDto.LastValidManifest.Thumbnail?.Blurhash ?? "",
-                            sources: thumbnailSources),
-                        captionSources: [],
-                        updatedAt: updatedAt));
+                catch
+                { }
             }
             
+            // Build indexed video.
             return new IndexedVideo(
                 id: videoDto.Id,
                 creationDateTime: videoDto.CreationDateTime,
@@ -415,95 +375,6 @@ namespace Etherna.Sdk.Users.Index.Clients
                 ownerAddress: videoDto.OwnerAddress,
                 totDownvotes: videoDto.TotDownvotes,
                 totUpvotes: videoDto.TotUpvotes);
-        }
-
-        private async Task<VideoManifestVideoSource> BuildVideoManifestVideoSourceAsync(
-            VideoSourceDto videoSourceDto,
-            string videoManifestHashStr)
-        {
-            if (!Enum.TryParse<VideoType>(videoSourceDto.Type, true, out var videoType))
-                videoType = VideoType.Mp4;
-            
-            var videoSourceSwarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
-            var videoSourceSwarmAddress = videoSourceSwarmUri.ToSwarmAddress(videoManifestHashStr);
-            
-            // Check for additional files.
-            List<VideoManifestVideoSourceAdditionalFile> additionalFiles = [];
-            switch (videoType)
-            {
-                case VideoType.Hls:
-                {
-                    //if is master playlist, skip it
-                    if (videoSourceDto.Size == 0)
-                        break;
-                    
-                    //if is a stream playlist, read it from swarm
-                    var response = await beeClient.GetFileAsync(videoSourceSwarmAddress).ConfigureAwait(false);
-                    using var memoryStream = new MemoryStream();
-                    await response.Stream.CopyToAsync(memoryStream).ConfigureAwait(false);
-                    memoryStream.Position = 0;
-            
-                    var byteArrayContent = memoryStream.ToArray();
-                    await response.Stream.DisposeAsync().ConfigureAwait(false);
-
-                    var playlistString = Encoding.UTF8.GetString(byteArrayContent);
-                    var playlist = MediaPlaylist.LoadFromText(playlistString);
-                    
-                    //retrieve segments as additional files
-                    foreach (var segment in playlist.MediaSegments.First().Segments)
-                    {
-                        // Read segments info.
-                        var segmentSwarmAddress = new SwarmAddress(
-                            videoSourceSwarmAddress.Hash,
-                            videoSourceSwarmAddress.Path.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator +
-                            segment.Uri);
-                        
-                        additionalFiles.Add(new VideoManifestVideoSourceAdditionalFile(
-                            Path.GetFileName(segment.Uri),
-                            (await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress).ConfigureAwait(false)).Hash));
-                    }
-                    
-                    break;
-                }
-            }
-
-            return VideoManifestVideoSource.BuildFromPublishedContent(
-                swarmAddress: videoSourceSwarmAddress,
-                sourceRelativePath: videoSourceDto.Path,
-                videoType: videoType,
-                quality: videoSourceDto.Quality,
-                totalSourceSize: videoSourceDto.Size,
-                additionalFiles: additionalFiles.ToArray());
-        }
-
-        private static VideoManifestImageSource BuildVideoManifestImageSource(
-            ImageSourceDto imageSourceDto,
-            string videoManifestHashStr)
-        {
-            if (!Enum.TryParse<ImageType>(imageSourceDto.Type, true, out var imageType))
-                imageType = ImageType.Jpeg; //only used jpeg at first
-
-            var fileName = imageSourceDto.Path.Split(SwarmAddress.Separator).Last();
-            if (!Path.HasExtension(fileName))
-                fileName += imageType switch
-                {
-                    ImageType.Avif => ".avif",
-                    ImageType.Jpeg => ".jpeg",
-                    ImageType.Png => ".png",
-                    ImageType.Webp => ".webp",
-                    _ => throw new InvalidOperationException()
-                };
-
-            var swarmUri = new SwarmUri(imageSourceDto.Path, UriKind.RelativeOrAbsolute);
-
-            return VideoManifestImageSource.BuildFromPublishedContent(
-                fileName,
-                imageType,
-                swarmUri.UriKind == UriKind.Absolute
-                    ? swarmUri.ToSwarmAddress()
-                    : swarmUri.ToSwarmAddress(videoManifestHashStr),
-                imageSourceDto.Width
-            );
         }
     }
 }

@@ -12,6 +12,14 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-
-[assembly: CLSCompliant(false)]
+namespace Etherna.Sdk.Tools.Video.Models
+{
+    public enum ImageType
+    {
+        Avif,
+        Jpeg,
+        Png,
+        Webp,
+        Unknown
+    }
+}
