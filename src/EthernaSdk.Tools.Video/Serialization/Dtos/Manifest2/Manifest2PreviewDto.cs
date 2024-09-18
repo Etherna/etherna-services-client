@@ -184,6 +184,12 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
                 var videoSourceSwarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
                 var videoSourceSwarmAddress = videoSourceSwarmUri.ToSwarmAddress(manifestHash);
                 
+                var sourceDirectoryPath = VideoManifestVideoSource.GetManifestVideoSourceBaseDirectory(videoType);
+                if (!videoSourceDto.Path.StartsWith(sourceDirectoryPath, StringComparison.Ordinal))
+                    throw new VideoManifestValidationException(
+                        [new ValidationError(ValidationErrorType.InvalidVideoSource, "Invalid video source path")]);
+                var sourceRelativePath = videoSourceDto.Path[sourceDirectoryPath.Length..];
+                
                 // Check for additional files.
                 List<VideoManifestVideoSourceAdditionalFile> additionalFiles = [];
                 switch (videoType)
@@ -206,19 +212,21 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
                         var playlistString = Encoding.UTF8.GetString(byteArrayContent);
                         var playlist = MediaPlaylist.LoadFromText(playlistString);
                         
+                        var playlistDirectoryPath =
+                            (videoSourceSwarmAddress.Path[..videoSourceSwarmAddress.Path.LastIndexOf(SwarmAddress.Separator)] + SwarmAddress.Separator).TrimStart(SwarmAddress.Separator);
+                            
                         //retrieve segments as additional files
                         foreach (var segment in playlist.MediaSegments.First().Segments)
                         {
-                            var playlistDirectoryPath =
-                                videoSourceSwarmAddress.Path[..videoSourceSwarmAddress.Path.LastIndexOf(SwarmAddress.Separator)] + SwarmAddress.Separator;
+                            var segmentPath = playlistDirectoryPath + segment.Uri;
+                            var segmentRelativePath = segmentPath[sourceDirectoryPath.Length..];
                             
-                            // Read segments info.
                             var segmentSwarmAddress = new SwarmAddress(
                                 videoSourceSwarmAddress.Hash,
-                                playlistDirectoryPath + segment.Uri);
+                                segmentPath);
                             
                             additionalFiles.Add(new VideoManifestVideoSourceAdditionalFile(
-                                Path.GetFileName(segment.Uri),
+                                segmentRelativePath,
                                 (await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress).ConfigureAwait(false)).Hash));
                         }
                         
@@ -228,7 +236,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
 
                 var videoSource = VideoManifestVideoSource.BuildFromPublishedContent(
                     swarmAddress: videoSourceSwarmAddress,
-                    sourceRelativePath: videoSourceDto.Path,
+                    sourceRelativePath: sourceRelativePath,
                     videoType: videoType,
                     quality: videoSourceDto.Quality,
                     totalSourceSize: videoSourceDto.Size,

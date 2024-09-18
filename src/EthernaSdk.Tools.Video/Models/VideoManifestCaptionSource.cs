@@ -13,6 +13,8 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Etherna.Sdk.Tools.Video.Models
@@ -30,5 +32,25 @@ namespace Etherna.Sdk.Tools.Video.Models
         public string Label { get; } = label;
         public string LanguageCode { get; } = languageCode;
         public string MimeContentType => "text/vtt";
+        
+        // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not VideoManifestCaptionSource other) return false;
+            return GetType() == other.GetType() &&
+                   EqualityComparer<SwarmHash?>.Default.Equals(ContentSwarmHash, other.ContentSwarmHash) &&
+                   string.Equals(FileName, other.FileName, StringComparison.Ordinal) &&
+                   string.Equals(Label, other.Label, StringComparison.Ordinal) &&
+                   string.Equals(LanguageCode, other.LanguageCode, StringComparison.Ordinal) &&
+                   string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal);
+        }
+        
+        public override int GetHashCode() =>
+            ContentSwarmHash.GetHashCode() ^
+            string.GetHashCode(FileName, StringComparison.Ordinal) ^
+            string.GetHashCode(Label, StringComparison.Ordinal) ^
+            string.GetHashCode(LanguageCode, StringComparison.Ordinal) ^
+            string.GetHashCode(MimeContentType, StringComparison.Ordinal);
     }
 }

@@ -38,6 +38,23 @@ namespace Etherna.Sdk.Tools.Video.Models
         public string SourceVideoId { get; } = sourceVideoId;
 
         // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not VideoManifestPersonalData other) return false;
+            return GetType() == other.GetType() &&
+                   string.Equals(ClientName, other.ClientName, StringComparison.Ordinal) &&
+                   string.Equals(ClientVersion, other.ClientVersion, StringComparison.Ordinal) &&
+                   string.Equals(SourceProviderName, other.SourceProviderName, StringComparison.Ordinal) &&
+                   string.Equals(SourceVideoId, other.SourceVideoId, StringComparison.Ordinal);
+        }
+
+        public override int GetHashCode() =>
+            string.GetHashCode(ClientName, StringComparison.Ordinal) ^
+            string.GetHashCode(ClientVersion, StringComparison.Ordinal) ^
+            string.GetHashCode(SourceProviderName, StringComparison.Ordinal) ^
+            string.GetHashCode(SourceVideoId, StringComparison.Ordinal);
+        
         public string Serialize()
         {
             var dto = new Serialization.Dtos.PersonalData1.ManifestPersonalDataDto(

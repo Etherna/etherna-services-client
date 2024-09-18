@@ -119,14 +119,22 @@ namespace Etherna.Sdk.Tools.Video.Services
                                     VideoType.Hls,
                                     "480p",
                                     2471,
-                                    []),
+                                    [
+                                        new VideoManifestVideoSourceAdditionalFile("480p/0.ts", "0000000000000000000000000000000000000000000000000000000000000001"),
+                                        new VideoManifestVideoSourceAdditionalFile("480p/1.ts", "0000000000000000000000000000000000000000000000000000000000000002"),
+                                        new VideoManifestVideoSourceAdditionalFile("480p/2.ts", "0000000000000000000000000000000000000000000000000000000000000003")
+                                    ]),
                                 VideoManifestVideoSource.BuildFromPublishedContent(
                                     new SwarmAddress(SwarmHash.Zero, "sources/hls/360p/playlist.m3u8"),
                                     "360p/playlist.m3u8",
                                     VideoType.Hls,
                                     "360p",
                                     2448,
-                                    [])
+                                    [
+                                        new VideoManifestVideoSourceAdditionalFile("360p/0.ts", "0000000000000000000000000000000000000000000000000000000000000004"),
+                                        new VideoManifestVideoSourceAdditionalFile("360p/1.ts", "0000000000000000000000000000000000000000000000000000000000000005"),
+                                        new VideoManifestVideoSourceAdditionalFile("360p/2.ts", "0000000000000000000000000000000000000000000000000000000000000006")
+                                    ])
                             ],
                             new VideoManifestImage(
                                 1.7777778f,

@@ -112,7 +112,7 @@ namespace Etherna.Sdk.Tools.Video.Models
 
         public IEnumerable<(SwarmUri Uri, VideoManifestVideoSourceAdditionalFile File)> AdditionalFiles =>
             additionalFiles.Select(f => (new SwarmUri(
-                GetManifestVideoSourceBaseDirectory() + f.SourceRelativePath,
+                GetManifestVideoSourceBaseDirectory(VideoType) + f.SourceRelativePath,
                 UriKind.Relative), f));
         
         // Methods.
@@ -141,7 +141,8 @@ namespace Etherna.Sdk.Tools.Video.Models
             VideoType.GetHashCode() ^
             AdditionalFiles.GetHashCode();
         
-        public string GetManifestVideoSourceBaseDirectory() =>
-            $"sources/{VideoType.ToStringInvariant().ToLowerInvariant()}/";
+        // Static methods.
+        public static string GetManifestVideoSourceBaseDirectory(VideoType videoType) =>
+            $"sources/{videoType.ToStringInvariant().ToLowerInvariant()}/";
     }
 }

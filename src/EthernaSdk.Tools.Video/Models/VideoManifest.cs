@@ -64,7 +64,7 @@ namespace Etherna.Sdk.Tools.Video.Models
         public DateTimeOffset? UpdatedAt { get; set; } = updatedAt;
         public IEnumerable<(SwarmUri Uri, VideoManifestVideoSource Metadata)> VideoSources { get; }
             = videoSources.Select(s => (new SwarmUri(
-                s.GetManifestVideoSourceBaseDirectory() + s.SourceRelativePath,
+                VideoManifestVideoSource.GetManifestVideoSourceBaseDirectory(s.VideoType) + s.SourceRelativePath,
                 UriKind.Relative), s));
         
         // Methods.

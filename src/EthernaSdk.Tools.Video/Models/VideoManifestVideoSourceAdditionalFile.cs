@@ -43,5 +43,23 @@ namespace Etherna.Sdk.Tools.Video.Models
         /// Absolute swarm hash. Used to link internal mantaray path to resource.
         /// </summary>
         public SwarmHash SwarmHash { get; } = swarmHash;
+        
+        // Methods.
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is not VideoManifestVideoSourceAdditionalFile other) return false;
+            return GetType() == other.GetType() &&
+                   string.Equals(FileName, other.FileName, StringComparison.Ordinal) &&
+                   string.Equals(MimeContentType, other.MimeContentType, StringComparison.Ordinal) &&
+                   string.Equals(SourceRelativePath, other.SourceRelativePath, StringComparison.Ordinal) &&
+                   SwarmHash.Equals(other.SwarmHash);
+        }
+
+        public override int GetHashCode() =>
+            string.GetHashCode(FileName, StringComparison.Ordinal) ^
+            string.GetHashCode(MimeContentType, StringComparison.Ordinal) ^
+            string.GetHashCode(SourceRelativePath, StringComparison.Ordinal) ^
+            SwarmHash.GetHashCode();
     }
 }
