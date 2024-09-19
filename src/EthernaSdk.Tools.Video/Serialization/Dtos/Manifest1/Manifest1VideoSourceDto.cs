@@ -12,6 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
+using Etherna.BeeNet.Models;
 using Etherna.Sdk.Tools.Video.Models;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -27,8 +28,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
     {
         // Constructors.
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        [JsonConstructor]
-        private Manifest1VideoSourceDto() { }
+        public Manifest1VideoSourceDto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
@@ -47,6 +47,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest1
 
             if (string.IsNullOrWhiteSpace(Quality))
                 errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Video source has empty quality"));
+
+            if (!SwarmHash.IsValidHash(Reference))
+                errors.Add(new ValidationError(ValidationErrorType.InvalidVideoSource, "Invalid reference"));
 
             return errors.ToArray();
         }

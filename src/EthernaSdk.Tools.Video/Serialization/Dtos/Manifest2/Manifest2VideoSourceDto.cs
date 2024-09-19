@@ -39,8 +39,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             Type = type.ToString().ToLowerInvariant();
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        [JsonConstructor]
-        private Manifest2VideoSourceDto() { }
+        public Manifest2VideoSourceDto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.

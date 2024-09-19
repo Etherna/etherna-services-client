@@ -42,8 +42,7 @@ namespace Etherna.Sdk.Tools.Video.Serialization.Dtos.Manifest2
             Thumbnail = thumbnail;
         }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        [JsonConstructor]
-        private Manifest2PreviewDto() { }
+        public Manifest2PreviewDto() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         // Properties.
