@@ -491,6 +491,9 @@ namespace Etherna.Sdk.Tools.Video.Services
                         It.IsAny<RedundancyStrategy?>(),
                         It.IsAny<bool?>(),
                         It.IsAny<string?>(),
+                        It.IsAny<long?>(),
+                        It.IsAny<string?>(),
+                        It.IsAny<string?>(),
                         It.IsAny<CancellationToken>()))
                     .Returns(Task.FromResult(
                         new FileResponse(null, new Dictionary<string, IEnumerable<string>>(), resourceStream)));

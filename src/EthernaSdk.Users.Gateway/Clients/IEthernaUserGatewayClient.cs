@@ -89,6 +89,8 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             PostageBatchId batchId,
             string? type = null,
             bool swarmPin = false,
+            bool? swarmAct = null,
+            string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default);
 
         /// <param name="hash">The swarm resource hash</param>
@@ -142,6 +144,9 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             RedundancyStrategy? swarmRedundancyStrategy = null,
             bool? swarmRedundancyFallbackMode = null,
             string? swarmChunkRetrievalTimeout = null,
+            long? swarmActTimestamp = null,
+            string? swarmActPublisher = null,
+            string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -155,6 +160,9 @@ namespace Etherna.Sdk.Users.Gateway.Clients
         Task<Stream> GetChunkAsync(
             SwarmHash hash,
             bool? swarmCache = null,
+            long? swarmActTimestamp = null,
+            string? swarmActPublisher = null,
+            string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -199,6 +207,9 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             RedundancyStrategy? swarmRedundancyStrategy = null,
             bool? swarmRedundancyFallbackMode = null,
             string? swarmChunkRetrievalTimeout = null,
+            long? swarmActTimestamp = null,
+            string? swarmActPublisher = null,
+            string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>

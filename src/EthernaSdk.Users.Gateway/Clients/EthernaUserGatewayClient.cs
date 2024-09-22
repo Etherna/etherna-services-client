@@ -88,8 +88,10 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             PostageBatchId batchId,
             string? type = null,
             bool swarmPin = false,
+            bool? swarmAct = null,
+            string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default) =>
-            BeeClient.CreateFeedAsync(owner, topic, batchId, type, swarmPin, cancellationToken);
+            BeeClient.CreateFeedAsync(owner, topic, batchId, type, swarmPin, swarmAct, swarmActHistoryAddress, cancellationToken);
 
         public Task<bool> DefundResourceDownloadAsync(
             SwarmHash hash,
@@ -119,8 +121,20 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             RedundancyStrategy? swarmRedundancyStrategy = null,
             bool? swarmRedundancyFallbackMode = null,
             string? swarmChunkRetrievalTimeout = null,
+            long? swarmActTimestamp = null,
+            string? swarmActPublisher = null,
+            string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default) =>
-            BeeClient.GetBytesAsync(hash, swarmCache, swarmRedundancyStrategy, swarmRedundancyFallbackMode, swarmChunkRetrievalTimeout, cancellationToken);
+            BeeClient.GetBytesAsync(
+                hash,
+                swarmCache,
+                swarmRedundancyStrategy,
+                swarmRedundancyFallbackMode,
+                swarmChunkRetrievalTimeout,
+                swarmActTimestamp,
+                swarmActPublisher,
+                swarmActHistoryAddress,
+                cancellationToken);
 
         public async Task<ChainState> GetChainStateAsync(CancellationToken cancellationToken = default) =>
             new(await generatedSystemClient.ChainstateAsync(cancellationToken).ConfigureAwait(false));
@@ -128,8 +142,17 @@ namespace Etherna.Sdk.Users.Gateway.Clients
         public Task<Stream> GetChunkAsync(
             SwarmHash hash,
             bool? swarmCache = null,
+            long? swarmActTimestamp = null,
+            string? swarmActPublisher = null,
+            string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default) =>
-            BeeClient.GetChunkStreamAsync(hash, swarmCache, cancellationToken);
+            BeeClient.GetChunkStreamAsync(
+                hash,
+                swarmCache,
+                swarmActTimestamp,
+                swarmActPublisher,
+                swarmActHistoryAddress,
+                cancellationToken);
 
         public async Task<UserCredit> GetCurrentUserCreditAsync(CancellationToken cancellationToken = default) =>
             new(await generatedUsersClient.CreditAsync(cancellationToken).ConfigureAwait(false));
@@ -157,9 +180,20 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             RedundancyStrategy? swarmRedundancyStrategy = null,
             bool? swarmRedundancyFallbackMode = null,
             string? swarmChunkRetrievalTimeout = null,
+            long? swarmActTimestamp = null,
+            string? swarmActPublisher = null,
+            string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default) =>
-            BeeClient.GetFileAsync(address, swarmCache, swarmRedundancyStrategy,
-                swarmRedundancyFallbackMode, swarmChunkRetrievalTimeout, cancellationToken);
+            BeeClient.GetFileAsync(
+                address,
+                swarmCache,
+                swarmRedundancyStrategy,
+                swarmRedundancyFallbackMode,
+                swarmChunkRetrievalTimeout,
+                swarmActTimestamp,
+                swarmActPublisher,
+                swarmActHistoryAddress,
+                cancellationToken);
 
         public async Task<IEnumerable<SwarmHash>> GetPinFundedResourcesAsync(
             CancellationToken cancellationToken = default) =>
