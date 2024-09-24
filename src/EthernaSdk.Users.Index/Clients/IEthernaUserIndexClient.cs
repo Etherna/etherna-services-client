@@ -82,6 +82,13 @@ namespace Etherna.Sdk.Users.Index.Clients
         Task<IEnumerable<VideoValidationStatus>> GetBulkVideoValidationStatusByManifestsAsync(IEnumerable<SwarmHash> manifestHashes, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Get current user info
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Current usre info</returns>
+        Task<IndexUserInfo> GetCurrentUserInfo(CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Get list of last uploaded videos.
         /// </summary>
         /// <param name="page">Current page of results</param>

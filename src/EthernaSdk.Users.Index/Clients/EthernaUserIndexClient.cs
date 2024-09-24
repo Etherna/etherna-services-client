@@ -123,6 +123,26 @@ namespace Etherna.Sdk.Users.Index.Clients
                     validationTime: s.ValidationTime,
                     videoId: s.VideoId));
 
+        public async Task<IndexUserInfo> GetCurrentUserInfo(CancellationToken cancellationToken = default)
+        {
+            var response = await generatedUsersClient.CurrentAsync(cancellationToken).ConfigureAwait(false);
+            return new IndexUserInfo(
+                response.Id,
+                response.Address,
+                response.CreationDateTime,
+                response.IsSuperModerator);
+        }
+
+        public async Task<IndexParameters> GetIndexParametersAsync(CancellationToken cancellationToken = default)
+        {
+            var response = await generatedSystemClient.ParametersAsync(cancellationToken).ConfigureAwait(false);
+            return new IndexParameters(
+                commentMaxLength: response.CommentMaxLength,
+                videoDescriptionMaxLength: response.VideoDescriptionMaxLength,
+                videoPersonalDataMaxLength: response.VideoPersonalDataMaxLength,
+                videoTitleMaxLength: response.VideoTitleMaxLength);
+        }
+
         public async Task<PaginatedResult<VideoPreview>> GetLastPublishedVideosAsync(int? page = null, int? take = null, CancellationToken cancellationToken = default)
         {
             // Get API result.
@@ -199,31 +219,24 @@ namespace Etherna.Sdk.Users.Index.Clients
                 result.Elements.Select(u => new IndexUserInfo(
                     id: u.Id,
                     address: u.Address,
-                    creationDateTime: u.CreationDateTime)),
+                    creationDateTime: u.CreationDateTime,
+                    null)),
                 result.TotalElements,
                 result.PageSize,
                 result.CurrentPage,
                 result.MaxPage);
         }
 
-        public async Task<IndexParameters> GetIndexParametersAsync(CancellationToken cancellationToken = default)
-        {
-            var response = await generatedSystemClient.ParametersAsync(cancellationToken).ConfigureAwait(false);
-            return new IndexParameters(
-                commentMaxLength: response.CommentMaxLength,
-                videoDescriptionMaxLength: response.VideoDescriptionMaxLength,
-                videoPersonalDataMaxLength: response.VideoPersonalDataMaxLength,
-                videoTitleMaxLength: response.VideoTitleMaxLength);
-        }
-
-        public async Task<IndexUserInfo> GetUserInfoByAddressAsync(string address,
+        public async Task<IndexUserInfo> GetUserInfoByAddressAsync(
+            string address,
             CancellationToken cancellationToken = default)
         {
             var response = await generatedUsersClient.UsersGetAsync(address, cancellationToken).ConfigureAwait(false);
             return new IndexUserInfo(
                 id: response.Id,
                 address: response.Address,
-                creationDateTime: response.CreationDateTime);
+                creationDateTime: response.CreationDateTime,
+                null);
         }
 
         public async Task<IndexedVideo> GetVideoByIdAsync(

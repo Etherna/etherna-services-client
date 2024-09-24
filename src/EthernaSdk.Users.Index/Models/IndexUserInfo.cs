@@ -19,11 +19,13 @@ namespace Etherna.Sdk.Users.Index.Models
     public class IndexUserInfo(
         string id,
         string? address,
-        DateTimeOffset creationDateTime)
+        DateTimeOffset creationDateTime,
+        bool? isSuperModerator)
     {
         // Properties.
         public string Id { get; } = id;
         public string? Address { get; } = address;
         public DateTimeOffset CreationDateTime { get; } = creationDateTime;
+        public bool? IsSuperModerator { get; } = isSuperModerator;
     }
 }
