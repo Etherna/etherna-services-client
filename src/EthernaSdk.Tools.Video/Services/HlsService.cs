@@ -29,7 +29,7 @@ namespace Etherna.Sdk.Tools.Video.Services
         IUFileProvider uFileProvider)
         : IHlsService
     {
-        public async Task<HlsVideoEncoding> ParseVideoEncodingFromHlsMasterPlaylistFileAsync(
+        public async Task<HlsVideoEncoding> ParseVideoEncodingFromHlsMasterPlaylistLocalFileAsync(
             TimeSpan duration,
             FileBase masterFile,
             SwarmAddress? masterSwarmAddress,
@@ -67,7 +67,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                 }
                 
                 // Parse stream playlist.
-                var variant = await ParseVideoVariantFromHlsStreamPlaylistFileAsync(
+                var variant = await ParseVideoVariantFromHlsStreamPlaylistLocalFileAsync(
                     streamPlaylistFile,
                     streamSwarmAddress,
                     (int)streamInfo.Resolution.Height,
@@ -83,7 +83,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                 variants.ToArray());
         }
         
-        public async Task<HlsVideoVariant> ParseVideoVariantFromHlsStreamPlaylistFileAsync(
+        public async Task<HlsVideoVariant> ParseVideoVariantFromHlsStreamPlaylistLocalFileAsync(
             FileBase streamPlaylistFile,
             SwarmAddress? streamPlaylistSwarmAddress,
             int height,
@@ -127,7 +127,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                 width);
         }
         
-        public async Task<MasterPlaylist?> TryParseHlsMasterPlaylistFromFileAsync(FileBase hlsPlaylist)
+        public async Task<MasterPlaylist?> TryParseHlsMasterPlaylistFromLocalFileAsync(FileBase hlsPlaylist)
         {
             ArgumentNullException.ThrowIfNull(hlsPlaylist, nameof(hlsPlaylist));
             
