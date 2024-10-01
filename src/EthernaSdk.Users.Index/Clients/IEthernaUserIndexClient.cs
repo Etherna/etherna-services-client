@@ -15,6 +15,7 @@
 using Etherna.BeeNet.Models;
 using Etherna.Sdk.Index.GenClients;
 using Etherna.Sdk.Users.Index.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,7 +64,9 @@ namespace Etherna.Sdk.Users.Index.Clients
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
         Task DeleteOwnedCommentAsync(string commentId, CancellationToken cancellationToken = default);
 
-        Task<IndexedVideo[]> GetAllVideosByOwnerAsync(string userAddress);
+        Task<IndexedVideo[]> GetAllVideosByOwnerAsync(
+            string userAddress,
+            Action<IndexedVideo>? onFoundVideo = null);
         
         /// <summary>
         /// Get bulk validation info by multiple video ids.
@@ -160,7 +163,12 @@ namespace Etherna.Sdk.Users.Index.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>List of user's videos</returns>
         /// <exception cref="EthernaIndexApiException">A server side error occurred.</exception>
-        Task<PaginatedResult<IndexedVideo>> GetVideosByOwnerAsync(string userAddress, int? page = null, int? take = null, CancellationToken cancellationToken = default);
+        Task<PaginatedResult<IndexedVideo>> GetVideosByOwnerAsync(
+            string userAddress,
+            int? page = null,
+            int? take = null,
+            Action<IndexedVideo>? onFoundVideo = null,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get validation info by id.

@@ -80,7 +80,9 @@ namespace Etherna.Sdk.Users.Index.Clients
         public Task DeleteOwnedCommentAsync(string commentId, CancellationToken cancellationToken = default) =>
             generatedCommentsClient.CommentsAsync(commentId, cancellationToken);
         
-        public async Task<IndexedVideo[]> GetAllVideosByOwnerAsync(string userAddress)
+        public async Task<IndexedVideo[]> GetAllVideosByOwnerAsync(
+            string userAddress,
+            Action<IndexedVideo>? onFoundVideo = null)
         {
             var videos = new List<IndexedVideo>();
             const int maxForPage = 100;
@@ -91,7 +93,8 @@ namespace Etherna.Sdk.Users.Index.Clients
                 page = await GetVideosByOwnerAsync(
                     userAddress,
                     page is null ? 0 : page.CurrentPage + 1,
-                    maxForPage).ConfigureAwait(false);
+                    maxForPage,
+                    onFoundVideo).ConfigureAwait(false);
                 videos.AddRange(page.Elements);
             } while (page.Elements.Any());
 
@@ -278,6 +281,7 @@ namespace Etherna.Sdk.Users.Index.Clients
             string userAddress,
             int? page = null,
             int? take = null,
+            Action<IndexedVideo>? onFoundVideo = null,
             CancellationToken cancellationToken = default)
         {
             var result = await generatedUsersClient.Videos3Async(userAddress, page, take, cancellationToken).ConfigureAwait(false);
@@ -286,7 +290,10 @@ namespace Etherna.Sdk.Users.Index.Clients
             foreach (var v in result.Elements)
                 try
                 {
-                    indexedVideos.Add(await BuildIndexedVideoAsync(v).ConfigureAwait(false));
+                    var indexedVideo = await BuildIndexedVideoAsync(v).ConfigureAwait(false);
+                    indexedVideos.Add(indexedVideo);
+
+                    onFoundVideo?.Invoke(indexedVideo);
                 }
                 catch (BeeNetApiException e) when(e.StatusCode == 404)
                 { }
