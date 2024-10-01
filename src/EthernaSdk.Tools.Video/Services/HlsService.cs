@@ -19,6 +19,7 @@ using Etherna.UniversalFiles;
 using M3U8Parser;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,7 +30,7 @@ namespace Etherna.Sdk.Tools.Video.Services
         IUFileProvider uFileProvider)
         : IHlsService
     {
-        public async Task<HlsVideoEncoding> ParseVideoEncodingFromHlsMasterPlaylistLocalFileAsync(
+        public async Task<HlsVideoEncoding> ParseVideoEncodingFromHlsMasterPlaylistFileAsync(
             TimeSpan duration,
             FileBase masterFile,
             SwarmAddress? masterSwarmAddress,
@@ -39,7 +40,7 @@ namespace Etherna.Sdk.Tools.Video.Services
             ArgumentNullException.ThrowIfNull(masterPlaylist, nameof(masterPlaylist));
 
             // Get master playlist directory.
-            var masterFileDirectory = masterFile.UUri.TryGetParentDirectoryAsAbsoluteUri();
+            var masterFileDirectory = Path.GetDirectoryName(masterFile.UUri.OriginalUri);
             if (masterFileDirectory is null)
                 throw new InvalidOperationException($"Can't get parent directory of {masterFile.UUri.OriginalUri}");
                         
@@ -48,26 +49,27 @@ namespace Etherna.Sdk.Tools.Video.Services
             foreach (var streamInfo in masterPlaylist.Streams)
             {
                 // Read stream info.
-                var streamRelativeUUri = new BasicUUri(streamInfo.Uri, UUriKind.Relative);
-                var streamAbsoluteUri = streamRelativeUUri.ToAbsoluteUri(
-                    baseDirectory: masterFileDirectory.OriginalUri);
+                var streamAbsoluteUri = Path.Combine(masterFileDirectory, streamInfo.Uri);
+                UUri streamUUri = masterFile.UUri switch
+                {
+                    BasicUUri _ => new BasicUUri(streamAbsoluteUri),
+                    SwarmUUri _ => new SwarmUUri(streamAbsoluteUri),
+                    _ => throw new InvalidOperationException()
+                };
 
                 // Build stream playlist file.
                 var streamPlaylistFile = await FileBase.BuildFromUFileAsync(
-                    uFileProvider.BuildNewUFile(streamAbsoluteUri)).ConfigureAwait(false);
+                    uFileProvider.BuildNewUFile(streamUUri)).ConfigureAwait(false);
                 SwarmAddress? streamSwarmAddress = null;
                 if (masterSwarmAddress is not null)
                 {
-                    streamSwarmAddress = new SwarmAddress(
-                        masterSwarmAddress.Value.Hash,
-                        masterSwarmAddress.Value.Path.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator + streamInfo.Uri
-                    );
+                    streamSwarmAddress = SwarmAddress.FromString(masterFileDirectory.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator + streamInfo.Uri);
                     var streamSwarmChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(streamSwarmAddress.Value).ConfigureAwait(false);
                     streamPlaylistFile.SwarmHash = streamSwarmChunkRef.Hash;
                 }
                 
                 // Parse stream playlist.
-                var variant = await ParseVideoVariantFromHlsStreamPlaylistLocalFileAsync(
+                var variant = await ParseVideoVariantFromHlsStreamPlaylistFileAsync(
                     streamPlaylistFile,
                     streamSwarmAddress,
                     (int)streamInfo.Resolution.Height,
@@ -78,42 +80,49 @@ namespace Etherna.Sdk.Tools.Video.Services
                         
             return new HlsVideoEncoding(
                 duration,
-                masterFileDirectory.OriginalUri,
+                masterFileDirectory,
                 masterFile,
                 variants.ToArray());
         }
-        
-        public async Task<HlsVideoVariant> ParseVideoVariantFromHlsStreamPlaylistLocalFileAsync(
+
+        public async Task<HlsVideoVariant> ParseVideoVariantFromHlsStreamPlaylistFileAsync(
             FileBase streamPlaylistFile,
             SwarmAddress? streamPlaylistSwarmAddress,
             int height,
             int width)
         {
             ArgumentNullException.ThrowIfNull(streamPlaylistFile, nameof(streamPlaylistFile));
-            
+
             // Get stream playlist directory.
-            var streamPlaylistDirectory = streamPlaylistFile.UUri.TryGetParentDirectoryAsAbsoluteUri();
+            var streamPlaylistDirectory = Path.GetDirectoryName(streamPlaylistFile.UUri.OriginalUri);
             if (streamPlaylistDirectory is null)
-                throw new InvalidOperationException($"Can't get parent directory of {streamPlaylistFile.UUri.OriginalUri}");
-                            
+                throw new InvalidOperationException(
+                    $"Can't get parent directory of {streamPlaylistFile.UUri.OriginalUri}");
+
             // Parse segments.
-            var streamPlaylist = MediaPlaylist.LoadFromText(await streamPlaylistFile.ReadToStringAsync().ConfigureAwait(false));
+            var streamPlaylist =
+                MediaPlaylist.LoadFromText(await streamPlaylistFile.ReadToStringAsync().ConfigureAwait(false));
             List<FileBase> segmentFiles = [];
             foreach (var segment in streamPlaylist.MediaSegments.First().Segments)
             {
                 // Read segments info.
-                var segmentRelativeUUri = new BasicUUri(segment.Uri, UUriKind.Relative);
-                var segmentAbsoluteUri = segmentRelativeUUri.ToAbsoluteUri(
-                    baseDirectory: streamPlaylistDirectory.OriginalUri);
-                    
+                var segmentAbsoluteUri = Path.Combine(streamPlaylistDirectory, segment.Uri);
+                UUri segmentUUri = streamPlaylistFile.UUri switch
+                {
+                    BasicUUri _ => new BasicUUri(segmentAbsoluteUri, UUriKind.LocalAbsolute),
+                    SwarmUUri _ => new SwarmUUri(segmentAbsoluteUri, UUriKind.OnlineAbsolute),
+                    _ => throw new InvalidOperationException()
+                };
+
                 // Build segment file.
-                var segmentFile = await FileBase.BuildFromUFileAsync(uFileProvider.BuildNewUFile(segmentAbsoluteUri)).ConfigureAwait(false);
+                var segmentFile = await FileBase.BuildFromUFileAsync(uFileProvider.BuildNewUFile(segmentUUri))
+                    .ConfigureAwait(false);
                 if (streamPlaylistSwarmAddress is not null)
                 {
-                    var segmentSwarmAddress = new SwarmAddress(
-                        streamPlaylistSwarmAddress.Value.Hash,
-                        streamPlaylistSwarmAddress.Value.Path.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator + segment.Uri);
-                    var segmentSwarmChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress).ConfigureAwait(false);
+                    var segmentSwarmAddress = SwarmAddress.FromString(
+                        streamPlaylistDirectory.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator + segment.Uri);
+                    var segmentSwarmChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress)
+                        .ConfigureAwait(false);
                     segmentFile.SwarmHash = segmentSwarmChunkRef.Hash;
                 }
 
@@ -126,8 +135,8 @@ namespace Etherna.Sdk.Tools.Video.Services
                 height,
                 width);
         }
-        
-        public async Task<MasterPlaylist?> TryParseHlsMasterPlaylistFromLocalFileAsync(FileBase hlsPlaylist)
+
+        public async Task<MasterPlaylist?> TryParseHlsMasterPlaylistFromFileAsync(FileBase hlsPlaylist)
         {
             ArgumentNullException.ThrowIfNull(hlsPlaylist, nameof(hlsPlaylist));
             

@@ -22,18 +22,18 @@ namespace Etherna.Sdk.Tools.Video.Services
 {
     public interface IHlsService
     {
-        Task<HlsVideoEncoding> ParseVideoEncodingFromHlsMasterPlaylistLocalFileAsync(
+        Task<HlsVideoEncoding> ParseVideoEncodingFromHlsMasterPlaylistFileAsync(
             TimeSpan duration,
             FileBase masterFile,
             SwarmAddress? masterSwarmAddress,
             MasterPlaylist masterPlaylist);
 
-        Task<HlsVideoVariant> ParseVideoVariantFromHlsStreamPlaylistLocalFileAsync(
+        Task<HlsVideoVariant> ParseVideoVariantFromHlsStreamPlaylistFileAsync(
             FileBase streamPlaylistFile,
             SwarmAddress? streamPlaylistSwarmAddress,
             int height,
             int width);
         
-        Task<MasterPlaylist?> TryParseHlsMasterPlaylistFromLocalFileAsync(FileBase hlsPlaylist);
+        Task<MasterPlaylist?> TryParseHlsMasterPlaylistFromFileAsync(FileBase hlsPlaylist);
     }
 }
