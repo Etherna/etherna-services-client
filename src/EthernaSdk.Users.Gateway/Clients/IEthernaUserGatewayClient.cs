@@ -160,6 +160,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
         Task<Stream> GetChunkAsync(
             SwarmHash hash,
             int maxRetryAttempts = 10,
+            SwarmHash? rootHash = null,
             bool? swarmCache = null,
             long? swarmActTimestamp = null,
             string? swarmActPublisher = null,
