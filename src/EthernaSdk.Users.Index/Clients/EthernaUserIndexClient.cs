@@ -33,8 +33,7 @@ namespace Etherna.Sdk.Users.Index.Clients
     public class EthernaUserIndexClient(
         Uri baseUrl,
         IBeeClient beeClient,
-        HttpClient httpClient,
-        IVideoManifestService videoManifestService) : IEthernaUserIndexClient
+        HttpClient httpClient) : IEthernaUserIndexClient
     {
         // Fields.
         private readonly CommentsClient generatedCommentsClient = new(baseUrl.AbsoluteUri, httpClient);
@@ -247,7 +246,7 @@ namespace Etherna.Sdk.Users.Index.Clients
             CancellationToken cancellationToken = default)
         {
             var response = await generatedVideosClient.Find2Async(videoId, cancellationToken).ConfigureAwait(false);
-            return await BuildIndexedVideoAsync(response).ConfigureAwait(false);
+            return BuildIndexedVideo(response);
         }
 
         public async Task<IndexedVideo> GetVideoByManifestAsync(
@@ -255,7 +254,7 @@ namespace Etherna.Sdk.Users.Index.Clients
             CancellationToken cancellationToken = default)
         {
             var response = await generatedVideosClient.Manifest2Async(manifestHash.ToString(), cancellationToken).ConfigureAwait(false);
-            return await BuildIndexedVideoAsync(response).ConfigureAwait(false);
+            return BuildIndexedVideo(response);
         }
 
         public async Task<PaginatedResult<Comment>> GetVideoCommentsAsync(string videoId, int? page = null, int? take = null,
@@ -287,10 +286,10 @@ namespace Etherna.Sdk.Users.Index.Clients
             var result = await generatedUsersClient.Videos3Async(userAddress, page, take, cancellationToken).ConfigureAwait(false);
 
             List<IndexedVideo> indexedVideos = [];
-            foreach (var v in result.Elements)
+            foreach (var videoDto in result.Elements)
                 try
                 {
-                    var indexedVideo = await BuildIndexedVideoAsync(v).ConfigureAwait(false);
+                    var indexedVideo = BuildIndexedVideo(videoDto);
                     indexedVideos.Add(indexedVideo);
 
                     onFoundVideo?.Invoke(indexedVideo);
@@ -363,33 +362,27 @@ namespace Etherna.Sdk.Users.Index.Clients
             generatedVideosClient.VotesAsync(id, Enum.Parse<Value>(value.ToString()), cancellationToken);
         
         // Helpers.
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
-        [SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-        private async Task<IndexedVideo> BuildIndexedVideoAsync(Video2Dto videoDto)
+        private static IndexedVideo BuildIndexedVideo(Video2Dto videoDto)
         {
             ArgumentNullException.ThrowIfNull(videoDto, nameof(videoDto));
 
             // Build published video manifest.
-            PublishedVideoManifest? publishedVideoManifest = null;
+            SwarmHash? lastValidManifestHash = null;
             if (videoDto.LastValidManifest is not null)
-            {
-                try
-                {
-                    publishedVideoManifest = await videoManifestService.GetPublishedVideoManifestAsync(
-                        videoDto.LastValidManifest.Hash).ConfigureAwait(false);
-                }
-                catch
-                { }
-            }
+                lastValidManifestHash = SwarmHash.FromString(videoDto.LastValidManifest.Hash);
             
             // Build indexed video.
+            VideoManifestPersonalData.TryDeserialize(videoDto.LastValidManifest?.PersonalData, out var personalData);
             return new IndexedVideo(
                 id: videoDto.Id,
                 creationDateTime: videoDto.CreationDateTime,
                 currentVoteValue: videoDto.CurrentVoteValue.HasValue ?
                     Enum.Parse<VoteValue>(videoDto.CurrentVoteValue.Value.ToString()) : null,
-                lastValidManifest: publishedVideoManifest,
+                description: videoDto.LastValidManifest?.Description,
+                lastValidManifestHash: lastValidManifestHash,
                 ownerAddress: videoDto.OwnerAddress,
+                personalData: personalData,
+                title: videoDto.LastValidManifest?.Title,
                 totDownvotes: videoDto.TotDownvotes,
                 totUpvotes: videoDto.TotUpvotes);
         }

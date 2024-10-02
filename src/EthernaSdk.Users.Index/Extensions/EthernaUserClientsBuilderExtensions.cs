@@ -39,12 +39,10 @@ namespace Etherna.Sdk.Users
             {
                 var beeClient = serviceProvider.GetRequiredService<IBeeClient>();
                 var clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-                var videoManifestService = serviceProvider.GetRequiredService<IVideoManifestService>();
                 return new EthernaUserIndexClient(
                     new Uri(indexBaseUrl, UriKind.Absolute),
                     beeClient,
-                    clientFactory.CreateClient(builder.HttpClientName),
-                    videoManifestService);
+                    clientFactory.CreateClient(builder.HttpClientName));
             });
 
             return builder;
