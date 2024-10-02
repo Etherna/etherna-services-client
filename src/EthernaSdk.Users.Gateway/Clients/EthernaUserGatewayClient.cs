@@ -141,6 +141,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
 
         public Task<Stream> GetChunkAsync(
             SwarmHash hash,
+            int maxRetryAttempts = 10,
             bool? swarmCache = null,
             long? swarmActTimestamp = null,
             string? swarmActPublisher = null,
@@ -148,6 +149,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             CancellationToken cancellationToken = default) =>
             BeeClient.GetChunkStreamAsync(
                 hash,
+                maxRetryAttempts,
                 swarmCache,
                 swarmActTimestamp,
                 swarmActPublisher,
