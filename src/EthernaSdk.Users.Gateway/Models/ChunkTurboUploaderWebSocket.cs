@@ -14,6 +14,8 @@
 
 using Etherna.BeeNet.Models;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
@@ -21,53 +23,35 @@ using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Users.Gateway.Models
 {
+#pragma warning disable CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
     public sealed class ChunkTurboUploaderWebSocket(
+        ushort chunkBatchSize,
         WebSocket webSocket)
-        : IDisposable
+        : ChunkUploaderWebSocket(webSocket)
+#pragma warning restore CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
     {
         // Fields.
         private readonly byte[] responseBuffer = new byte[SwarmHash.HashSize]; //not really used
         
-        // Dispose.
-        public void Dispose()
-        {
-            webSocket.Dispose();
-        }
-        
         // Methods.
-        public async Task CloseAsync()
-        {
-            if (webSocket.State == WebSocketState.Open)
-            {
-                try
-                {
-                    await webSocket.CloseOutputAsync(
-                        WebSocketCloseStatus.NormalClosure,
-                        null,
-                        CancellationToken.None).ConfigureAwait(false);
-                }
-                catch (Exception e) when (e is WebSocketException or OperationCanceledException)
-                { }
-            }
-        }
-        
+        public override Task SendChunkAsync(SwarmChunk chunk, CancellationToken cancellationToken) =>
+            SendChunksAsync([chunk], null, cancellationToken);
+
         /// <summary>
         /// Divide chunks in batches and send them to BeeTurbo
         /// </summary>
-        public async Task SendChunksAsync(
-            SwarmChunk[] chunks,
-            ushort chunkBatchMaxSize = ushort.MaxValue,
+        [SuppressMessage("Performance", "CA1851:Possible multiple enumerations of \'IEnumerable\' collection")]
+        public override async Task SendChunksAsync(
+            IEnumerable<SwarmChunk> chunks,
             Action<int>? onChunkBatchSent = null,
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(chunks, nameof(chunks));
-            if (chunkBatchMaxSize == 0)
-                throw new ArgumentOutOfRangeException(nameof(chunkBatchMaxSize));
-            
+
             // Iterate on chunk batches.
-            for (int i = 0; i < chunks.Length; i += chunkBatchMaxSize)
+            for (int i = 0; i < chunks.Count(); i += chunkBatchSize)
             {
-                var chunksInBatch = chunks.Skip(i).Take(chunkBatchMaxSize).ToArray();
+                var chunksInBatch = chunks.Skip(i).Take(chunkBatchSize).ToArray();
                 
                 //send amount of chunks in batch
                 var chunkBatchSizeByteArray = BitConverter.GetBytes((ushort)chunksInBatch.Length);

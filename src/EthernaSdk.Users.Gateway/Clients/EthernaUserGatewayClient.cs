@@ -297,6 +297,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
         public async Task<ChunkTurboUploaderWebSocket> GetChunkTurboUploaderWebSocketAsync(
             PostageBatchId batchId,
             TagId? tagId = null,
+            ushort chunkBatchMaxSize = ushort.MaxValue,
             CancellationToken cancellationToken = default)
         {
             // Build uploader.
@@ -308,7 +309,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
                 1024,             //1kB
                 1024 * 1024 * 10, //10MB
                 cancellationToken).ConfigureAwait(false);
-            return new ChunkTurboUploaderWebSocket(webSocket);
+            return new ChunkTurboUploaderWebSocket(chunkBatchMaxSize, webSocket);
         }
 
         public Task<SwarmHash> UploadBytesAsync(
