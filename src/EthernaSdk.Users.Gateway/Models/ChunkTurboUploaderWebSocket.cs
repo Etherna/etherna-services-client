@@ -14,9 +14,6 @@
 
 using Etherna.BeeNet.Models;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +22,7 @@ namespace Etherna.Sdk.Users.Gateway.Models
 {
 #pragma warning disable CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
     public sealed class ChunkTurboUploaderWebSocket(
-        ushort chunkBatchSize,
+        ushort chunkBatchMaxSize,
         WebSocket webSocket)
         : ChunkUploaderWebSocket(webSocket)
 #pragma warning restore CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
@@ -35,58 +32,50 @@ namespace Etherna.Sdk.Users.Gateway.Models
         
         // Methods.
         public override Task SendChunkAsync(SwarmChunk chunk, CancellationToken cancellationToken) =>
-            SendChunksAsync([chunk], null, cancellationToken);
+            SendChunksAsync([chunk], cancellationToken);
 
         /// <summary>
-        /// Divide chunks in batches and send them to BeeTurbo
+        /// Send chunk batch to BeeTurbo
         /// </summary>
-        [SuppressMessage("Performance", "CA1851:Possible multiple enumerations of \'IEnumerable\' collection")]
         public override async Task SendChunksAsync(
-            IEnumerable<SwarmChunk> chunks,
-            Action<int>? onChunkBatchSent = null,
+            SwarmChunk[] chunkBatch,
             CancellationToken cancellationToken = default)
         {
-            ArgumentNullException.ThrowIfNull(chunks, nameof(chunks));
+            ArgumentNullException.ThrowIfNull(chunkBatch, nameof(chunkBatch));
+            if (chunkBatch.Length > chunkBatchMaxSize)
+                throw new ArgumentOutOfRangeException(nameof(chunkBatch), "The chunk batch is larger than max size");
 
-            // Iterate on chunk batches.
-            for (int i = 0; i < chunks.Count(); i += chunkBatchSize)
+            //send amount of chunks in batch
+            var chunkBatchSizeByteArray = BitConverter.GetBytes((ushort)chunkBatch.Length);
+            await webSocket.SendAsync(chunkBatchSizeByteArray, WebSocketMessageType.Binary, false, cancellationToken)
+                .ConfigureAwait(false);
+
+            //send chunks
+            for (var j = 0; j < chunkBatch.Length; j++)
             {
-                var chunksInBatch = chunks.Skip(i).Take(chunkBatchSize).ToArray();
-                
-                //send amount of chunks in batch
-                var chunkBatchSizeByteArray = BitConverter.GetBytes((ushort)chunksInBatch.Length);
-                await webSocket.SendAsync(chunkBatchSizeByteArray, WebSocketMessageType.Binary, false, cancellationToken).ConfigureAwait(false);
-                
-                //send chunks
-                for (var j = 0; j < chunksInBatch.Length; j++)
-                {
-                    var chunkBytes = chunksInBatch[j].GetSpanAndData();
-                    var chunkSizeByteArray = BitConverter.GetBytes((ushort)chunkBytes.Length);
-                
-                    //send chunk size
-                    await webSocket.SendAsync(
-                        chunkSizeByteArray,
-                        WebSocketMessageType.Binary,
-                        false,
-                        cancellationToken).ConfigureAwait(false);
-                    
-                    //send chunk data
-                    await webSocket.SendAsync(
-                        chunkBytes,
-                        WebSocketMessageType.Binary,
-                        j + 1 == chunksInBatch.Length,
-                        cancellationToken).ConfigureAwait(false);
-                }
-            
-                //wait response
-                var response = await webSocket.ReceiveAsync(responseBuffer, CancellationToken.None).ConfigureAwait(false);
-                if (response.MessageType == WebSocketMessageType.Close)
-                    throw new OperationCanceledException(
-                        $"Connection closed by server, message: {response.CloseStatusDescription}");
-                
-                //invoke callback
-                onChunkBatchSent?.Invoke(i + chunksInBatch.Length);
+                var chunkBytes = chunkBatch[j].GetSpanAndData();
+                var chunkSizeByteArray = BitConverter.GetBytes((ushort)chunkBytes.Length);
+
+                //send chunk size
+                await webSocket.SendAsync(
+                    chunkSizeByteArray,
+                    WebSocketMessageType.Binary,
+                    false,
+                    cancellationToken).ConfigureAwait(false);
+
+                //send chunk data
+                await webSocket.SendAsync(
+                    chunkBytes,
+                    WebSocketMessageType.Binary,
+                    j + 1 == chunkBatch.Length,
+                    cancellationToken).ConfigureAwait(false);
             }
+
+            //wait response
+            var response = await webSocket.ReceiveAsync(responseBuffer, CancellationToken.None).ConfigureAwait(false);
+            if (response.MessageType == WebSocketMessageType.Close)
+                throw new OperationCanceledException(
+                    $"Connection closed by server, message: {response.CloseStatusDescription}");
         }
     }
 }

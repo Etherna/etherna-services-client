@@ -302,7 +302,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
         {
             // Build uploader.
             var webSocket = await BeeClient.OpenChunkUploadWebSocketConnectionAsync(
-                "chunks/stream",
+                "chunks/stream-turbo",
                 batchId,
                 tagId,
                 1024 * 1024 * 11, //11MB
