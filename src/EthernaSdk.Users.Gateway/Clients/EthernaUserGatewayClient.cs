@@ -294,6 +294,23 @@ namespace Etherna.Sdk.Users.Gateway.Clients
                 swarmDeferredUpload: swarmDeferredUpload,
                 cancellationToken: cancellationToken);
 
+        public async Task<ChunkTurboUploaderWebSocket> GetChunkTurboUploaderWebSocketAsync(
+            PostageBatchId batchId,
+            TagId? tagId = null,
+            CancellationToken cancellationToken = default)
+        {
+            // Build uploader.
+            var webSocket = await BeeClient.OpenChunkUploadWebSocketConnectionAsync(
+                "chunks/stream",
+                batchId,
+                tagId,
+                1024 * 1024 * 11, //11MB
+                1024,             //1kB
+                1024 * 1024 * 10, //10MB
+                cancellationToken).ConfigureAwait(false);
+            return new ChunkTurboUploaderWebSocket(webSocket);
+        }
+
         public Task<SwarmHash> UploadBytesAsync(
             PostageBatchId batchId,
             Stream content,
