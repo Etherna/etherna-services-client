@@ -14,6 +14,7 @@
 
 using Etherna.BeeNet.Models;
 using System;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,55 +24,68 @@ namespace Etherna.Sdk.Users.Gateway.Models
 #pragma warning disable CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
     public sealed class ChunkTurboUploaderWebSocket(
         ushort chunkBatchMaxSize,
-        WebSocket webSocket)
-        : ChunkUploaderWebSocket(webSocket)
+        WebSocket webSocket) : IDisposable
 #pragma warning restore CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
     {
         // Fields.
         private readonly byte[] responseBuffer = new byte[SwarmHash.HashSize]; //not really used
-        
+
+        // Dispose.
+        public void Dispose() =>
+            webSocket.Dispose();
+
         // Methods.
-        public override Task SendChunkAsync(SwarmChunk chunk, CancellationToken cancellationToken) =>
-            SendChunksAsync([chunk], cancellationToken);
+        public async Task CloseAsync()
+        {
+            if (webSocket.State == WebSocketState.Open)
+            {
+                try
+                {
+                    await webSocket.CloseOutputAsync(
+                        WebSocketCloseStatus.NormalClosure,
+                        null,
+                        CancellationToken.None).ConfigureAwait(false);
+                }
+                catch (Exception e) when (e is WebSocketException or OperationCanceledException)
+                {
+                }
+            }
+        }
 
         /// <summary>
         /// Send chunk batch to BeeTurbo
         /// </summary>
-        public override async Task SendChunksAsync(
+        public async Task SendChunksAsync(
             SwarmChunk[] chunkBatch,
+            bool isLastBatch,
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(chunkBatch, nameof(chunkBatch));
             if (chunkBatch.Length > chunkBatchMaxSize)
                 throw new ArgumentOutOfRangeException(nameof(chunkBatch), "The chunk batch is larger than max size");
 
-            //send amount of chunks in batch
-            var chunkBatchSizeByteArray = BitConverter.GetBytes((ushort)chunkBatch.Length);
-            await webSocket.SendAsync(chunkBatchSizeByteArray, WebSocketMessageType.Binary, false, cancellationToken)
-                .ConfigureAwait(false);
-
-            //send chunks
+            // Build payload.
+            List<byte> sendPayload = [];
             for (var j = 0; j < chunkBatch.Length; j++)
             {
                 var chunkBytes = chunkBatch[j].GetSpanAndData();
                 var chunkSizeByteArray = BitConverter.GetBytes((ushort)chunkBytes.Length);
 
-                //send chunk size
-                await webSocket.SendAsync(
-                    chunkSizeByteArray,
-                    WebSocketMessageType.Binary,
-                    false,
-                    cancellationToken).ConfigureAwait(false);
+                //chunk size
+                sendPayload.AddRange(chunkSizeByteArray);
 
-                //send chunk data
-                await webSocket.SendAsync(
-                    chunkBytes,
-                    WebSocketMessageType.Binary,
-                    j + 1 == chunkBatch.Length,
-                    cancellationToken).ConfigureAwait(false);
+                //chunk data
+                sendPayload.AddRange(chunkBytes);
             }
 
-            //wait response
+            // Send.
+            await webSocket.SendAsync(
+                sendPayload.ToArray(),
+                WebSocketMessageType.Binary,
+                isLastBatch,
+                cancellationToken).ConfigureAwait(false);
+
+            // Wait response.
             var response = await webSocket.ReceiveAsync(responseBuffer, CancellationToken.None).ConfigureAwait(false);
             if (response.MessageType == WebSocketMessageType.Close)
                 throw new OperationCanceledException(
