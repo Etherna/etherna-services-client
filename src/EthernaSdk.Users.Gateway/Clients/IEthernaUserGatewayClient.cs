@@ -167,6 +167,12 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default);
 
+        Task<ChunkTurboUploaderWebSocket> GetChunkTurboUploaderWebSocketAsync(
+            PostageBatchId batchId,
+            TagId? tagId = null,
+            ushort chunkBatchMaxSize = ushort.MaxValue,
+            CancellationToken cancellationToken = default);
+
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="EthernaGatewayApiException">A server side error occurred.</exception>
         Task<UserCredit> GetCurrentUserCreditAsync(CancellationToken cancellationToken = default);
