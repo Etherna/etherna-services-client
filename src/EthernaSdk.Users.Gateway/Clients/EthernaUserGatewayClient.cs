@@ -14,8 +14,10 @@
 
 using Etherna.BeeNet;
 using Etherna.BeeNet.Models;
+using Etherna.BeeNet.Tools;
 using Etherna.Sdk.Gateway.GenClients;
 using Etherna.Sdk.Users.Gateway.Models;
+using Etherna.Sdk.Users.Gateway.Tools;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -294,7 +296,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
                 swarmDeferredUpload: swarmDeferredUpload,
                 cancellationToken: cancellationToken);
 
-        public async Task<ChunkTurboUploaderWebSocket> GetChunkTurboUploaderWebSocketAsync(
+        public async Task<IChunkWebSocketUploader> GetChunkTurboUploaderWebSocketAsync(
             PostageBatchId batchId,
             TagId? tagId = null,
             ushort chunkBatchMaxSize = ushort.MaxValue,
@@ -309,7 +311,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
                 1024,             //1kB
                 1024 * 1024 * 10, //10MB
                 cancellationToken).ConfigureAwait(false);
-            return new ChunkTurboUploaderWebSocket(chunkBatchMaxSize, webSocket);
+            return new ChunkWebSocketTurboUploader(chunkBatchMaxSize, webSocket);
         }
 
         public Task<SwarmHash> UploadBytesAsync(

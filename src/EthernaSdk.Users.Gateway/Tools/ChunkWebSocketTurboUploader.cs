@@ -13,18 +13,19 @@
 // If not, see <https://www.gnu.org/licenses/>.
 
 using Etherna.BeeNet.Models;
+using Etherna.BeeNet.Tools;
 using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Etherna.Sdk.Users.Gateway.Models
+namespace Etherna.Sdk.Users.Gateway.Tools
 {
 #pragma warning disable CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
-    public sealed class ChunkTurboUploaderWebSocket(
+    public sealed class ChunkWebSocketTurboUploader(
         ushort chunkBatchMaxSize,
-        WebSocket webSocket) : IDisposable
+        WebSocket webSocket) : IChunkWebSocketUploader
 #pragma warning restore CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
     {
         // Dispose.
@@ -49,10 +50,16 @@ namespace Etherna.Sdk.Users.Gateway.Models
             }
         }
 
+        public Task SendChunkAsync(byte[] chunkPayload, CancellationToken cancellationToken) =>
+            SendChunkAsync(SwarmChunk.BuildFromSpanAndData(SwarmHash.Zero, chunkPayload), cancellationToken);
+
+        public Task SendChunkAsync(SwarmChunk chunk, CancellationToken cancellationToken) =>
+            SendChunkBatchAsync([chunk], true, cancellationToken);
+
         /// <summary>
         /// Send chunk batch to BeeTurbo
         /// </summary>
-        public async Task SendChunksAsync(
+        public async Task SendChunkBatchAsync(
             SwarmChunk[] chunkBatch,
             bool isLastBatch,
             CancellationToken cancellationToken = default)

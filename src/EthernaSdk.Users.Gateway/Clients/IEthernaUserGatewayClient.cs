@@ -14,6 +14,7 @@
 
 using Etherna.BeeNet;
 using Etherna.BeeNet.Models;
+using Etherna.BeeNet.Tools;
 using Etherna.Sdk.Gateway.GenClients;
 using Etherna.Sdk.Users.Gateway.Models;
 using System;
@@ -167,7 +168,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             string? swarmActHistoryAddress = null,
             CancellationToken cancellationToken = default);
 
-        Task<ChunkTurboUploaderWebSocket> GetChunkTurboUploaderWebSocketAsync(
+        Task<IChunkWebSocketUploader> GetChunkTurboUploaderWebSocketAsync(
             PostageBatchId batchId,
             TagId? tagId = null,
             ushort chunkBatchMaxSize = ushort.MaxValue,
