@@ -27,9 +27,6 @@ namespace Etherna.Sdk.Users.Gateway.Models
         WebSocket webSocket) : IDisposable
 #pragma warning restore CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
     {
-        // Fields.
-        private readonly byte[] responseBuffer = new byte[SwarmHash.HashSize]; //not really used
-
         // Dispose.
         public void Dispose() =>
             webSocket.Dispose();
@@ -84,12 +81,6 @@ namespace Etherna.Sdk.Users.Gateway.Models
                 WebSocketMessageType.Binary,
                 isLastBatch,
                 cancellationToken).ConfigureAwait(false);
-
-            // Wait response.
-            var response = await webSocket.ReceiveAsync(responseBuffer, CancellationToken.None).ConfigureAwait(false);
-            if (response.MessageType == WebSocketMessageType.Close)
-                throw new OperationCanceledException(
-                    $"Connection closed by server, message: {response.CloseStatusDescription}");
         }
     }
 }
