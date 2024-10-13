@@ -28,6 +28,9 @@ namespace Etherna.Sdk.Users.Gateway.Tools
         WebSocket webSocket) : IChunkWebSocketUploader
 #pragma warning restore CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
     {
+        // Fields.
+        private readonly byte[] ackBuffer = new byte[100];
+        
         // Dispose.
         public void Dispose() =>
             webSocket.Dispose();
@@ -88,6 +91,9 @@ namespace Etherna.Sdk.Users.Gateway.Tools
                 WebSocketMessageType.Binary,
                 isLastBatch,
                 cancellationToken).ConfigureAwait(false);
+            
+            // Wait ack.
+            await webSocket.ReceiveAsync(ackBuffer, CancellationToken.None);
         }
     }
 }
