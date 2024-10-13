@@ -98,8 +98,9 @@ namespace Etherna.Sdk.Users.Gateway.Tools
             // Send closure.
             if (isLastBatch)
             {
+                var lastBytes = "last"u8.ToArray();
                 await webSocket.SendAsync(
-                    [],
+                    lastBytes,
                     WebSocketMessageType.Binary,
                     true,
                     cancellationToken).ConfigureAwait(false);
