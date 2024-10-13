@@ -89,11 +89,21 @@ namespace Etherna.Sdk.Users.Gateway.Tools
             await webSocket.SendAsync(
                 sendPayload.ToArray(),
                 WebSocketMessageType.Binary,
-                isLastBatch,
+                false,
                 cancellationToken).ConfigureAwait(false);
             
             // Wait ack.
             await webSocket.ReceiveAsync(ackBuffer, CancellationToken.None).ConfigureAwait(false);
+            
+            // Send closure.
+            if (isLastBatch)
+            {
+                await webSocket.SendAsync(
+                    [],
+                    WebSocketMessageType.Binary,
+                    true,
+                    cancellationToken).ConfigureAwait(false);
+            }
         }
     }
 }
