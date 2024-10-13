@@ -93,7 +93,7 @@ namespace Etherna.Sdk.Users.Gateway.Tools
                 cancellationToken).ConfigureAwait(false);
             
             // Wait ack.
-            await webSocket.ReceiveAsync(ackBuffer, CancellationToken.None);
+            await webSocket.ReceiveAsync(ackBuffer, CancellationToken.None).ConfigureAwait(false);
         }
     }
 }
