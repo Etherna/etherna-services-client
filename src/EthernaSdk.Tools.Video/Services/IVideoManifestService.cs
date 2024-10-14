@@ -25,6 +25,7 @@ namespace Etherna.Sdk.Tools.Video.Services
             VideoManifest manifest,
             string chunksDirectory,
             bool createDirectory = true,
+            ushort compactLevel = 0,
             IPostageStampIssuer? postageStampIssuer = null);
 
         Task<PublishedVideoManifest> GetPublishedVideoManifestAsync(SwarmHash manifestHash);

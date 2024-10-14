@@ -46,6 +46,7 @@ namespace Etherna.Sdk.Tools.Video.Services
             VideoManifest manifest,
             string chunksDirectory,
             bool createDirectory = true,
+            ushort compactLevel = 0,
             IPostageStampIssuer? postageStampIssuer = null)
         {
             ArgumentNullException.ThrowIfNull(manifest, nameof(manifest));
@@ -63,12 +64,14 @@ namespace Etherna.Sdk.Tools.Video.Services
                 previewManifestByteArray,
                 chunksDirectory,
                 postageStampIssuer,
-                createDirectory).ConfigureAwait(false);
+                createDirectory,
+                compactLevel: compactLevel).ConfigureAwait(false);
             var detailsManifestHash = await chunkService.WriteDataChunksAsync(
                 detailsManifestByteArray,
                 chunksDirectory,
                 postageStampIssuer,
-                createDirectory).ConfigureAwait(false);
+                createDirectory,
+                compactLevel: compactLevel).ConfigureAwait(false);
             
             // Create mantaray root manifest.
             var chunkStore = new LocalDirectoryChunkStore(chunksDirectory, createDirectory);
@@ -86,7 +89,8 @@ namespace Etherna.Sdk.Tools.Video.Services
                     false,
                     0,
                     null),
-                false);
+                false,
+                compactLevel > 0);
             
             //add default (preview)
             mantarayManifest.Add(
