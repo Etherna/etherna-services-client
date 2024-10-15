@@ -75,6 +75,11 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             string? label = null,
             CancellationToken cancellationToken = default);
 
+        Task ChunksBulkUploadAsync(
+            SwarmChunk[] chunks,
+            PostageBatchId batchId,
+            CancellationToken cancellationToken = default);
+
         /// <summary>Create an initial feed root manifest</summary>
         /// <param name="owner">Owner</param>
         /// <param name="topic">Topic</param>

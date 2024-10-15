@@ -33,6 +33,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
     public sealed class EthernaUserGatewayClient : IEthernaUserGatewayClient
     {
         // Fields.
+        private readonly ChunksClient generatedChunksClient;
         private readonly PostageClient generatedPostageClient;
         private readonly ResourcesClient generatedResourcesClient;
         private readonly SystemClient generatedSystemClient;
@@ -47,6 +48,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             ArgumentNullException.ThrowIfNull(baseUrl, nameof(baseUrl));
 
             BeeClient = beeClient;
+            generatedChunksClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedPostageClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedResourcesClient = new(baseUrl.AbsoluteUri, httpClient);
             generatedSystemClient = new(baseUrl.AbsoluteUri, httpClient);
@@ -83,6 +85,36 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             string? label = null,
             CancellationToken cancellationToken = default) =>
             generatedUsersClient.BatchesPostAsync(depth, amount.ToPlurLong(), label, cancellationToken);
+
+        public async Task ChunksBulkUploadAsync(
+            SwarmChunk[] chunks,
+            PostageBatchId batchId,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(chunks, nameof(chunks));
+            
+            // Build payload.
+            List<byte> payload = [];
+            for (var j = 0; j < chunks.Length; j++)
+            {
+                var chunkBytes = chunks[j].GetSpanAndData();
+                var chunkSizeByteArray = BitConverter.GetBytes((ushort)chunkBytes.Length);
+
+                //chunk size
+                payload.AddRange(chunkSizeByteArray);
+
+                //chunk data
+                payload.AddRange(chunkBytes);
+            }
+            
+            var byteArrayPayload = payload.ToArray();
+            using var memoryStream = new MemoryStream(byteArrayPayload);
+            
+            await generatedChunksClient.ChunksBulkUploadAsync(
+                memoryStream,
+                swarm_postage_batch_id: batchId.ToString(),
+                cancellationToken).ConfigureAwait(false);
+        }
 
         public Task<SwarmHash> CreateFeedAsync(
             string owner,
