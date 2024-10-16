@@ -105,6 +105,9 @@ namespace Etherna.Sdk.Users.Gateway.Clients
 
                 //chunk data
                 payload.AddRange(chunkBytes);
+                
+                //check hash
+                payload.AddRange(chunks[j].Hash.ToByteArray());
             }
             
             var byteArrayPayload = payload.ToArray();
