@@ -500,7 +500,9 @@ namespace Etherna.Sdk.Tools.Video.Services
             }
             foreach (var (resourceAddress, resourceHash) in test.SwarmAdditionalResources)
             {
-                beeMock.Setup(b => b.ResolveAddressToChunkReferenceAsync(resourceAddress))
+                beeMock.Setup(b => b.ResolveAddressToChunkReferenceAsync(
+                        resourceAddress,
+                        It.IsAny<IDictionary<SwarmHash, SwarmChunk>?>()))
                     .Returns(Task.FromResult(new SwarmChunkReference(resourceHash, null, false)));
             }
         
