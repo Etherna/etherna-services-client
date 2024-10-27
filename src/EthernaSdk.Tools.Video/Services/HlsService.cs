@@ -34,10 +34,13 @@ namespace Etherna.Sdk.Tools.Video.Services
             TimeSpan duration,
             FileBase masterFile,
             SwarmAddress? masterSwarmAddress,
-            MasterPlaylist masterPlaylist)
+            MasterPlaylist masterPlaylist,
+            IDictionary<SwarmHash, SwarmChunk>? chunksCache = null)
         {
             ArgumentNullException.ThrowIfNull(masterFile, nameof(masterFile));
             ArgumentNullException.ThrowIfNull(masterPlaylist, nameof(masterPlaylist));
+            
+            chunksCache ??= new Dictionary<SwarmHash, SwarmChunk>();
 
             // Get master playlist directory.
             var masterFileDirectory = Path.GetDirectoryName(masterFile.UUri.OriginalUri);
@@ -64,7 +67,9 @@ namespace Etherna.Sdk.Tools.Video.Services
                 if (masterSwarmAddress is not null)
                 {
                     streamSwarmAddress = SwarmAddress.FromString(masterFileDirectory.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator + streamInfo.Uri);
-                    var streamSwarmChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(streamSwarmAddress.Value).ConfigureAwait(false);
+                    var streamSwarmChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(
+                        streamSwarmAddress.Value,
+                        chunksCache).ConfigureAwait(false);
                     streamPlaylistFile.SwarmHash = streamSwarmChunkRef.Hash;
                 }
                 
@@ -73,7 +78,8 @@ namespace Etherna.Sdk.Tools.Video.Services
                     streamPlaylistFile,
                     streamSwarmAddress,
                     (int)streamInfo.Resolution.Height,
-                    (int)streamInfo.Resolution.Width).ConfigureAwait(false);
+                    (int)streamInfo.Resolution.Width,
+                    chunksCache).ConfigureAwait(false);
                 
                 variants.Add(variant);
             }
@@ -89,9 +95,12 @@ namespace Etherna.Sdk.Tools.Video.Services
             FileBase streamPlaylistFile,
             SwarmAddress? streamPlaylistSwarmAddress,
             int height,
-            int width)
+            int width,
+            IDictionary<SwarmHash, SwarmChunk>? chunksCache = null)
         {
             ArgumentNullException.ThrowIfNull(streamPlaylistFile, nameof(streamPlaylistFile));
+
+            chunksCache ??= new Dictionary<SwarmHash, SwarmChunk>();
 
             // Get stream playlist directory.
             var streamPlaylistDirectory = Path.GetDirectoryName(streamPlaylistFile.UUri.OriginalUri);
@@ -121,8 +130,9 @@ namespace Etherna.Sdk.Tools.Video.Services
                 {
                     var segmentSwarmAddress = SwarmAddress.FromString(
                         streamPlaylistDirectory.TrimEnd(SwarmAddress.Separator) + SwarmAddress.Separator + segment.Uri);
-                    var segmentSwarmChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress)
-                        .ConfigureAwait(false);
+                    var segmentSwarmChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(
+                            segmentSwarmAddress,
+                            chunksCache).ConfigureAwait(false);
                     segmentFile.SwarmHash = segmentSwarmChunkRef.Hash;
                 }
 

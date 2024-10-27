@@ -50,6 +50,8 @@ namespace Etherna.Sdk.Tools.Video.Serialization
         {
             ArgumentNullException.ThrowIfNull(beeClient, nameof(beeClient));
             
+            Dictionary<SwarmHash, SwarmChunk> chunksCache = [];
+            
             // Get manifest.
             var manifestDto = manifestJsonElement.Deserialize<Manifest1Dto>(jsonSerializerOptions);
             if (manifestDto is null)
@@ -65,7 +67,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization
             List<VideoManifestVideoSource> videoSources = [];
             foreach (var videoSourceDto in manifestDto.Sources)
             {
-                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceDto.Reference).ConfigureAwait(false);
+                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(
+                    videoSourceDto.Reference,
+                    chunksCache).ConfigureAwait(false);
                 videoSources.Add(new VideoManifestVideoSource(
                     videoSourceDto.Quality + ".mp4",
                     VideoType.Mp4,
@@ -82,7 +86,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization
                 List<VideoManifestImageSource> imgSources = [];
                 foreach (var imgSourceDto in manifestDto.Thumbnail.Sources)
                 {
-                    var imgSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(imgSourceDto.Value).ConfigureAwait(false);
+                    var imgSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(
+                        imgSourceDto.Value,
+                        chunksCache).ConfigureAwait(false);
                     imgSources.Add(new VideoManifestImageSource(
                         imgSourceDto.Key.TrimEnd('w') + ".jpg",
                         ImageType.Jpeg,
@@ -121,6 +127,8 @@ namespace Etherna.Sdk.Tools.Video.Serialization
         {
             ArgumentNullException.ThrowIfNull(beeClient, nameof(beeClient));
             
+            Dictionary<SwarmHash, SwarmChunk> chunksCache = [];
+            
             // Get preview manifest.
             var previewManifestDto = previewManifestJsonElement.Deserialize<Manifest2PreviewDto>(jsonSerializerOptions);
             if (previewManifestDto is null)
@@ -147,7 +155,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization
             {
                 var captionSwarmUri = new SwarmUri(captionDto.Path, UriKind.RelativeOrAbsolute);
                 var captionSwarmAddress = captionSwarmUri.ToSwarmAddress(manifestHash);
-                var captionChunkReference = await beeClient.ResolveAddressToChunkReferenceAsync(captionSwarmAddress).ConfigureAwait(false);
+                var captionChunkReference = await beeClient.ResolveAddressToChunkReferenceAsync(
+                    captionSwarmAddress,
+                    chunksCache).ConfigureAwait(false);
                 var captionFileName = captionDto.Path.Split(SwarmAddress.Separator).Last();
 
                 captions.Add(new(
@@ -177,7 +187,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization
                 var swarmUri = new SwarmUri(thumbnailSourceDto.Path, UriKind.RelativeOrAbsolute);
 
                 var thumbnailAddress = swarmUri.ToSwarmAddress(manifestHash);
-                var thumbnailChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(thumbnailAddress).ConfigureAwait(false);
+                var thumbnailChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(
+                    thumbnailAddress,
+                    chunksCache).ConfigureAwait(false);
                 
                 var thumbnailSource = new VideoManifestImageSource(
                     fileName,
@@ -196,7 +208,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization
                 
                 var videoSourceSwarmUri = new SwarmUri(videoSourceDto.Path, UriKind.RelativeOrAbsolute);
                 var videoSourceSwarmAddress = videoSourceSwarmUri.ToSwarmAddress(manifestHash);
-                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(videoSourceSwarmAddress).ConfigureAwait(false);
+                var videoSourceChunkRef = await beeClient.ResolveAddressToChunkReferenceAsync(
+                    videoSourceSwarmAddress,
+                    chunksCache).ConfigureAwait(false);
                 
                 var sourceDirectoryPath = VideoManifestVideoSource.GetManifestVideoSourceBaseDirectory(videoType);
                 if (!videoSourceDto.Path.StartsWith(sourceDirectoryPath, StringComparison.Ordinal))
@@ -240,7 +254,9 @@ namespace Etherna.Sdk.Tools.Video.Serialization
                             
                             additionalFiles.Add(new VideoManifestVideoSourceAdditionalFile(
                                 segmentRelativePath,
-                                (await beeClient.ResolveAddressToChunkReferenceAsync(segmentSwarmAddress).ConfigureAwait(false)).Hash));
+                                (await beeClient.ResolveAddressToChunkReferenceAsync(
+                                    segmentSwarmAddress,
+                                    chunksCache).ConfigureAwait(false)).Hash));
                         }
                         
                         break;
