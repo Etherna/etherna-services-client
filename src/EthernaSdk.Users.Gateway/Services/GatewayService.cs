@@ -66,18 +66,27 @@ namespace Etherna.Sdk.Users.Gateway.Services
         public async Task<PostageBatchId> CreatePostageBatchAsync(
             BzzBalance amount,
             int batchDepth,
+            string? label,
             Action? onWaitingBatchCreation = null,
             Action<PostageBatchId>? onBatchCreated = null,
             Action? onWaitingBatchUsable = null,
             Action? onBatchUsable = null)
         {
+            if (amount <= 0)
+                throw new ArgumentException("Amount must be positive");
+            if (batchDepth < PostageBatch.MinDepth)
+                throw new ArgumentException($"Postage depth must be at least {PostageBatch.MinDepth}");
+
             if (options.IsDryRun)
                 return PostageBatchId.Zero;
             if (options.UseBeeApi)
             {
                 // Create batch.
                 onWaitingBatchCreation?.Invoke();
-                var batchId = await ethernaGatewayClient.BeeClient.BuyPostageBatchAsync(amount, batchDepth).ConfigureAwait(false);
+                var batchId = await ethernaGatewayClient.BeeClient.BuyPostageBatchAsync(
+                    amount,
+                    batchDepth,
+                    label).ConfigureAwait(false);
                 onBatchCreated?.Invoke(batchId);
 
                 // Wait until created batch is usable.
@@ -89,7 +98,10 @@ namespace Etherna.Sdk.Users.Gateway.Services
             }
             else
             {
-                var batchReferenceId = await ethernaGatewayClient.BuyPostageBatchAsync(amount, batchDepth).ConfigureAwait(false);
+                var batchReferenceId = await ethernaGatewayClient.BuyPostageBatchAsync(
+                    amount,
+                    batchDepth,
+                    label).ConfigureAwait(false);
 
                 // Wait until created batch is available.
                 onWaitingBatchCreation?.Invoke();
@@ -176,6 +188,13 @@ namespace Etherna.Sdk.Users.Gateway.Services
             return (await ethernaGatewayClient.GetChainStateAsync().ConfigureAwait(false)).CurrentPrice;
         }
 
+        public Task<PostageBatch> GetPostageBatchInfoAsync(PostageBatchId batchId)
+        {
+            if (options.UseBeeApi)
+                return ethernaGatewayClient.BeeClient.GetPostageBatchAsync(batchId);
+            return ethernaGatewayClient.GetPostageBatchAsync(batchId);
+        }
+
         public async Task<bool> IsBatchUsableAsync(PostageBatchId batchId)
         {
             if (options.UseBeeApi)
@@ -236,7 +255,8 @@ namespace Etherna.Sdk.Users.Gateway.Services
                 { }
 
                 //waiting for batch usable
-                await Task.Delay(BatchCheckTimeSpan).ConfigureAwait(false);
+                if (!batchIsUsable) 
+                    await Task.Delay(BatchCheckTimeSpan).ConfigureAwait(false);
             } while (!batchIsUsable);
         }
     }
