@@ -230,6 +230,32 @@ namespace Etherna.Sdk.Users.Gateway.Services
                 swarmPin: fundPinning,
                 tagId: tagId).ConfigureAwait(false);
         }
+        
+#if NET7_0_OR_GREATER
+        public Task<SwarmHash> UploadDirectoryAsync(
+            PostageBatchId batchId,
+            string directoryPath,
+            bool pinResource) =>
+            ethernaGatewayClient.UploadDirectoryAsync(
+                batchId,
+                directoryPath,
+                swarmDeferredUpload: true,
+                swarmPin: pinResource);
+#endif
+
+        public Task<SwarmHash> UploadFileAsync(
+            PostageBatchId batchId,
+            Stream content,
+            string? name,
+            string? contentType,
+            bool pinResource) =>
+            ethernaGatewayClient.UploadFileAsync(
+                batchId,
+                content,
+                name: name,
+                contentType: contentType,
+                swarmDeferredUpload: true,
+                swarmPin: pinResource);
 
         // Helpers.
         private async Task WaitForBatchUsableAsync(PostageBatchId batchId)

@@ -14,6 +14,7 @@
 
 using Etherna.BeeNet.Models;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Etherna.Sdk.Users.Gateway.Services
@@ -84,5 +85,19 @@ namespace Etherna.Sdk.Users.Gateway.Services
             SwarmChunk chunk,
             bool fundPinning = false,
             TagId? tagId = null);
+        
+#if NET7_0_OR_GREATER
+        Task<SwarmHash> UploadDirectoryAsync(
+            PostageBatchId batchId,
+            string directoryPath,
+            bool pinResource);
+#endif
+        
+        Task<SwarmHash> UploadFileAsync(
+            PostageBatchId batchId,
+            Stream content,
+            string? name,
+            string? contentType,
+            bool pinResource);
     }
 }
