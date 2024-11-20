@@ -231,7 +231,6 @@ namespace Etherna.Sdk.Users.Gateway.Services
                 tagId: tagId).ConfigureAwait(false);
         }
         
-#if NET7_0_OR_GREATER
         public Task<SwarmHash> UploadDirectoryAsync(
             PostageBatchId batchId,
             string directoryPath,
@@ -241,7 +240,6 @@ namespace Etherna.Sdk.Users.Gateway.Services
                 directoryPath,
                 swarmDeferredUpload: true,
                 swarmPin: pinResource);
-#endif
 
         public Task<SwarmHash> UploadFileAsync(
             PostageBatchId batchId,
