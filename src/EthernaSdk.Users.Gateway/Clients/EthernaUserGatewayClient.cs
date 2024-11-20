@@ -362,7 +362,6 @@ namespace Etherna.Sdk.Users.Gateway.Clients
                 swarmRedundancyLevel: swarmRedundancyLevel,
                 cancellationToken: cancellationToken);
         
-#if NET7_0_OR_GREATER
         public Task<SwarmHash> UploadDirectoryAsync(
             PostageBatchId batchId,
             string directoryPath,
@@ -377,7 +376,6 @@ namespace Etherna.Sdk.Users.Gateway.Clients
                 swarmDeferredUpload: swarmDeferredUpload,
                 swarmRedundancyLevel: swarmRedundancyLevel,
                 cancellationToken: cancellationToken);
-#endif
 
         public Task<SwarmHash> UploadFileAsync(
             PostageBatchId batchId,
