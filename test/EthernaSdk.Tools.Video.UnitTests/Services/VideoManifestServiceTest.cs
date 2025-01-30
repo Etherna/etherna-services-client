@@ -488,6 +488,7 @@ namespace Etherna.Sdk.Tools.Video.Services
                 beeMock.Setup(b => b.GetFileAsync(
                         resourceAddress,
                         It.IsAny<bool?>(),
+                        It.IsAny<RedundancyLevel?>(),
                         It.IsAny<RedundancyStrategy?>(),
                         It.IsAny<bool?>(),
                         It.IsAny<string?>(),

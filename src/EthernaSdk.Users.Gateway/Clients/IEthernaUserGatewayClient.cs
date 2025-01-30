@@ -147,6 +147,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
         Task<Stream> GetBytesAsync(
             SwarmHash hash,
             bool? swarmCache = null,
+            RedundancyLevel? swarmRedundancyLevel = null,
             RedundancyStrategy? swarmRedundancyStrategy = null,
             bool? swarmRedundancyFallbackMode = null,
             string? swarmChunkRetrievalTimeout = null,
@@ -198,7 +199,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
         /// <param name="type">Feed indexing scheme (default: sequence)</param>
         /// <returns>Latest feed update</returns>
         /// <exception cref="BeeNetGatewayApiException">A server side error occurred.</exception>
-        Task<SwarmHash> GetFeedAsync(
+        Task<FileResponse> GetFeedAsync(
             string owner,
             string topic,
             int? at = null,
@@ -217,6 +218,7 @@ namespace Etherna.Sdk.Users.Gateway.Clients
         Task<FileResponse> GetFileAsync(
             SwarmAddress address,
             bool? swarmCache = null,
+            RedundancyLevel? swarmRedundancyLevel = null,
             RedundancyStrategy? swarmRedundancyStrategy = null,
             bool? swarmRedundancyFallbackMode = null,
             string? swarmChunkRetrievalTimeout = null,
@@ -388,7 +390,6 @@ namespace Etherna.Sdk.Users.Gateway.Clients
             string signature,
             PostageBatchId batchId,
             Stream content,
-            bool swarmPin = false,
             CancellationToken cancellationToken = default);
     }
 }
