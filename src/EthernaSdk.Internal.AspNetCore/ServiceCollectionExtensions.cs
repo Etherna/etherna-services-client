@@ -12,7 +12,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Etherna SDK .Net.
 // If not, see <https://www.gnu.org/licenses/>.
 
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
