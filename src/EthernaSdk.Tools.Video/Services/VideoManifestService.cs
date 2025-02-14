@@ -60,15 +60,17 @@ namespace Etherna.Sdk.Tools.Video.Services
             
             // Create video manifests chunks.
             var previewManifestHash = await chunkService.WriteDataChunksAsync(
+                new LocalDirectoryChunkStore(
+                    chunksDirectory,
+                    createDirectory),
                 previewManifestByteArray,
-                chunksDirectory,
-                postageStampIssuer,
-                createDirectory).ConfigureAwait(false);
+                postageStampIssuer).ConfigureAwait(false);
             var detailsManifestHash = await chunkService.WriteDataChunksAsync(
+                new LocalDirectoryChunkStore(
+                    chunksDirectory,
+                    createDirectory),
                 detailsManifestByteArray,
-                chunksDirectory,
-                postageStampIssuer,
-                createDirectory).ConfigureAwait(false);
+                postageStampIssuer).ConfigureAwait(false);
             
             // Create mantaray root manifest.
             var chunkStore = new LocalDirectoryChunkStore(chunksDirectory, createDirectory);
@@ -79,14 +81,15 @@ namespace Etherna.Sdk.Tools.Video.Services
                     postageStampIssuer,
                     new MemoryStampStore());
             var mantarayManifest = new MantarayManifest(
-                () => HasherPipelineBuilder.BuildNewHasherPipeline(
+                readOnly => HasherPipelineBuilder.BuildNewHasherPipeline(
                     chunkStore,
                     postageStamper,
                     RedundancyLevel.None,
                     false,
                     0,
-                    null),
-                false);
+                    null,
+                    readOnly: readOnly),
+                0);
             
             //add default (preview)
             mantarayManifest.Add(
